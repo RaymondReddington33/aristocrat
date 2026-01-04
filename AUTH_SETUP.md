@@ -22,8 +22,9 @@ Para que la autenticación funcione correctamente, necesitas configurar las URLs
 
 ### 2. Configurar Site URL
 
-- **Site URL**: Tu URL de producción (ej: `https://tu-proyecto.vercel.app`)
-- Para desarrollo local: `http://localhost:3000`
+- **Site URL**: Tu URL de producción
+  - Producción: `https://aristocrat.oriolclaramunt.com`
+  - Desarrollo local: `http://localhost:3000`
 
 ### 3. Configurar Redirect URLs
 
@@ -31,7 +32,7 @@ Añade las siguientes URLs en **Redirect URLs**:
 
 **Producción:**
 ```
-https://tu-proyecto.vercel.app/auth/callback
+https://aristocrat.oriolclaramunt.com/auth/callback
 ```
 
 **Desarrollo local:**
@@ -41,7 +42,7 @@ http://localhost:3000/auth/callback
 
 **Para múltiples entornos:**
 ```
-https://tu-proyecto.vercel.app/auth/callback
+https://aristocrat.oriolclaramunt.com/auth/callback
 http://localhost:3000/auth/callback
 ```
 

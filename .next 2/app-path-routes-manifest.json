@@ -1,0 +1,13 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/admin/page": "/admin",
+  "/auth/callback/route": "/auth/callback",
+  "/auth/login/page": "/auth/login",
+  "/page": "/",
+  "/preview/android/page": "/preview/android",
+  "/preview/brief/page": "/preview/brief",
+  "/preview/ios/page": "/preview/ios",
+  "/preview/keywords/page": "/preview/keywords",
+  "/preview/page": "/preview"
+}

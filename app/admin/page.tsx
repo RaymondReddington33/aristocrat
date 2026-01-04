@@ -25,6 +25,8 @@ import { ColorPaletteDisplay } from "@/components/color-palette-display"
 import { TypographyDisplay } from "@/components/typography-display"
 import { AppleSearchAdsConfig } from "@/components/apple-search-ads-config"
 import { CompetitorAnalysisManager } from "@/components/competitor-analysis-manager"
+import { getUserWithRole } from "@/app/actions"
+import { getUserRole, canEdit, getRoleLabel, type UserRole } from "@/lib/auth"
 
 // Lazy load heavy components
 const KeywordManager = dynamic(() => import("@/components/keyword-manager").then(mod => ({ default: mod.KeywordManager })), {
@@ -143,6 +145,18 @@ export default function AdminPanel() {
   }
 
   useEffect(() => {
+    // Check user role
+    const checkRole = async () => {
+      try {
+        const { user, role } = await getUserWithRole()
+        setUserRole(role)
+        setIsReadOnly(!canEdit(role))
+      } catch (error) {
+        console.error("Error checking user role:", error)
+      }
+    }
+    
+    checkRole()
     loadExistingData()
   }, [loadExistingData])
 

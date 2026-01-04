@@ -473,6 +473,28 @@ export async function generateOptimizedKeywordSetsAction(appDataId: string) {
   return generateOptimizedKeywordSets(keywords)
 }
 
+export async function getUser() {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  return user
+}
+
+export async function getUserWithRole() {
+  const user = await getUser()
+  if (!user?.email) return { user: null, role: null }
+  
+  const { getUserRole } = await import("@/lib/auth")
+  const role = getUserRole(user.email)
+  return { user, role }
+}
+
+export async function signOut() {
+  const supabase = await createClient()
+  await supabase.auth.signOut()
+}
+
 export async function getScreenshotMessaging(screenshotId: string) {
   const supabase = await createClient()
 

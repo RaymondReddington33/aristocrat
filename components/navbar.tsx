@@ -12,6 +12,9 @@ import {
   Menu,
   X,
   Info,
+  LogIn,
+  LogOut,
+  User,
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
@@ -30,6 +33,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { createClient } from "@/lib/supabase/client"
+import { getUserRole, getRoleLabel, type UserRole } from "@/lib/auth"
 
 export function Navbar() {
   const pathname = usePathname()
@@ -39,10 +43,51 @@ export function Navbar() {
   const [apps, setApps] = useState<Array<{ id: string; app_name: string; app_icon_url?: string }>>([])
   const [selectedAppId, setSelectedAppId] = useState<string | null>(null)
   const [isMounted, setIsMounted] = useState(false)
+  const [user, setUser] = useState<{ email?: string } | null>(null)
+  const [userRole, setUserRole] = useState<UserRole | null>(null)
 
   useEffect(() => {
     setIsMounted(true)
   }, [])
+
+  useEffect(() => {
+    // Check auth state
+    const checkAuth = async () => {
+      try {
+        const supabase = createClient()
+        const { data: { user: authUser } } = await supabase.auth.getUser()
+        const authUserObj = authUser ? { email: authUser.email } : null
+        setUser(authUserObj)
+        if (authUserObj?.email) {
+          setUserRole(getUserRole(authUserObj.email))
+        } else {
+          setUserRole(null)
+        }
+      } catch (error) {
+        console.error("Error checking auth:", error)
+      }
+    }
+
+    if (isMounted) {
+      checkAuth()
+      
+      // Listen for auth changes
+      const supabase = createClient()
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        const authUser = session?.user ? { email: session.user.email } : null
+        setUser(authUser)
+        if (authUser?.email) {
+          setUserRole(getUserRole(authUser.email))
+        } else {
+          setUserRole(null)
+        }
+      })
+
+      return () => {
+        subscription.unsubscribe()
+      }
+    }
+  }, [isMounted])
 
   useEffect(() => {
     // Fetch all apps for selector
@@ -90,6 +135,17 @@ export function Navbar() {
 
   const handlePreviewSelect = (platform: "ios" | "android" | "brief") => {
     router.push(`/preview/${platform}`)
+  }
+
+  const handleLogout = async () => {
+    try {
+      const supabase = createClient()
+      await supabase.auth.signOut()
+      router.push("/")
+      router.refresh()
+    } catch (error) {
+      console.error("Error signing out:", error)
+    }
   }
 
   const selectedApp = apps.find(app => app.id === selectedAppId)
@@ -247,6 +303,42 @@ export function Navbar() {
               <Info className="h-4 w-4" />
               <span className="hidden lg:inline">Info</span>
             </Button>
+            {user ? (
+              <>
+                <div className="flex flex-col items-end px-2 py-1 text-xs">
+                  <div className="flex items-center gap-2 text-slate-600">
+                    <User className="h-3.5 w-3.5" />
+                    <span className="hidden lg:inline max-w-[120px] truncate">{user.email}</span>
+                  </div>
+                  {userRole && (
+                    <span className="text-[10px] text-slate-500 hidden lg:inline">
+                      {getRoleLabel(userRole)}
+                    </span>
+                  )}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-9 gap-1.5"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="hidden lg:inline">Logout</span>
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 gap-1.5"
+                asChild
+              >
+                <Link href="/auth/login">
+                  <LogIn className="h-4 w-4" />
+                  <span className="hidden lg:inline">Login</span>
+                </Link>
+              </Button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -414,6 +506,35 @@ export function Navbar() {
               >
                 Test Information
               </button>
+              {user ? (
+                <>
+                  <div className="px-3 py-2 text-sm text-slate-600 border-t border-slate-200">
+                    <div className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      <span className="truncate">{user.email}</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      handleLogout()
+                      setMobileMenuOpen(false)
+                    }}
+                    className="block px-3 py-2 rounded-md text-sm font-medium transition-all text-slate-700 hover:bg-slate-50 w-full text-left flex items-center gap-2"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/auth/login"
+                  className="block px-3 py-2 rounded-md text-sm font-medium transition-all text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <LogIn className="h-4 w-4" />
+                  Login
+                </Link>
+              )}
             </div>
 
             {/* Mobile Candidate Info */}

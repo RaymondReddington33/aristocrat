@@ -1,0 +1,20 @@
+NUEVA CLAVE SSH PARA GITHUB
+============================
+
+Copia esta clave SSH completa y pégala en GitHub:
+
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDNY1S9C7jekVBHVJZUknu9N09+UY1g6NabjsC2V6i6V aristocrat-project
+
+INSTRUCCIONES PARA GITHUB:
+1. Copia TODA la línea de arriba (desde 'ssh-ed25519' hasta el final)
+2. En GitHub, pega la clave en el campo "Key"
+3. Title: "aristocrat" (ya está puesto, está bien)
+4. Key type: "Authentication Key" (debe estar seleccionado)
+5. Haz clic en "Add SSH key"
+
+DESPUÉS DE AÑADIRLA EN GITHUB:
+Ejecuta estos comandos para configurar Git para usar esta clave:
+
+cd /Users/oriolclaramuntpascual/Desktop/Programacion2025/app-store-preview
+git config core.sshCommand 'ssh -i ~/.ssh/id_ed25519_aristocrat'
+git push -u origin main

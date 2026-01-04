@@ -55,7 +55,10 @@ export function Navbar() {
           .order("created_at", { ascending: false })
           .limit(10)
 
-        if (error) throw error
+        if (error) {
+          console.error("Supabase error fetching apps:", error)
+          return
+        }
 
         if (data && data.length > 0) {
           setApps(data)
@@ -66,14 +69,17 @@ export function Navbar() {
         }
       } catch (error) {
         console.error("Error fetching apps:", error)
+        // Silently fail - app can still work without the app selector
       }
     }
 
-    fetchApps()
-    // Refresh apps list every 5 seconds to catch new apps
-    const interval = setInterval(fetchApps, 5000)
-    return () => clearInterval(interval)
-  }, [selectedAppId])
+    if (isMounted) {
+      fetchApps()
+      // Refresh apps list every 5 seconds to catch new apps
+      const interval = setInterval(fetchApps, 5000)
+      return () => clearInterval(interval)
+    }
+  }, [selectedAppId, isMounted])
 
   const isActive = (path: string) => pathname === path || pathname?.startsWith(path + "/")
 

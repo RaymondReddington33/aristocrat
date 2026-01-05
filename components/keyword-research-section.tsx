@@ -135,10 +135,10 @@ export function KeywordResearchSection({ keywords, appData }: KeywordResearchSec
               <Target className="h-5 w-5 text-indigo-600" />
               Platform Analysis
             </CardTitle>
-            <CardDescription>Side-by-side comparison of iOS and Android keyword optimization</CardDescription>
+            <CardDescription>Side-by-side comparison of keywords configured in admin panel for iOS and Android</CardDescription>
           </CardHeader>
           <CardContent className="pt-4">
-            <PlatformComparison keywords={filteredKeywords} />
+            <PlatformComparison appData={appData} />
           </CardContent>
         </Card>
       )}

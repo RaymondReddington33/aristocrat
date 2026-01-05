@@ -3,18 +3,36 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Smartphone, Monitor } from "lucide-react"
-import type { AppKeyword } from "@/lib/types"
-import { optimizeIOSKeywords, optimizeAndroidKeywords } from "@/lib/keyword-optimizer"
+import type { AppData } from "@/lib/types"
 
 interface PlatformComparisonProps {
-  keywords: AppKeyword[]
+  appData: AppData
 }
 
-export function PlatformComparison({ keywords }: PlatformComparisonProps) {
-  const iosOptimized = optimizeIOSKeywords(keywords)
-  const androidOptimized = optimizeAndroidKeywords(keywords)
+// Helper function to extract keywords from text (split by spaces, commas, or other delimiters)
+function extractKeywords(text: string | null | undefined): string[] {
+  if (!text) return []
+  return text
+    .split(/[,\s]+/)
+    .map(kw => kw.trim())
+    .filter(kw => kw.length > 0)
+}
 
-  const iosKeywordsFieldLength = iosOptimized.keywordsField.length
+export function PlatformComparison({ appData }: PlatformComparisonProps) {
+  // Extract keywords from actual admin fields
+  // iOS: Extract from title, subtitle, keywords field, and description
+  const iosTitleKeywords = extractKeywords(appData.ios_app_name)
+  const iosSubtitleKeywords = extractKeywords(appData.ios_subtitle)
+  const iosKeywordsField = appData.ios_keywords || ""
+  const iosKeywordsFieldArray = iosKeywordsField.split(",").map(k => k.trim()).filter(k => k.length > 0)
+  const iosDescriptionKeywords = extractKeywords(appData.ios_description)
+
+  // Android: Extract from title, short description, and full description
+  const androidTitleKeywords = extractKeywords(appData.android_app_name)
+  const androidShortDescKeywords = extractKeywords(appData.android_short_description)
+  const androidFullDescKeywords = extractKeywords(appData.android_full_description)
+
+  const iosKeywordsFieldLength = iosKeywordsField.length
 
   return (
     <div className="grid md:grid-cols-2 gap-6">
@@ -25,7 +43,7 @@ export function PlatformComparison({ keywords }: PlatformComparisonProps) {
             <Smartphone className="h-5 w-5 text-blue-600" />
             iOS App Store
           </CardTitle>
-          <CardDescription>Optimized keywords for Apple App Store</CardDescription>
+          <CardDescription>Keywords configured in admin panel for Apple App Store</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 pt-4">
           {/* Title Keywords */}
@@ -33,22 +51,25 @@ export function PlatformComparison({ keywords }: PlatformComparisonProps) {
             <div className="flex items-center justify-between mb-2">
               <h4 className="font-semibold text-sm">Title Keywords</h4>
               <Badge variant="outline" className="text-xs">
-                {iosOptimized.title.length} keywords
+                {iosTitleKeywords.length} keywords
               </Badge>
             </div>
             <div className="p-3 bg-slate-50 rounded-lg border">
-              <div className="flex flex-wrap gap-2">
-                {iosOptimized.title.length > 0 ? (
-                  iosOptimized.title.map((kw, idx) => (
+              {iosTitleKeywords.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {iosTitleKeywords.map((kw, idx) => (
                     <Badge key={idx} variant="secondary" className="text-xs">
                       {kw}
                     </Badge>
-                  ))
-                ) : (
-                  <span className="text-xs text-slate-500">No keywords assigned</span>
-                )}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-xs text-slate-500">No keywords assigned</span>
+              )}
             </div>
+            {appData.ios_app_name && (
+              <p className="text-xs text-slate-600 mt-1 italic">From: "{appData.ios_app_name}"</p>
+            )}
           </div>
 
           {/* Subtitle Keywords */}
@@ -56,22 +77,25 @@ export function PlatformComparison({ keywords }: PlatformComparisonProps) {
             <div className="flex items-center justify-between mb-2">
               <h4 className="font-semibold text-sm">Subtitle Keywords</h4>
               <Badge variant="outline" className="text-xs">
-                {iosOptimized.subtitle.length} keywords
+                {iosSubtitleKeywords.length} keywords
               </Badge>
             </div>
             <div className="p-3 bg-slate-50 rounded-lg border">
-              <div className="flex flex-wrap gap-2">
-                {iosOptimized.subtitle.length > 0 ? (
-                  iosOptimized.subtitle.map((kw, idx) => (
+              {iosSubtitleKeywords.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {iosSubtitleKeywords.map((kw, idx) => (
                     <Badge key={idx} variant="secondary" className="text-xs">
                       {kw}
                     </Badge>
-                  ))
-                ) : (
-                  <span className="text-xs text-slate-500">No keywords assigned</span>
-                )}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-xs text-slate-500">No keywords assigned</span>
+              )}
             </div>
+            {appData.ios_subtitle && (
+              <p className="text-xs text-slate-600 mt-1 italic">From: "{appData.ios_subtitle}"</p>
+            )}
           </div>
 
           {/* Keywords Field (100 chars max) */}
@@ -83,12 +107,21 @@ export function PlatformComparison({ keywords }: PlatformComparisonProps) {
               </Badge>
             </div>
             <div className="p-3 bg-slate-50 rounded-lg border font-mono text-xs">
-              {iosOptimized.keywordsField || (
+              {iosKeywordsField || (
                 <span className="text-slate-500">No keywords assigned</span>
               )}
             </div>
             {iosKeywordsFieldLength > 100 && (
-              <p className="text-xs text-slate-600 mt-1">Exceeds 100 character limit</p>
+              <p className="text-xs text-red-600 mt-1">⚠️ Exceeds 100 character limit</p>
+            )}
+            {iosKeywordsFieldArray.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {iosKeywordsFieldArray.map((kw, idx) => (
+                  <Badge key={idx} variant="secondary" className="text-xs">
+                    {kw}
+                  </Badge>
+                ))}
+              </div>
             )}
           </div>
 
@@ -97,22 +130,27 @@ export function PlatformComparison({ keywords }: PlatformComparisonProps) {
             <div className="flex items-center justify-between mb-2">
               <h4 className="font-semibold text-sm">Description Keywords</h4>
               <Badge variant="outline" className="text-xs">
-                {iosOptimized.description.length} keywords
+                {iosDescriptionKeywords.length} keywords
               </Badge>
             </div>
             <div className="p-3 bg-slate-50 rounded-lg border max-h-32 overflow-y-auto">
-              <div className="flex flex-wrap gap-2">
-                {iosOptimized.description.length > 0 ? (
-                  iosOptimized.description.map((kw, idx) => (
+              {iosDescriptionKeywords.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {iosDescriptionKeywords.map((kw, idx) => (
                     <Badge key={idx} variant="secondary" className="text-xs">
                       {kw}
                     </Badge>
-                  ))
-                ) : (
-                  <span className="text-xs text-slate-500">No keywords assigned</span>
-                )}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-xs text-slate-500">No keywords assigned</span>
+              )}
             </div>
+            {appData.ios_description && (
+              <p className="text-xs text-slate-600 mt-1 italic line-clamp-2">
+                From description: "{appData.ios_description.substring(0, 100)}..."
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -124,7 +162,7 @@ export function PlatformComparison({ keywords }: PlatformComparisonProps) {
             <Monitor className="h-5 w-5 text-green-600" />
             Google Play Store
           </CardTitle>
-          <CardDescription>Optimized keywords for Google Play Store</CardDescription>
+          <CardDescription>Keywords configured in admin panel for Google Play Store</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 pt-4">
           {/* Title Keywords */}
@@ -132,22 +170,25 @@ export function PlatformComparison({ keywords }: PlatformComparisonProps) {
             <div className="flex items-center justify-between mb-2">
               <h4 className="font-semibold text-sm">Title Keywords</h4>
               <Badge variant="outline" className="text-xs">
-                {androidOptimized.title.length} keywords
+                {androidTitleKeywords.length} keywords
               </Badge>
             </div>
             <div className="p-3 bg-slate-50 rounded-lg border">
-              <div className="flex flex-wrap gap-2">
-                {androidOptimized.title.length > 0 ? (
-                  androidOptimized.title.map((kw, idx) => (
+              {androidTitleKeywords.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {androidTitleKeywords.map((kw, idx) => (
                     <Badge key={idx} variant="secondary" className="text-xs">
                       {kw}
                     </Badge>
-                  ))
-                ) : (
-                  <span className="text-xs text-slate-500">No keywords assigned</span>
-                )}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-xs text-slate-500">No keywords assigned</span>
+              )}
             </div>
+            {appData.android_app_name && (
+              <p className="text-xs text-slate-600 mt-1 italic">From: "{appData.android_app_name}"</p>
+            )}
           </div>
 
           {/* Short Description Keywords */}
@@ -155,22 +196,25 @@ export function PlatformComparison({ keywords }: PlatformComparisonProps) {
             <div className="flex items-center justify-between mb-2">
               <h4 className="font-semibold text-sm">Short Description Keywords</h4>
               <Badge variant="outline" className="text-xs">
-                {androidOptimized.shortDescription.length} keywords
+                {androidShortDescKeywords.length} keywords
               </Badge>
             </div>
             <div className="p-3 bg-slate-50 rounded-lg border">
-              <div className="flex flex-wrap gap-2">
-                {androidOptimized.shortDescription.length > 0 ? (
-                  androidOptimized.shortDescription.map((kw, idx) => (
+              {androidShortDescKeywords.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {androidShortDescKeywords.map((kw, idx) => (
                     <Badge key={idx} variant="secondary" className="text-xs">
                       {kw}
                     </Badge>
-                  ))
-                ) : (
-                  <span className="text-xs text-slate-500">No keywords assigned</span>
-                )}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-xs text-slate-500">No keywords assigned</span>
+              )}
             </div>
+            {appData.android_short_description && (
+              <p className="text-xs text-slate-600 mt-1 italic">From: "{appData.android_short_description}"</p>
+            )}
           </div>
 
           {/* Full Description Keywords */}
@@ -178,22 +222,27 @@ export function PlatformComparison({ keywords }: PlatformComparisonProps) {
             <div className="flex items-center justify-between mb-2">
               <h4 className="font-semibold text-sm">Full Description Keywords</h4>
               <Badge variant="outline" className="text-xs">
-                {androidOptimized.fullDescription.length} keywords
+                {androidFullDescKeywords.length} keywords
               </Badge>
             </div>
             <div className="p-3 bg-slate-50 rounded-lg border max-h-32 overflow-y-auto">
-              <div className="flex flex-wrap gap-2">
-                {androidOptimized.fullDescription.length > 0 ? (
-                  androidOptimized.fullDescription.map((kw, idx) => (
+              {androidFullDescKeywords.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {androidFullDescKeywords.map((kw, idx) => (
                     <Badge key={idx} variant="secondary" className="text-xs">
                       {kw}
                     </Badge>
-                  ))
-                ) : (
-                  <span className="text-xs text-slate-500">No keywords assigned</span>
-                )}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-xs text-slate-500">No keywords assigned</span>
+              )}
             </div>
+            {appData.android_full_description && (
+              <p className="text-xs text-slate-600 mt-1 italic line-clamp-2">
+                From description: "{appData.android_full_description.substring(0, 100)}..."
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>

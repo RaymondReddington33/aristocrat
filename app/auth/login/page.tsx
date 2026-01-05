@@ -23,7 +23,7 @@ export default function LoginPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     if (params.get("error") === "unauthorized") {
-      setMessage("Your email is not authorized to access this application. Only Test Owner (claramuntoriol@gmail.com) and Test Reviewer (@aristocrat.com) emails are allowed.")
+      setMessage("Your email is not authorized to access this application. Only Test Owner (claramuntoriol@gmail.com) and Test Reviewer (@aristocrat.com / @productmadness.com) emails are allowed.")
       toast({
         title: "Unauthorized",
         description: "Your email is not authorized to access this application.",
@@ -47,7 +47,7 @@ export default function LoginPage() {
       // Validate email before sending (informative, actual validation in middleware)
       const role = getUserRole(email)
       if (!role) {
-        setMessage("Your email is not authorized. Only claramuntoriol@gmail.com (Test Owner) or @aristocrat.com emails (Test Reviewer) are allowed.")
+        setMessage("Your email is not authorized. Only claramuntoriol@gmail.com (Test Owner) or @aristocrat.com / @productmadness.com emails (Test Reviewer) are allowed.")
         toast({
           title: "Unauthorized Email",
           description: "Only Test Owner and Test Reviewer emails are allowed.",
@@ -134,7 +134,7 @@ export default function LoginPage() {
                           <div>
                             <div className="font-semibold text-slate-900 text-xs mb-0.5 sm:mb-1">Test Reviewer</div>
                             <p className="text-slate-600 text-xs leading-relaxed break-words">
-                              Read-only access to review the test submission. Any email with <span className="font-medium text-slate-900">@aristocrat.com</span> domain.
+                              Read-only access to review the test submission. Any email with <span className="font-medium text-slate-900">@aristocrat.com</span> or <span className="font-medium text-slate-900">@productmadness.com</span> domain.
                             </p>
                           </div>
                         </div>

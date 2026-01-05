@@ -10,8 +10,9 @@ export function getUserRole(email: string | undefined | null): UserRole {
     return "test_owner"
   }
   
-  // Test Reviewer: cualquier email con @aristocrat.com
-  if (email.toLowerCase().endsWith("@aristocrat.com")) {
+  // Test Reviewer: cualquier email con @aristocrat.com o @productmadness.com
+  const emailLower = email.toLowerCase()
+  if (emailLower.endsWith("@aristocrat.com") || emailLower.endsWith("@productmadness.com")) {
     return "test_reviewer"
   }
   

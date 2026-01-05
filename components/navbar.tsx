@@ -15,6 +15,7 @@ import {
   LogIn,
   LogOut,
   User,
+  Eye,
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
@@ -32,8 +33,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { createClient } from "@/lib/supabase/client"
-import { getUserRole, getRoleLabel, type UserRole } from "@/lib/auth"
+import { getUserRole, getRoleLabel, getEffectiveRole, setRoleOverride, type UserRole } from "@/lib/auth"
 
 export function Navbar() {
   const pathname = usePathname()
@@ -59,10 +68,20 @@ export function Navbar() {
         const authUserObj = authUser ? { email: authUser.email } : null
         setUser(authUserObj)
         if (authUserObj?.email) {
-          setUserRole(getUserRole(authUserObj.email))
+          setUserRole(getEffectiveRole(authUserObj.email))
         } else {
           setUserRole(null)
         }
+        
+        // Listen for role override changes
+        const handleStorageChange = () => {
+          if (authUserObj?.email) {
+            setUserRole(getEffectiveRole(authUserObj.email))
+          }
+        }
+        
+        window.addEventListener("storage", handleStorageChange)
+        return () => window.removeEventListener("storage", handleStorageChange)
       } catch (error) {
         console.error("Error checking auth:", error)
       }
@@ -77,7 +96,7 @@ export function Navbar() {
         const authUser = session?.user ? { email: session.user.email } : null
         setUser(authUser)
         if (authUser?.email) {
-          setUserRole(getUserRole(authUser.email))
+          setUserRole(getEffectiveRole(authUser.email))
         } else {
           setUserRole(null)
         }
@@ -140,6 +159,7 @@ export function Navbar() {
   const handleLogout = async () => {
     try {
       const supabase = createClient()
+      setRoleOverride(null) // Clear role override on logout
       await supabase.auth.signOut()
       router.push("/")
       router.refresh()
@@ -147,6 +167,15 @@ export function Navbar() {
       console.error("Error signing out:", error)
     }
   }
+
+  const handleRoleSwitch = (newRole: UserRole) => {
+    setRoleOverride(newRole)
+    setUserRole(newRole)
+    router.refresh() // Refresh to apply changes
+  }
+
+  const actualRole = user?.email ? getUserRole(user.email) : null
+  const canSwitchRole = actualRole === "test_owner"
 
   const selectedApp = apps.find(app => app.id === selectedAppId)
 
@@ -276,14 +305,6 @@ export function Navbar() {
               <Link href="/">Home</Link>
             </Button>
             <Button
-              variant={isActive("/preview") ? "default" : "ghost"}
-              size="sm"
-              className="h-9"
-              asChild
-            >
-              <Link href="/preview">All Previews</Link>
-            </Button>
-            <Button
               variant={isActive("/admin") ? "default" : "ghost"}
               size="sm"
               className="h-9 gap-1.5"
@@ -304,28 +325,59 @@ export function Navbar() {
               <span className="hidden lg:inline">Info</span>
             </Button>
             {user ? (
-              <>
-                <div className="flex flex-col items-end px-2 py-1 text-xs">
-                  <div className="flex items-center gap-2 text-slate-600">
-                    <User className="h-3.5 w-3.5" />
-                    <span className="hidden lg:inline max-w-[120px] truncate">{user.email}</span>
-                  </div>
-                  {userRole && (
-                    <span className="text-[10px] text-slate-500 hidden lg:inline">
-                      {getRoleLabel(userRole)}
-                    </span>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-9 gap-2 px-2 md:px-3"
+                  >
+                    <User className="h-4 w-4 flex-shrink-0" />
+                    <div className="flex flex-col items-start hidden md:flex">
+                      <span className="text-xs font-medium text-slate-900 max-w-[140px] truncate">
+                        {user.email}
+                      </span>
+                      {userRole && (
+                        <span className="text-[10px] text-slate-500">
+                          {getRoleLabel(userRole)}
+                        </span>
+                      )}
+                    </div>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel className="px-3 py-2">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-sm font-medium truncate">{user.email}</span>
+                      {userRole && (
+                        <span className="text-xs text-slate-500">
+                          {getRoleLabel(userRole)}
+                        </span>
+                      )}
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {canSwitchRole && (
+                    <>
+                      <DropdownMenuItem 
+                        onClick={() => handleRoleSwitch(userRole === "test_owner" ? "test_reviewer" : "test_owner")}
+                        className="cursor-pointer focus:bg-slate-100"
+                      >
+                        <Eye className="h-4 w-4 mr-2 flex-shrink-0" />
+                        <span>Switch to {userRole === "test_owner" ? "Test Reviewer" : "Test Owner"}</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
                   )}
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-9 gap-1.5"
-                  onClick={handleLogout}
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span className="hidden lg:inline">Logout</span>
-                </Button>
-              </>
+                  <DropdownMenuItem 
+                    onClick={handleLogout} 
+                    className="cursor-pointer focus:bg-slate-100"
+                  >
+                    <LogOut className="h-4 w-4 mr-2 flex-shrink-0" />
+                    <span>Logout</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <Button
                 variant="ghost"
@@ -476,17 +528,6 @@ export function Navbar() {
                 Home
               </Link>
               <Link
-                href="/preview"
-                className={`block px-3 py-2 rounded-md text-sm font-medium transition-all ${
-                  isActive("/preview")
-                    ? "bg-slate-100 text-slate-900"
-                    : "text-slate-700 hover:bg-slate-50"
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                All Previews
-              </Link>
-              <Link
                 href="/admin"
                 className={`block px-3 py-2 rounded-md text-sm font-medium transition-all ${
                   isActive("/admin")
@@ -508,10 +549,19 @@ export function Navbar() {
               </button>
               {user ? (
                 <>
-                  <div className="px-3 py-2 text-sm text-slate-600 border-t border-slate-200">
-                    <div className="flex items-center gap-2">
-                      <User className="h-4 w-4" />
-                      <span className="truncate">{user.email}</span>
+                  <div className="px-3 py-2.5 text-sm border-t border-slate-200 bg-slate-50/50">
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                        <User className="h-4 w-4 text-white" />
+                      </div>
+                      <div className="flex flex-col min-w-0 flex-1">
+                        <span className="text-xs font-medium text-slate-900 truncate">{user.email}</span>
+                        {userRole && (
+                          <span className="text-[10px] text-slate-500 mt-0.5">
+                            {getRoleLabel(userRole)}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                   <button
@@ -519,10 +569,10 @@ export function Navbar() {
                       handleLogout()
                       setMobileMenuOpen(false)
                     }}
-                    className="block px-3 py-2 rounded-md text-sm font-medium transition-all text-slate-700 hover:bg-slate-50 w-full text-left flex items-center gap-2"
+                    className="block px-3 py-2.5 rounded-md text-sm font-medium transition-all text-slate-700 hover:bg-slate-100 w-full text-left flex items-center gap-2.5 border-t border-slate-200"
                   >
-                    <LogOut className="h-4 w-4" />
-                    Logout
+                    <LogOut className="h-4 w-4 flex-shrink-0" />
+                    <span>Logout</span>
                   </button>
                 </>
               ) : (

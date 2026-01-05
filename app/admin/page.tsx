@@ -26,12 +26,13 @@ import { TypographyDisplay } from "@/components/typography-display"
 import { AppleSearchAdsConfig } from "@/components/apple-search-ads-config"
 import { CompetitorAnalysisManager } from "@/components/competitor-analysis-manager"
 import { getUserWithRole } from "@/app/actions"
-import { getUserRole, canEdit, getRoleLabel, type UserRole } from "@/lib/auth"
+import { getUserRole, canEdit, getRoleLabel, getEffectiveRole, type UserRole } from "@/lib/auth"
 
 // Lazy load heavy components
 const KeywordManager = dynamic(() => import("@/components/keyword-manager").then(mod => ({ default: mod.KeywordManager })), {
   loading: () => <div className="text-center p-8">Loading keyword manager...</div>,
-  ssr: false
+  ssr: false,
+  suspense: true
 })
 
 export default function AdminPanel() {
@@ -57,6 +58,8 @@ export default function AdminPanel() {
   const [showClearSectionDialog, setShowClearSectionDialog] = useState(false)
   const [sectionToClear, setSectionToClear] = useState<string | null>(null)
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
+  const [userRole, setUserRole] = useState<UserRole | null>(null)
+  const [isReadOnly, setIsReadOnly] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
 
@@ -149,8 +152,9 @@ export default function AdminPanel() {
     const checkRole = async () => {
       try {
         const { user, role } = await getUserWithRole()
-        setUserRole(role)
-        setIsReadOnly(!canEdit(role))
+        const effectiveRole = typeof window !== "undefined" ? getEffectiveRole(user?.email) : role
+        setUserRole(effectiveRole)
+        setIsReadOnly(!canEdit(effectiveRole))
       } catch (error) {
         console.error("Error checking user role:", error)
       }
@@ -158,6 +162,15 @@ export default function AdminPanel() {
     
     checkRole()
     loadExistingData()
+    
+    // Listen for role override changes
+    if (typeof window !== "undefined") {
+      const handleStorageChange = () => {
+        checkRole()
+      }
+      window.addEventListener("storage", handleStorageChange)
+      return () => window.removeEventListener("storage", handleStorageChange)
+    }
   }, [loadExistingData])
 
   const validateAppData = (): boolean => {

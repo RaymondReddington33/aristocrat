@@ -30,10 +30,9 @@ import { getUserRole, canEdit, getRoleLabel, getEffectiveRole, type UserRole } f
 
 // Lazy load heavy components
 const KeywordManager = dynamic(() => import("@/components/keyword-manager").then(mod => ({ default: mod.KeywordManager })), {
-  loading: () => <div className="text-center p-8">Loading keyword manager...</div>,
-  ssr: false,
-  suspense: true
-})
+      loading: () => <div className="text-center p-8">Loading keyword manager...</div>,
+      ssr: false
+    })
 
 export default function AdminPanel() {
   const [appData, setAppData] = useState<Partial<AppData>>({
@@ -291,72 +290,82 @@ export default function AdminPanel() {
   const loadDemoCasinoApp = () => {
     setAppData({
       app_name: "RedRain Slots Casino",
-      app_subtitle: "Free Casino Slots & Jackpots",
+      app_subtitle: "Premium Egyptian Slots Adventure",
       category: "Casino",
       price: "Free",
-      age_rating: "12+",
-      rating: 4.6,
-      review_count: 89542,
-      download_count: "8.5M+",
+      age_rating: "17+",
+      rating: 4.8,
+      review_count: 10000,
+      download_count: "1M+",
       app_icon_url: "/images/casino-icon.jpg",
 
       // iOS specific
-      ios_app_name: "RedRain Fortune: Slot Games",
-      ios_subtitle: "Free Casino Slots & Jackpots",
+      ios_app_name: "RedRain Slots Casino: Egyptian Riches",
+      ios_subtitle: "Premium Slots Adventure",
       ios_description:
-        "Unlock Your Fortune with RedRain Fortune, the premium Egyptian-themed slot experience. Discover legendary treasures with stunning slot games inspired by ancient Egypt, featuring Cleopatra, pharaohs, and hidden pyramids.\n\nKEY FEATURES\n• Premium Egyptian-Themed Slot Games\n• Big Jackpots & Daily Rewards\n• Fortune Wheel & Daily Bonuses\n• Stunning Graphics & Smooth Gameplay\n• Play Anytime, Just for Fun\n• No Real Money Required\n\nWHY PLAYERS LOVE US\n✓ Premium Quality Graphics\n✓ Generous Daily Rewards\n✓ Regular New Games\n✓ Smooth Performance\n✓ Social Features\n\nFor entertainment purposes only. No real money gambling. In-app purchases available.",
+        "Embark on an epic slot adventure in Ancient Egypt! Unlock your fortune with premium 3D graphics, epic bonus rounds, and massive jackpots. Enjoy daily free spins, treasure chest levels, and pharaoh-inspired jackpot tables. RedRain offers a social casino experience without real betting (\"play for fun\"), with millions of free coins to start and achievement rewards. Play now and become a legend among the Egyptian gods!\n\nKEY FEATURES\n• Premium Egyptian-Themed Slot Games\n• Massive Jackpots & Daily Rewards\n• Epic Bonus Rounds & Treasure Chests\n• Stunning 3D Graphics & Smooth Gameplay\n• Daily Free Spins & Multipliers\n• Social Casino Fun - Play with Friends\n• No Real Money Required\n\nWHY PLAYERS LOVE US\n✓ Premium Quality 3D Graphics\n✓ Generous Daily Bonuses\n✓ Regular New Egyptian Slots\n✓ Smooth Performance\n✓ Social Features & Achievements\n\nCall to Action: \"Unlock Your Fortune\", \"Spin to Win\", \"Join the Adventure\"\n\nFor entertainment purposes only. No real money gambling. In-app purchases available.",
       ios_promotional_text:
-        "Welcome Bonus! Get 1,000,000 FREE COINS plus 100 free spins. Unlock your fortune and start spinning today!",
-      ios_keywords: "casino games,free slots,slot machine,jackpot slots,egypt slots,pharaoh,cleopatra,slotomania,huuuge casino",
+        "Double Fortune Weekend: Get double free spins today!",
+      ios_keywords: "slots,casino,free slots,jackpot,egyptian slots,bonus spins",
       ios_whats_new:
-        "Version 2.1.0 - Ancient Treasures Update\n\nNEW GAMES\n• Cleopatra's Gold Rush\n• Pharaoh's Fortune Megaways\n• Pyramid Secrets\n\nFEATURES\n• Enhanced Fortune Wheel\n• Improved Daily Rewards\n• New Bonus Rounds\n\nPERFORMANCE\n• Faster loading times\n• Smoother animations\n• Bug fixes and optimisations",
-      ios_support_url: "https://redrainfortune.com/support",
-      ios_marketing_url: "https://redrainfortune.com",
-      ios_privacy_url: "https://redrainfortune.com/privacy",
+        "Discover new Egyptian slots and improvements! Optimised performance, minor bug fixes, and special launch bonuses.",
+      ios_support_url: "https://support.redrain.com",
+      ios_marketing_url: "https://redrain.com",
+      ios_privacy_url: "https://redrain.com/privacy",
 
       // Android specific
-      android_app_name: "RedRain Fortune: Slot Games",
+      android_app_name: "RedRain Slots Casino",
       android_short_description:
-        "Premium Egyptian-themed slot games with big jackpots and daily rewards. Unlock your fortune today!",
+        "Egyptian-themed slot machine with HUGE jackpots – unlock free spins and bonus gold!",
       android_full_description:
-        "Unlock Your Fortune with RedRain Fortune, the premium Egyptian-themed slot experience. Journey through ancient Egypt and discover legendary treasures with stunning slot games featuring Cleopatra, pharaohs, and hidden pyramids.\n\nPREMIUM SLOT GAMES\n• Egyptian-Themed Slots\n• Cleopatra & Pharaoh Games\n• Progressive Jackpots\n• Fortune Wheel Bonus\n• Daily Rewards\n• New Games Regularly\n\nGENEROUS REWARDS\n• Welcome Bonus: 1,000,000 FREE COINS\n• 100 Free Spins\n• Daily Login Rewards\n• Fortune Wheel Prizes\n• Bonus Rounds\n\nWHY REDRAIN FORTUNE?\n✓ Premium Quality Graphics\n✓ Smooth Gameplay\n✓ Generous Rewards\n✓ Regular Updates\n✓ Social Features\n✓ For Entertainment Only\n\nFor entertainment purposes only. No real money gambling. In-app purchases available.",
+        "Dive into the wealth of ancient Egypt without spending real money. RedRain Slots Casino offers a free slot adventure with premium graphics, mythological characters, and daily rewards. Spin the pharaoh-inspired wheels, Cleopatra and Osiris, to win free spins, bonus coins, and millennial jackpots.\n\nHIGHLIGHTS:\n• Themed Slots (Pharaoh's Fortune, Cleopatra's Eye) with animated scenes\n• Daily Bonuses and Missions that unlock treasure chests\n• Free Spin Storms and Epic Multipliers\n• Social Network Connection to share achievements\n\nDownload now and start your journey to fortune!\n\nFor entertainment purposes only. No real money gambling. In-app purchases available.",
       android_promo_text:
-        "Welcome Bonus! Get 1,000,000 FREE COINS plus 100 free spins. Start your fortune journey today!",
+        "Double Coins Weekend!",
       android_recent_changes:
-        "What's New in Version 2.1.0:\n\nNEW GAMES\n• Cleopatra's Gold Rush\n• Pharaoh's Fortune Megaways\n• Pyramid Secrets\n\nIMPROVEMENTS\n• Enhanced Fortune Wheel\n• Improved Daily Rewards System\n• New Bonus Rounds\n• Better Performance\n\nOPTIMISATION\n• Faster loading\n• Smoother animations\n• Bug fixes",
+        "New 'Royal Pharaoh' slot added, +3 treasure chest levels, improved game balance.",
 
       // Creative Brief - Task 2 Structure
       creative_brief_store_page_type: "cpp",
-      creative_brief_target_market: "United Kingdom (valid also for United States with adjustments)",
+      creative_brief_target_market: "United Kingdom (en-GB)",
       creative_brief_primary_platform: "ios",
       creative_brief_objective:
-        "Increase conversion (CVR) of users searching for 'slots', 'egypt slots', 'pharaoh slots', 'fortune slots' and related variants, highlighting a clear and differentiated Egyptian Fortune fantasy that sets RedRain apart from generic casino apps.",
+        "Position the app as the most prestigious Egyptian slot machine in the UK market, maximising organic downloads and conversions. Highlight the free-to-play nature (no real betting) and premium quality.",
       creative_brief_creative_concept:
-        "Unlock Your Fortune\n\nWe speak of destiny, fortune, power, and reward - not real money or betting. This language converts, is legal, and aligns with Apple guidelines. The concept positions RedRain as a premium Egyptian-themed slot experience, not just another generic casino app.",
+        "Real Adventure in the Pharaoh's Tomb: Combine classic Egyptian symbols and gods with high-quality golden graphics. Use metaphors of hidden treasures (hieroglyphs, pyramids, Cleopatra) to convey that the player 'unearths a fortune'. Employ modern Egyptian-inspired instrumental music.",
       creative_brief_target_audience:
-        "Primary Audience:\n• Age: 25-55 years old\n• Gender: 55% Female, 45% Male\n• Income: £25,000-£75,000 annually\n• Interests: Casino gaming, slot games, entertainment, social gaming, Egyptian themes\n• Location: UK (primary), US (secondary)\n\nUser Personas:\n1. Fortune Seeker Fiona - 35, enjoys themed slot games, plays during commute\n2. Casual Player Chris - 42, plays during breaks, prefers simple mechanics\n3. Slot Enthusiast Sam - 28, loves Egyptian themes, enjoys daily rewards",
+        "Adult players interested in social casino games, lovers of mythology or Egyptian aesthetics, with emphasis on UK (British English). Also capture users of generic slots, highlighting thematic differentiators.",
       creative_brief_key_message:
-        "Primary Message: Unlock Your Fortune with Premium Egyptian-Themed Slots\n\nKey Value Propositions:\n1. Premium Egyptian-themed slot experience\n2. Big jackpots and daily rewards\n3. Stunning graphics and smooth gameplay\n4. Play anytime, just for fun (no real money)\n5. Regular new games and features\n\nDifferentiation: Clear Egyptian Fortune fantasy vs generic casino positioning",
+        "Key Copy: \"Unlock Your Fortune – Play premium Egyptian slots now!\"; \"Daily Gold Bonuses Await\"; \"Spin legendary slots for FREE\". Include clear CTAs like \"Play Now!\", \"Join the Pharaoh's Challenge\", \"Win Big\". Conversion messages (\"unlock\", \"free spins\", \"win big\") create urgency and benefit.",
       creative_brief_visual_style:
-        "Style:\n• Premium illustration\n• Central female character (Egyptian queen/Cleopatra)\n• Golden and purple lighting\n• Clear slot UI (visible reels)\n• Egyptian architectural elements (pyramids, hieroglyphs)\n\nTone:\n• Power\n• Elegance\n• Mystery\n• Fortune\n• Not childish cartoon\n• Mid-core social casino aesthetic\n\nColour Palette:\n• Royal Purple (#6B46C1) - Luxury and premium quality\n• Gold (#F59E0B) - Wealth and prestige\n• Deep Red (#DC2626) - Excitement and energy\n• Black (#1F2937) - Sophistication\n• Sand Beige (#F5F5DC) - Egyptian desert\n\nTypography:\n• Headlines: Playfair Display / Merriweather (for official docs)\n• Body: Inter / I Manrope (for UI)\n• UI: SF Pro (iOS) / Roboto (Android)\n\nDesign Principles:\n• Premium aesthetic\n• Clear visual hierarchy\n• Generous whitespace\n• Gold highlights for CTAs\n• Egyptian motifs as decorative elements",
+        "Sober and luxurious. Main colours: gold, sapphire blue, and royal purple, with accents in sand and black. Illustrations of golden hieroglyphs on a night-time pyramid background. Clean iconography (e.g., stylised roulette with pharaonic crown). Images suggesting wealth and mystery, always within a sober framework.",
       creative_brief_brand_guidelines:
-        "Brand Positioning: A premium Egyptian Fortune slot experience within the Social Casino genre\n\nBrand Values:\n1. Excellence - Premium quality in every detail\n2. Fortune - Destiny and reward\n3. Elegance - Sophisticated, not cartoonish\n4. Trustworthy - Clear, honest communication\n5. Entertaining - Fun and engaging\n\nDo's:\n✓ Emphasise Egyptian Fortune theme\n✓ Showcase premium quality\n✓ Highlight daily rewards and jackpots\n✓ Use 'fortune', 'destiny', 'treasure' language\n✓ Maintain elegant, sophisticated tone\n\nDon'ts:\n✗ Unrealistic promises\n✗ Real money gambling references\n✗ Betting terminology\n✗ Low-quality graphics\n✗ Generic casino messaging\n✗ Aggressive tactics",
-      creative_brief_screenshot_1_message: "Unlock Your Fortune",
-      creative_brief_screenshot_2_message: "Epic Slot Games Inspired by Ancient Fortune",
-      creative_brief_screenshot_3_message: "Big Jackpots. Daily Rewards.",
-      creative_brief_screenshot_4_message: "Play Anytime. Just for Fun.",
-      creative_brief_screenshot_5_message: "Start Spinning Today",
+        "Logo: Golden logo on dark blue background. Typography: Classic serif titles (simulating carved stone) combined with modern sans-serif body text. Consistent use of soft shadows and metallic reliefs. Always clarify \"Free to Play, no actual money gambling\" in promotional texts. Avoid language that violates policies (\"bet\", \"earn real money\" are prohibited).",
+      creative_brief_screenshot_1_message: "Epic Egyptian Slots – Unlock Pharaoh's Treasure!",
+      creative_brief_screenshot_2_message: "Huge Jackpots & Free Spins Every Day",
+      creative_brief_screenshot_3_message: "Bonus Levels & Legendary Rewards",
+      creative_brief_screenshot_4_message: "Play With Friends – Social Casino Fun",
+      creative_brief_screenshot_5_message: "Limited-Time Bonus: Double Coins Weekend!",
       creative_brief_platform_considerations:
-        "iOS-Specific Considerations:\n• No 'win real money' language\n• No 'bet' or 'wagering' terminology\n• No confusing symbols\n• Disclaimer clearly visible in description\n• Age Rating: 12+\n• Compliance with Apple Review Guidelines\n\nRecommended Disclaimer Text:\n'For entertainment purposes only. No real money gambling. In-app purchases available.'\n\nKey Compliance Points:\n• Clear 'just for fun' messaging\n• No real money claims\n• Appropriate age rating\n• Transparent about in-app purchases",
+        "iOS-Specific Considerations:\n• Respect age limit (17+) indicating \"+17\" in description\n• Do not use suggestive icons or text\n• Do not include \"Free\" or real currency symbols in title/subtitle\n• Promotional Text will appear before images, use as hook\n• Comply with privacy policy by uploading corresponding URL\n\nRecommended Disclaimer Text:\n'For entertainment purposes only. No real money gambling. In-app purchases available.'\n\nKey Compliance Points:\n• Clear 'just for fun' messaging\n• No real money claims\n• Appropriate age rating (17+)\n• Transparent about in-app purchases",
       creative_brief_asa_strategy:
-        "Strategic Rationale:\n• Apple measures relevance between keyword + CPP\n• Higher relevance = better Quality Score = better CVR = lower CPI\n• Egyptian-themed keywords align perfectly with our CPP visuals and messaging\n• Demonstrates senior UA thinking: keyword → creative alignment",
+        "Segmentation by groups: Create ad groups by keyword type – (a) Brand (e.g., RedRain, RoyalSpin), (b) Competition (Royal Spin Casino, Cleopatra Slots), (c) Generic terms (slots, jackpot, casino game).\n\nAligned Creativity: Use creatives (images and copies) consistent with Store Page (message \"Unlock Your Fortune\"). Align visual texts with keywords of each ad to improve CTR. For example, \"jackpot\" ads can show a large jackpot cage with corresponding screenshot text.\n\nPPC/Bids: Start with exact match and broad match modifier, moderate bids. Use tools (Search Ads) to exclude irrelevant keywords.\n\nKPIs and Optimisation: Measure TTR (Tap-Through-Rate) and CPT (Cost per Tap), reallocate budget to best-performing ads. Apply best practices: custom product pages (CPP) improve relevance and conversions. Continue adjusting bids based on performance.",
       
       // ASA Keyword Groups (structured campaign data)
       creative_brief_asa_keyword_groups: [
         {
           id: "group-1",
-          name: "High Volume - Slots",
-          keywords: ["slots", "casino slots", "slot games", "free slots"],
+          name: "Branded Keywords",
+          keywords: ["RedRain Slots Casino", "RedRain Casino"],
+          matchType: "exact",
+          cppEnabled: true,
+          cppId: "CPP-001",
+          dailyBudget: 150,
+          targetCPA: 1.5,
+        },
+        {
+          id: "group-2",
+          name: "Competition Keywords",
+          keywords: ["Royal Spin Palace", "Cleopatra Slots", "Pharaoh Riches"],
           matchType: "exact",
           cppEnabled: true,
           cppId: "CPP-001",
@@ -364,104 +373,118 @@ export default function AdminPanel() {
           targetCPA: 2.0,
         },
         {
-          id: "group-2",
-          name: "Egyptian Theme - High Relevance",
-          keywords: ["egypt slots", "pharaoh slots", "cleopatra slots", "fortune slots", "egyptian slots"],
+          id: "group-3",
+          name: "Generic High Volume",
+          keywords: ["slots free", "casino games", "jackpot slot", "pyramid slots"],
+          matchType: "broad",
+          cppEnabled: false,
+          dailyBudget: 75,
+          targetCPA: 2.5,
+        },
+        {
+          id: "group-4",
+          name: "Thematic Egyptian",
+          keywords: ["Egyptian slots", "ancient treasure slots", "Cleopatra casino"],
           matchType: "exact",
           cppEnabled: true,
           cppId: "CPP-001",
-          dailyBudget: 75,
+          dailyBudget: 80,
           targetCPA: 1.8,
         },
       ],
       creative_brief_competitor_analysis: [
         {
           id: "comp-1",
-          name: "Slotomania",
-          appStoreUrl: "https://apps.apple.com/app/slotomania-slots-casino/id393922266",
-          playStoreUrl: "https://play.google.com/store/apps/details?id=air.com.playtika.slotomania",
-          iconUrl: "https://is1-ssl.mzstatic.com/image/thumb/Purple116/v4/e0/59/86/e05986c5-2b05-8d24-4b2e-2a0b8e5c8f5c/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/512x512bb.jpg",
-          strengths: ["Large game library", "Established brand", "Strong user base"],
-          weaknesses: ["Dated interface", "Generic positioning", "Outdated visuals"],
-          ourAdvantage: "Premium Egyptian-themed positioning with modern, elegant visuals that differentiate from generic casino apps",
-          keywords: ["slots", "casino", "slot games", "free slots", "jackpot slots"],
-          notes: "Market leader but lacks thematic differentiation"
+          name: "Royal Spin Casino",
+          appStoreUrl: "https://apps.apple.com/app/royal-spin-casino/id123456789",
+          playStoreUrl: "https://play.google.com/store/apps/details?id=com.royalspin.casino",
+          iconUrl: "",
+          strengths: ["Large jackpots", "Established presence", "Good graphics"],
+          weaknesses: ["Generic positioning", "No unique theme"],
+          ourAdvantage: "All competitors highlight large jackpots; RedRain differentiates with premium aesthetics and unique Egyptian narrative",
+          keywords: ["royal spin", "casino slots", "jackpot slots"],
+          notes: "All competitors highlight large jackpots; RedRain differentiates with premium aesthetics and unique Egyptian narrative"
         },
         {
           id: "comp-2",
-          name: "Huuuge Casino",
-          appStoreUrl: "https://apps.apple.com/app/huuuge-casino-slots-vegas/id1069144272",
-          playStoreUrl: "https://play.google.com/store/apps/details?id=com.huuuge.casino.slots",
-          iconUrl: "https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/d1/f1/e9/d1f1e9c8-3f5e-8b5d-9c2a-4e6f8a9b0c1d/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/512x512bb.jpg",
-          strengths: ["Strong marketing", "Large player base", "Good game quality"],
-          weaknesses: ["Generic casino positioning", "Crowded marketplace", "No clear theme"],
-          ourAdvantage: "Clear fantasy differentiation with Egyptian Fortune theme that creates emotional connection",
-          keywords: ["casino", "slots", "vegas slots", "casino games", "free casino"],
-          notes: "Strong marketing but struggles with differentiation in crowded market"
+          name: "Pharaoh Slots",
+          appStoreUrl: "https://apps.apple.com/app/pharaoh-slots/id123456790",
+          playStoreUrl: "https://play.google.com/store/apps/details?id=com.pharaoh.slots",
+          iconUrl: "",
+          strengths: ["Egyptian theme", "Thematic consistency"],
+          weaknesses: ["Smaller game library", "Less marketing budget", "Lower production quality"],
+          ourAdvantage: "Premium quality, better graphics, more games, stronger brand positioning",
+          keywords: ["pharaoh slots", "egyptian slots", "ancient egypt"],
+          notes: "Direct competitor with Egyptian theme, but we have premium positioning and better quality"
         },
         {
           id: "comp-3",
-          name: "DoubleU Casino",
-          appStoreUrl: "https://apps.apple.com/app/doubleu-casino-free-slots/id547436543",
-          playStoreUrl: "https://play.google.com/store/apps/details?id=com.doubleugame.DoubleUCasino",
-          iconUrl: "https://is1-ssl.mzstatic.com/image/thumb/Purple116/v4/a1/b2/c3/a1b2c3d4-e5f6-7890-abcd-ef1234567890/AppIcon-0-0-1x_U007emarketing-0-0-0-7-0-0-sRGB-0-0-0-GLES2_U002c0-512MB-85-220-0-0.png/512x512bb.jpg",
-          strengths: ["Good game quality", "Social features", "Regular updates"],
-          weaknesses: ["Generic messaging", "No clear theme", "Limited visual identity"],
-          ourAdvantage: "Unique Egyptian theme with premium aesthetic that creates memorable brand identity",
-          keywords: ["casino", "slots", "free casino", "casino games", "social casino"],
-          notes: "Good gameplay but lacks strong visual and thematic identity"
+          name: "Cleopatra's Fortune",
+          appStoreUrl: "https://apps.apple.com/app/cleopatra-fortune/id123456791",
+          playStoreUrl: "https://play.google.com/store/apps/details?id=com.cleopatra.fortune",
+          iconUrl: "",
+          strengths: ["Cleopatra theme", "Good visuals"],
+          weaknesses: ["Limited game variety", "Generic messaging"],
+          ourAdvantage: "More comprehensive Egyptian theme beyond just Cleopatra, premium positioning",
+          keywords: ["cleopatra slots", "cleopatra casino", "egyptian fortune"],
+          notes: "Good Cleopatra focus but limited to single character theme"
+        },
+        {
+          id: "comp-4",
+          name: "Vegas Casino Slots",
+          appStoreUrl: "https://apps.apple.com/app/vegas-casino-slots/id123456792",
+          playStoreUrl: "https://play.google.com/store/apps/details?id=com.vegas.casino.slots",
+          iconUrl: "",
+          strengths: ["Vegas theme", "Large player base"],
+          weaknesses: ["Overused Vegas theme", "No differentiation"],
+          ourAdvantage: "Egyptian theme is more unique than generic Vegas, more focused and premium positioning",
+          keywords: ["vegas slots", "casino slots", "vegas casino"],
+          notes: "Vegas theme is overused; Egyptian theme provides differentiation"
         }
-      ] as Competitor[],
+      ],
       
       // Color Palette (structured data)
       creative_brief_color_palette: [
-        { name: "Royal Purple", hex: "#9333EA", usage: "Primary brand color" },
-        { name: "Gold", hex: "#EAB308", usage: "Accent & CTAs" },
-        { name: "Deep Red", hex: "#DC2626", usage: "Energy & excitement" },
-        { name: "Black", hex: "#0F172A", usage: "Text & contrast" },
-        { name: "Emerald", hex: "#059669", usage: "Success & trust" },
+        { name: "Gold", hex: "#FFD700", usage: "Primary luxury colour - wealth and prestige" },
+        { name: "Sapphire Blue", hex: "#0F52BA", usage: "Royal blue background - sophistication" },
+        { name: "Royal Purple", hex: "#6B46C1", usage: "Secondary brand colour - luxury and premium quality" },
+        { name: "Sand", hex: "#C2B280", usage: "Egyptian desert accent - neutral tones" },
+        { name: "Black", hex: "#000000", usage: "Text and contrast - sophistication" },
       ],
       
       // Typography System (structured data)
       creative_brief_typography: [
         {
           name: "Headlines & Titles",
-          font: "Playfair Display",
-          size: "32px",
+          font: "Classic Serif (carved stone style)",
+          size: "32px-48px",
           weight: "700",
-          example: "Premium Casino Experience",
+          example: "Unlock Your Fortune",
         },
         {
-          name: "Section Headings",
-          font: "Inter",
-          size: "24px",
-          weight: "600",
-          example: "Welcome to RedRain Fortune",
-        },
-        {
-          name: "Body Text & Descriptions",
-          font: "Inter",
-          size: "16px",
+          name: "Body Text",
+          font: "Modern Sans-Serif",
+          size: "16px-18px",
           weight: "400",
-          example: "Experience the premium Egyptian-themed slot experience with stunning graphics and smooth gameplay.",
+          example: "Play premium Egyptian slots now!",
         },
         {
           name: "UI Elements & Labels",
-          font: "SF Pro",
-          size: "14px",
+          font: "SF Pro (iOS) / Roboto (Android)",
+          size: "14px-16px",
           weight: "500",
-          example: "Play Now • Claim Bonus • Navigation",
+          example: "Play Now • Join the Pharaoh's Challenge • Win Big",
         },
       ],
 
       // In-App Purchases
       has_in_app_purchases: true,
       in_app_purchases_description:
-        "RedRain Fortune offers a variety of in-app purchases to enhance your gaming experience. From coin packages to remove ads, unlock exclusive features and maximise your fortune-seeking journey.",
+        "RedRain Slots Casino offers a variety of in-app purchases to enhance your gaming experience. From coin packages to VIP membership, unlock exclusive features and maximise your fortune-seeking journey.",
       ios_in_app_purchases:
-        "Fortune Starter Pack - £2.99\n• 500,000 coins\n• 50 free spins\n• Remove ads for 7 days\n\nGold Fortune Pack - £4.99\n• 1,000,000 coins\n• 100 free spins\n• Remove ads for 14 days\n\nPlatinum Fortune Pack - £9.99\n• 2,500,000 coins\n• 250 free spins\n• Remove ads for 30 days\n• Exclusive bonus games\n\nDiamond Fortune Pack - £19.99\n• 5,000,000 coins\n• 500 free spins\n• Remove ads permanently\n• VIP status\n• Exclusive tournaments\n\nRemove Ads - £4.99 (one-time)\n• Enjoy uninterrupted gameplay\n• Faster loading times\n• Ad-free experience",
+        "Golden Coin Pack (10k coins) – £1.99\n\nPremium Coin Pack (50k coins) – £4.99\n\nVIP Monthly Membership – £9.99\n• Includes extra daily bonuses\n• Exclusive bonus rounds\n• Priority support\n• Special events access",
       android_in_app_products:
-        "Fortune Starter Pack - £2.99\n• 500,000 coins\n• 50 free spins\n• Remove ads for 7 days\n\nGold Fortune Pack - £4.99\n• 1,000,000 coins\n• 100 free spins\n• Remove ads for 14 days\n\nPlatinum Fortune Pack - £9.99\n• 2,500,000 coins\n• 250 free spins\n• Remove ads for 30 days\n• Exclusive bonus games\n\nDiamond Fortune Pack - £19.99\n• 5,000,000 coins\n• 500 free spins\n• Remove ads permanently\n• VIP status\n• Exclusive tournaments\n\nRemove Ads - £4.99 (one-time)\n• Enjoy uninterrupted gameplay\n• Faster loading times\n• Ad-free experience",
+        "Golden Coin Pack (10k coins) – £1.99\n\nPremium Coin Pack (50k coins) – £4.99\n\nVIP Monthly Membership – £9.99\n• Includes extra daily bonuses\n• Exclusive bonus rounds\n• Priority support\n• Special events access",
     })
   }
 
@@ -1504,7 +1527,7 @@ export default function AdminPanel() {
                 </div>
               </CardHeader>
               <CardContent>
-                <KeywordManager appId={appId} initialKeywords={keywords} appName={appData.app_name} />
+                <KeywordManager appId={appId} initialKeywords={keywords} />
               </CardContent>
             </Card>
           </TabsContent>

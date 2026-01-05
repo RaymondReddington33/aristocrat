@@ -52,7 +52,7 @@ export function Navbar() {
   const [apps, setApps] = useState<Array<{ id: string; app_name: string; app_icon_url?: string }>>([])
   const [selectedAppId, setSelectedAppId] = useState<string | null>(null)
   const [isMounted, setIsMounted] = useState(false)
-  const [user, setUser] = useState<{ email?: string } | null>(null)
+  const [user, setUser] = useState<{ email?: string; username?: string } | null>(null)
   const [userRole, setUserRole] = useState<UserRole | null>(null)
 
   useEffect(() => {
@@ -63,6 +63,18 @@ export function Navbar() {
     // Check auth state
     const checkAuth = async () => {
       try {
+        // Check for supervisor session first
+        const supervisorSession = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("supervisor_session="))
+        
+        if (supervisorSession && supervisorSession.includes("supervisor_")) {
+          setUser({ email: "laura@supervisor", username: "Laura" })
+          setUserRole("test_reviewer")
+          return
+        }
+        
+        // Otherwise check Supabase auth
         const supabase = createClient()
         const { data: { user: authUser } } = await supabase.auth.getUser()
         const authUserObj = authUser ? { email: authUser.email } : null
@@ -93,6 +105,17 @@ export function Navbar() {
       // Listen for auth changes
       const supabase = createClient()
       const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        // Check supervisor session first
+        const supervisorSession = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("supervisor_session="))
+        
+        if (supervisorSession && supervisorSession.includes("supervisor_")) {
+          setUser({ email: "laura@supervisor", username: "Laura" })
+          setUserRole("test_reviewer")
+          return
+        }
+        
         const authUser = session?.user ? { email: session.user.email } : null
         setUser(authUser)
         if (authUser?.email) {
@@ -158,9 +181,23 @@ export function Navbar() {
 
   const handleLogout = async () => {
     try {
-      const supabase = createClient()
       setRoleOverride(null) // Clear role override on logout
-      await supabase.auth.signOut()
+      
+      // Check if supervisor session exists
+      const supervisorSession = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("supervisor_session="))
+      
+      if (supervisorSession) {
+        // Logout supervisor
+        await fetch("/api/auth/simple-logout", { method: "POST" })
+        document.cookie = "supervisor_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
+      } else {
+        // Logout Supabase
+        const supabase = createClient()
+        await supabase.auth.signOut()
+      }
+      
       router.push("/")
       router.refresh()
     } catch (error) {
@@ -174,7 +211,7 @@ export function Navbar() {
     router.refresh() // Refresh to apply changes
   }
 
-  const actualRole = user?.email ? getUserRole(user.email) : null
+  const actualRole = user?.username === "Laura" ? "test_reviewer" : (user?.email ? getUserRole(user.email) : null)
   const canSwitchRole = actualRole === "test_owner"
 
   const selectedApp = apps.find(app => app.id === selectedAppId)
@@ -335,7 +372,7 @@ export function Navbar() {
                     <User className="h-4 w-4 flex-shrink-0" />
                     <div className="flex flex-col items-start hidden md:flex">
                       <span className="text-xs font-medium text-slate-900 max-w-[140px] truncate">
-                        {user.email}
+                        {user.username || user.email}
                       </span>
                       {userRole && (
                         <span className="text-[10px] text-slate-500">

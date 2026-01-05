@@ -41,15 +41,23 @@ export async function middleware(request: NextRequest) {
       }
     )
 
-    // Refresh session if expired - required for Server Components
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser()
+    // Check for supervisor session (simple auth)
+    const supervisorSession = request.cookies.get("supervisor_session")
+    const hasSupervisorSession = supervisorSession && supervisorSession.value.startsWith("supervisor_")
 
-    if (authError) {
-      console.error("Error getting user in middleware:", authError)
-      // Continue without user if there's an auth error
+    // Refresh session if expired - required for Server Components (for Supabase auth)
+    let user = null
+    if (supabaseUrl && supabaseAnonKey) {
+      const {
+        data: { user: supabaseUser },
+        error: authError,
+      } = await supabase.auth.getUser()
+
+      if (authError) {
+        console.error("Error getting user in middleware:", authError)
+      } else {
+        user = supabaseUser
+      }
     }
 
     // Protect routes - require authentication for /admin and / (home)
@@ -65,30 +73,40 @@ export async function middleware(request: NextRequest) {
 
     // Protect /admin and / (home) routes
     if (isAdminPath || isHomePath) {
-      if (!user) {
+      // Check if user is authenticated (either Supabase or supervisor session)
+      const isAuthenticated = user || hasSupervisorSession
+      
+      if (!isAuthenticated) {
         const url = request.nextUrl.clone()
         url.pathname = "/auth/login"
         url.searchParams.set("next", pathname)
         return NextResponse.redirect(url)
       }
       
-      // Check if user has valid role
-      try {
-        const role = getUserRole(user.email)
-        if (!role) {
-          // User doesn't have a valid role, redirect to login with error
+      // If supervisor session, allow access (test_reviewer role)
+      if (hasSupervisorSession) {
+        return response
+      }
+      
+      // For Supabase users, check if user has valid role
+      if (user) {
+        try {
+          const role = getUserRole(user.email)
+          if (!role) {
+            // User doesn't have a valid role, redirect to login with error
+            const url = request.nextUrl.clone()
+            url.pathname = "/auth/login"
+            url.searchParams.set("error", "unauthorized")
+            return NextResponse.redirect(url)
+          }
+        } catch (error) {
+          console.error("Error checking user role in middleware:", error)
+          // If role check fails, redirect to login
           const url = request.nextUrl.clone()
           url.pathname = "/auth/login"
           url.searchParams.set("error", "unauthorized")
           return NextResponse.redirect(url)
         }
-      } catch (error) {
-        console.error("Error checking user role in middleware:", error)
-        // If role check fails, redirect to login
-        const url = request.nextUrl.clone()
-        url.pathname = "/auth/login"
-        url.searchParams.set("error", "unauthorized")
-        return NextResponse.redirect(url)
       }
     }
 

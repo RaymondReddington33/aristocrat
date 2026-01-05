@@ -474,6 +474,21 @@ export async function generateOptimizedKeywordSetsAction(appDataId: string) {
 }
 
 export async function getUser() {
+  const { cookies } = await import("next/headers")
+  const cookieStore = await cookies()
+  
+  // Check for supervisor session first
+  const supervisorSession = cookieStore.get("supervisor_session")
+  if (supervisorSession && supervisorSession.value.startsWith("supervisor_")) {
+    return { 
+      id: "supervisor_laura",
+      email: "laura@supervisor",
+      username: "Laura",
+      role: "test_reviewer"
+    } as any
+  }
+  
+  // Otherwise check Supabase auth
   const supabase = await createClient()
   const {
     data: { user },
@@ -483,6 +498,13 @@ export async function getUser() {
 
 export async function getUserWithRole() {
   const user = await getUser()
+  
+  // If supervisor session
+  if (user && (user as any).username === "Laura") {
+    return { user: { email: "laura@supervisor", username: "Laura" }, role: "test_reviewer" as const }
+  }
+  
+  // If Supabase user
   if (!user?.email) return { user: null, role: null }
   
   const { getUserRole } = await import("@/lib/auth")
@@ -491,8 +513,19 @@ export async function getUserWithRole() {
 }
 
 export async function signOut() {
-  const supabase = await createClient()
-  await supabase.auth.signOut()
+  const { cookies } = await import("next/headers")
+  const cookieStore = await cookies()
+  
+  // Clear supervisor session
+  cookieStore.delete("supervisor_session")
+  
+  // Also sign out from Supabase if logged in
+  try {
+    const supabase = await createClient()
+    await supabase.auth.signOut()
+  } catch (error) {
+    // Ignore errors if not logged in with Supabase
+  }
 }
 
 export async function getScreenshotMessaging(screenshotId: string) {

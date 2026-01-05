@@ -37,7 +37,18 @@ export interface AppData {
   creative_brief_visual_references?: string[] // Array of image URLs for visual reference gallery
   creative_brief_color_palette?: Array<{ name: string; hex: string; usage: string }> // Color palette with hex codes
   creative_brief_typography?: Array<{ name: string; font: string; size: string; weight: string; example: string }> // Typography styles
-  creative_brief_competitor_analysis?: string
+  creative_brief_competitor_analysis?: Array<{
+    id: string
+    name: string
+    appStoreUrl?: string
+    playStoreUrl?: string
+    iconUrl?: string
+    strengths?: string[]
+    weaknesses?: string[]
+    ourAdvantage?: string
+    keywords?: string[]
+    notes?: string
+  }>
   creative_brief_screenshot_1_message?: string
   creative_brief_screenshot_2_message?: string
   creative_brief_screenshot_3_message?: string

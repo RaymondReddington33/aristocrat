@@ -7,13 +7,17 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Mail, Loader2, MessageCircle, ExternalLink, Shield, Eye, Lock } from "lucide-react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Mail, Loader2, MessageCircle, ExternalLink, Shield, Eye, Lock, User } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { getUserRole } from "@/lib/auth"
+import { loginSupervisor } from "@/lib/simple-auth"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState("")
   const router = useRouter()
@@ -23,16 +27,16 @@ export default function LoginPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     if (params.get("error") === "unauthorized") {
-      setMessage("Your email is not authorized to access this application. Only Test Owner (claramuntoriol@gmail.com) and Test Reviewer (@aristocrat.com / @productmadness.com) emails are allowed.")
+      setMessage("Your credentials are not authorized to access this application.")
       toast({
         title: "Unauthorized",
-        description: "Your email is not authorized to access this application.",
+        description: "Your credentials are not authorized to access this application.",
         variant: "destructive",
       })
     }
   }, [toast])
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setMessage("")
@@ -47,10 +51,10 @@ export default function LoginPage() {
       // Validate email before sending (informative, actual validation in middleware)
       const role = getUserRole(email)
       if (!role) {
-        setMessage("Your email is not authorized. Only claramuntoriol@gmail.com (Test Owner) or @aristocrat.com / @productmadness.com emails (Test Reviewer) are allowed.")
+        setMessage("Your email is not authorized. Only claramuntoriol@gmail.com (Test Owner) is allowed.")
         toast({
           title: "Unauthorized Email",
-          description: "Only Test Owner and Test Reviewer emails are allowed.",
+          description: "Only Test Owner email is allowed.",
           variant: "destructive",
         })
         setLoading(false)
@@ -84,11 +88,48 @@ export default function LoginPage() {
     }
   }
 
+  const handleSupervisorLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setMessage("")
+
+    try {
+      const result = await loginSupervisor(username, password)
+      
+      if (result.success) {
+        toast({
+          title: "Login successful",
+          description: "Welcome back!",
+        })
+        // Redirect to home or admin
+        const next = new URLSearchParams(window.location.search).get("next") || "/"
+        router.push(next)
+        router.refresh()
+      } else {
+        setMessage(result.error || "Invalid username or password")
+        toast({
+          title: "Login failed",
+          description: result.error || "Invalid credentials",
+          variant: "destructive",
+        })
+      }
+    } catch (error: any) {
+      console.error("Login error:", error)
+      setMessage("An error occurred. Please try again.")
+      toast({
+        title: "Error",
+        description: "Failed to login",
+        variant: "destructive",
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-white relative">
       {/* Header with Aristocrat Banner */}
       <header className="relative w-full flex-shrink-0 overflow-hidden">
-        {/* Banner Background Image */}
         <div className="relative z-0 w-full">
           <img 
             src="/images/banner.png" 
@@ -101,7 +142,6 @@ export default function LoginPage() {
       {/* Main Content - Floating Dialog */}
       <main className="flex-1 flex items-center justify-center min-h-0 py-4 sm:py-6 px-3 sm:px-4">
         <div className="w-full max-w-4xl mx-auto">
-          {/* Floating Card */}
           <Card className="border-slate-200 shadow-2xl overflow-hidden bg-white" style={{ boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}>
             <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-slate-200">
               {/* Left Side - Information */}
@@ -132,9 +172,9 @@ export default function LoginPage() {
                             </p>
                           </div>
                           <div>
-                            <div className="font-semibold text-slate-900 text-xs mb-0.5 sm:mb-1">Test Reviewer</div>
+                            <div className="font-semibold text-slate-900 text-xs mb-0.5 sm:mb-1">Supervisor (Test Reviewer)</div>
                             <p className="text-slate-600 text-xs leading-relaxed break-words">
-                              Read-only access to review the test submission. Any email with <span className="font-medium text-slate-900">@aristocrat.com</span> or <span className="font-medium text-slate-900">@productmadness.com</span> domain.
+                              Read-only access to review the test submission. Use username and password login.
                             </p>
                           </div>
                         </div>
@@ -196,69 +236,138 @@ export default function LoginPage() {
                 <div className="mb-4 sm:mb-5">
                   <h2 className="text-lg sm:text-xl font-bold text-slate-900 mb-1.5 sm:mb-2">Sign In</h2>
                   <p className="text-slate-600 text-xs sm:text-sm">
-                    Enter your email to receive a magic link
+                    Choose your login method
                   </p>
                 </div>
 
-                <form onSubmit={handleLogin} className="space-y-3 sm:space-y-4">
-                  <div className="space-y-1.5 sm:space-y-2">
-                    <Label htmlFor="email" className="text-xs sm:text-sm font-medium">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="you@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      disabled={loading}
-                      className="h-10 sm:h-11 text-sm sm:text-base"
-                    />
-                  </div>
+                <Tabs defaultValue="supervisor" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2 mb-4">
+                    <TabsTrigger value="supervisor">Supervisor Login</TabsTrigger>
+                    <TabsTrigger value="admin">Admin (Magic Link)</TabsTrigger>
+                  </TabsList>
 
-                  {message && (
-                    <Alert 
-                      variant={message.includes("Check your email") ? "default" : "destructive"}
-                      className="text-xs sm:text-sm"
-                    >
-                      <AlertDescription className="text-xs sm:text-sm">
-                        {message}
-                      </AlertDescription>
-                    </Alert>
-                  )}
+                  {/* Supervisor Login */}
+                  <TabsContent value="supervisor" className="space-y-4">
+                    <form onSubmit={handleSupervisorLogin} className="space-y-3 sm:space-y-4">
+                      <div className="space-y-1.5 sm:space-y-2">
+                        <Label htmlFor="username" className="text-xs sm:text-sm font-medium">Username</Label>
+                        <Input
+                          id="username"
+                          type="text"
+                          placeholder="Enter username"
+                          value={username}
+                          onChange={(e) => setUsername(e.target.value)}
+                          required
+                          disabled={loading}
+                          className="h-10 sm:h-11 text-sm sm:text-base"
+                        />
+                      </div>
 
-                  <Button 
-                    type="submit" 
-                    className="w-full h-10 sm:h-11 text-white text-sm sm:text-base font-medium" 
-                    style={{ 
-                      background: 'linear-gradient(to right, #4f46e5, #6366f1, #8b5cf6)',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'linear-gradient(to right, #4338ca, #4f46e5, #7c3aed)'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'linear-gradient(to right, #4f46e5, #6366f1, #8b5cf6)'
-                    }}
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        <Mail className="mr-2 h-4 w-4" />
-                        Send Magic Link
-                      </>
-                    )}
-                  </Button>
-                </form>
+                      <div className="space-y-1.5 sm:space-y-2">
+                        <Label htmlFor="password" className="text-xs sm:text-sm font-medium">Password</Label>
+                        <Input
+                          id="password"
+                          type="password"
+                          placeholder="Enter password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                          disabled={loading}
+                          className="h-10 sm:h-11 text-sm sm:text-base"
+                        />
+                      </div>
 
-                <div className="mt-4 sm:mt-5 pt-3 border-t border-slate-200">
-                  <p className="text-xs text-slate-500 text-center leading-relaxed px-1">
-                    You'll receive a secure link to sign in without a password. The link will expire after 1 hour.
-                  </p>
-                </div>
+                      {message && (
+                        <Alert 
+                          variant={message.includes("successful") ? "default" : "destructive"}
+                          className="text-xs sm:text-sm"
+                        >
+                          <AlertDescription className="text-xs sm:text-sm">
+                            {message}
+                          </AlertDescription>
+                        </Alert>
+                      )}
+
+                      <Button 
+                        type="submit" 
+                        className="w-full h-10 sm:h-11 text-white text-sm sm:text-base font-medium" 
+                        style={{ 
+                          background: 'linear-gradient(to right, #4f46e5, #6366f1, #8b5cf6)',
+                        }}
+                        disabled={loading}
+                      >
+                        {loading ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Signing in...
+                          </>
+                        ) : (
+                          <>
+                            <User className="mr-2 h-4 w-4" />
+                            Sign In
+                          </>
+                        )}
+                      </Button>
+                    </form>
+                  </TabsContent>
+
+                  {/* Admin Login (Magic Link) */}
+                  <TabsContent value="admin" className="space-y-4">
+                    <form onSubmit={handleEmailLogin} className="space-y-3 sm:space-y-4">
+                      <div className="space-y-1.5 sm:space-y-2">
+                        <Label htmlFor="email" className="text-xs sm:text-sm font-medium">Email</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="claramuntoriol@gmail.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                          disabled={loading}
+                          className="h-10 sm:h-11 text-sm sm:text-base"
+                        />
+                      </div>
+
+                      {message && (
+                        <Alert 
+                          variant={message.includes("Check your email") ? "default" : "destructive"}
+                          className="text-xs sm:text-sm"
+                        >
+                          <AlertDescription className="text-xs sm:text-sm">
+                            {message}
+                          </AlertDescription>
+                        </Alert>
+                      )}
+
+                      <Button 
+                        type="submit" 
+                        className="w-full h-10 sm:h-11 text-white text-sm sm:text-base font-medium" 
+                        style={{ 
+                          background: 'linear-gradient(to right, #4f46e5, #6366f1, #8b5cf6)',
+                        }}
+                        disabled={loading}
+                      >
+                        {loading ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            <Mail className="mr-2 h-4 w-4" />
+                            Send Magic Link
+                          </>
+                        )}
+                      </Button>
+                    </form>
+
+                    <div className="pt-3 border-t border-slate-200">
+                      <p className="text-xs text-slate-500 text-center leading-relaxed px-1">
+                        You'll receive a secure link to sign in without a password. The link will expire after 1 hour.
+                      </p>
+                    </div>
+                  </TabsContent>
+                </Tabs>
               </div>
             </div>
           </Card>

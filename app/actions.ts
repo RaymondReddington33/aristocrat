@@ -473,6 +473,50 @@ export async function generateOptimizedKeywordSetsAction(appDataId: string) {
   return generateOptimizedKeywordSets(keywords)
 }
 
+export async function deleteApp(appId: string) {
+  const supabase = await createClient()
+
+  try {
+    // Delete the app - CASCADE will automatically delete related data:
+    // - app_screenshots (ON DELETE CASCADE)
+    // - app_preview_videos (ON DELETE CASCADE)
+    // - app_keywords (ON DELETE CASCADE)
+    // - app_screenshot_messaging (via screenshots)
+    
+    // First, get screenshot IDs to delete messaging
+    const { data: screenshots } = await supabase
+      .from("app_screenshots")
+      .select("id")
+      .eq("app_data_id", appId)
+
+    if (screenshots && screenshots.length > 0) {
+      const screenshotIds = screenshots.map(s => s.id)
+      // Delete screenshot messaging
+      await supabase
+        .from("app_screenshot_messaging")
+        .delete()
+        .in("screenshot_id", screenshotIds)
+    }
+
+    // Delete the app (CASCADE will handle related tables)
+    const { error } = await supabase
+      .from("app_data")
+      .delete()
+      .eq("id", appId)
+
+    if (error) throw error
+
+    revalidatePath("/admin")
+    revalidatePath("/preview")
+    revalidatePath("/")
+
+    return { success: true }
+  } catch (error) {
+    console.error("Error deleting app:", error)
+    return { success: false, error: String(error) }
+  }
+}
+
 export async function getUser() {
   const { cookies } = await import("next/headers")
   const cookieStore = await cookies()

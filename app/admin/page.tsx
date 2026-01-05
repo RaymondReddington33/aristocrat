@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { CheckCircle2, Loader2, Sparkles, Plus, Undo2, Redo2, Trash2 } from "lucide-react"
 import type { AppData, AppScreenshot, AppKeyword } from "@/lib/types"
-import { getLatestAppData, getAllApps, getAppData, saveAppData, saveScreenshot, savePreviewVideo, getScreenshots, deleteScreenshot, updateScreenshotOrder, getKeywords, bulkDeleteKeywords } from "@/app/actions"
+import { getLatestAppData, getAllApps, getAppData, saveAppData, saveScreenshot, savePreviewVideo, getScreenshots, deleteScreenshot, updateScreenshotOrder, getKeywords, bulkDeleteKeywords, deleteApp } from "@/app/actions"
 import { useToast } from "@/hooks/use-toast"
 import { ConfirmDialog } from "@/components/confirm-dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -55,6 +55,7 @@ export default function AdminPanel() {
   const [showNewAppDialog, setShowNewAppDialog] = useState(false)
   const [showClearAllDialog, setShowClearAllDialog] = useState(false)
   const [showClearSectionDialog, setShowClearSectionDialog] = useState(false)
+  const [showDeleteAppDialog, setShowDeleteAppDialog] = useState(false)
   const [sectionToClear, setSectionToClear] = useState<string | null>(null)
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
   const [userRole, setUserRole] = useState<UserRole | null>(null)
@@ -682,6 +683,16 @@ export default function AdminPanel() {
             <Button variant="outline" onClick={() => router.push("/preview")}>
               View Previews
             </Button>
+            {appId && !isReadOnly && (
+              <Button 
+                variant="destructive" 
+                onClick={() => setShowDeleteAppDialog(true)}
+                className="gap-2"
+              >
+                <Trash2 className="h-4 w-4" />
+                Delete App
+              </Button>
+            )}
             <Button variant="outline" onClick={handleClearAll} className="gap-2 text-red-600 hover:text-red-700 hover:bg-red-50">
               <Trash2 className="h-4 w-4" />
               Clear All
@@ -1564,6 +1575,69 @@ export default function AdminPanel() {
         confirmText="Clear Section"
         cancelText="Cancel"
         variant="destructive"
+      />
+
+      <ConfirmDialog
+        open={showDeleteAppDialog}
+        onOpenChange={setShowDeleteAppDialog}
+        title="Delete App"
+        description={`Are you sure you want to delete "${appData.app_name || 'this app'}"? This will permanently delete the app and ALL associated data including screenshots, keywords, preview videos, and all other information. This action cannot be undone.`}
+        confirmText="Delete App"
+        cancelText="Cancel"
+        variant="destructive"
+        onConfirm={async () => {
+          if (!appId) return
+          
+          try {
+            const result = await deleteApp(appId)
+            
+            if (result.success) {
+              toast({
+                title: "Success",
+                description: "App deleted successfully",
+              })
+              
+              // Reset state
+              setAppId(null)
+              setAppData({
+                app_name: "",
+                category: "",
+                price: "Free",
+                age_rating: "4+",
+                rating: 0,
+                review_count: 0,
+                download_count: "",
+              })
+              setIosScreenshots([])
+              setAndroidScreenshots([])
+              setKeywords([])
+              
+              // Reload apps list
+              await loadApps()
+              
+              // If there are other apps, load the first one
+              const appsList = await getAllApps()
+              if (appsList.length > 0) {
+                await loadAppData(appsList[0].id)
+              }
+              
+              setShowDeleteAppDialog(false)
+            } else {
+              toast({
+                title: "Error",
+                description: result.error || "Failed to delete app",
+                variant: "destructive",
+              })
+            }
+          } catch (error) {
+            console.error("Error deleting app:", error)
+            toast({
+              title: "Error",
+              description: "An error occurred while deleting the app",
+              variant: "destructive",
+            })
+          }
+        }}
       />
     </div>
   )

@@ -83,8 +83,16 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(url)
       }
       
-      // If supervisor session, allow access (test_reviewer role)
-      if (hasSupervisorSession) {
+      // Block supervisor (test_reviewer) from accessing /admin
+      if (isAdminPath && hasSupervisorSession) {
+        // Supervisor can only view previews, not edit admin
+        const url = request.nextUrl.clone()
+        url.pathname = "/"
+        return NextResponse.redirect(url)
+      }
+      
+      // If supervisor session for home page, allow access (test_reviewer role)
+      if (hasSupervisorSession && !isAdminPath) {
         return response
       }
       
@@ -97,6 +105,13 @@ export async function middleware(request: NextRequest) {
             const url = request.nextUrl.clone()
             url.pathname = "/auth/login"
             url.searchParams.set("error", "unauthorized")
+            return NextResponse.redirect(url)
+          }
+          
+          // Block test_reviewer from accessing /admin
+          if (isAdminPath && role === "test_reviewer") {
+            const url = request.nextUrl.clone()
+            url.pathname = "/"
             return NextResponse.redirect(url)
           }
         } catch (error) {

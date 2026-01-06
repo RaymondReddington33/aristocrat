@@ -659,14 +659,18 @@ export default function AdminPanel() {
                 </SelectContent>
               </Select>
             )}
-            <Button onClick={handleCreateNewApp} variant="outline" className="gap-2">
-              <Plus className="h-4 w-4" />
-              New App
-            </Button>
-            <Button onClick={loadDemoCasinoApp} variant="outline" className="gap-2 bg-transparent">
-              <Sparkles className="h-4 w-4" />
-              Load Demo Casino App
-            </Button>
+            {!isReadOnly && (
+              <>
+                <Button onClick={handleCreateNewApp} variant="outline" className="gap-2">
+                  <Plus className="h-4 w-4" />
+                  New App
+                </Button>
+                <Button onClick={loadDemoCasinoApp} variant="outline" className="gap-2 bg-transparent">
+                  <Sparkles className="h-4 w-4" />
+                  Load Demo Casino App
+                </Button>
+              </>
+            )}
             <div className="flex items-center gap-3">
               {lastSaved && (
                 <span className="text-xs text-slate-500">
@@ -693,10 +697,12 @@ export default function AdminPanel() {
                 Delete App
               </Button>
             )}
-            <Button variant="outline" onClick={handleClearAll} className="gap-2 text-red-600 hover:text-red-700 hover:bg-red-50">
-              <Trash2 className="h-4 w-4" />
-              Clear All
-            </Button>
+            {!isReadOnly && (
+              <Button variant="outline" onClick={handleClearAll} className="gap-2 text-red-600 hover:text-red-700 hover:bg-red-50">
+                <Trash2 className="h-4 w-4" />
+                Clear All
+              </Button>
+            )}
           </div>
         </div>
 
@@ -725,10 +731,12 @@ export default function AdminPanel() {
                     <CardTitle>General Information</CardTitle>
                     <CardDescription>Basic app information used across both platforms</CardDescription>
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => handleClearSection("general")} className="gap-2 text-red-600 hover:text-red-700">
-                    <Trash2 className="h-4 w-4" />
-                    Clear Section
-                  </Button>
+                  {!isReadOnly && (
+                    <Button variant="outline" size="sm" onClick={() => handleClearSection("general")} className="gap-2 text-red-600 hover:text-red-700">
+                      <Trash2 className="h-4 w-4" />
+                      Clear Section
+                    </Button>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -876,10 +884,12 @@ export default function AdminPanel() {
                     <CardTitle>iOS App Store Listing</CardTitle>
                     <CardDescription>Information specific to the Apple App Store</CardDescription>
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => handleClearSection("ios")} className="gap-2 text-red-600 hover:text-red-700">
-                    <Trash2 className="h-4 w-4" />
-                    Clear Section
-                  </Button>
+                  {!isReadOnly && (
+                    <Button variant="outline" size="sm" onClick={() => handleClearSection("ios")} className="gap-2 text-red-600 hover:text-red-700">
+                      <Trash2 className="h-4 w-4" />
+                      Clear Section
+                    </Button>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -1081,10 +1091,12 @@ export default function AdminPanel() {
                     <CardTitle>Google Play Store Listing</CardTitle>
                     <CardDescription>Information specific to Google Play Store</CardDescription>
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => handleClearSection("android")} className="gap-2 text-red-600 hover:text-red-700">
-                    <Trash2 className="h-4 w-4" />
-                    Clear Section
-                  </Button>
+                  {!isReadOnly && (
+                    <Button variant="outline" size="sm" onClick={() => handleClearSection("android")} className="gap-2 text-red-600 hover:text-red-700">
+                      <Trash2 className="h-4 w-4" />
+                      Clear Section
+                    </Button>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -1531,10 +1543,12 @@ export default function AdminPanel() {
                     <CardTitle>Keyword Research</CardTitle>
                     <CardDescription>Manage and optimize keywords for App Store and Google Play Store</CardDescription>
                   </div>
-                  <Button variant="outline" size="sm" onClick={() => handleClearSection("keywords")} className="gap-2 text-red-600 hover:text-red-700">
-                    <Trash2 className="h-4 w-4" />
-                    Clear Section
-                  </Button>
+                  {!isReadOnly && (
+                    <Button variant="outline" size="sm" onClick={() => handleClearSection("keywords")} className="gap-2 text-red-600 hover:text-red-700">
+                      <Trash2 className="h-4 w-4" />
+                      Clear Section
+                    </Button>
+                  )}
                 </div>
               </CardHeader>
               <CardContent>

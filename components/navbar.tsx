@@ -17,7 +17,7 @@ import {
   User,
   Eye,
 } from "lucide-react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Select,
@@ -233,10 +233,15 @@ export function Navbar() {
     router.refresh() // Refresh to apply changes
   }
 
-  const actualRole = user?.username === "Laura" ? "test_reviewer" : (user?.email ? getUserRole(user.email) : null)
+  // Use userRole directly since it's already set correctly in useEffect
+  // This ensures it's always in sync with the authentication state
+  const actualRole = userRole
   const canSwitchRole = actualRole === "test_owner"
 
-  const selectedApp = apps.find(app => app.id === selectedAppId)
+  // Use useMemo to recalculate selectedApp when selectedAppId or apps change
+  const selectedApp = useMemo(() => {
+    return apps.find(app => app.id === selectedAppId)
+  }, [apps, selectedAppId])
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white shadow-sm">
@@ -363,17 +368,20 @@ export function Navbar() {
             >
               <Link href="/">Home</Link>
             </Button>
-            <Button
-              variant={isActive("/admin") ? "default" : "ghost"}
-              size="sm"
-              className="h-9 gap-1.5"
-              asChild
-            >
-              <Link href="/admin">
-                <Settings className="h-4 w-4" />
-                Admin
-              </Link>
-            </Button>
+            {/* Only show Admin button if user is not test_reviewer */}
+            {actualRole !== "test_reviewer" && (
+              <Button
+                variant={isActive("/admin") ? "default" : "ghost"}
+                size="sm"
+                className="h-9 gap-1.5"
+                asChild
+              >
+                <Link href="/admin">
+                  <Settings className="h-4 w-4" />
+                  Admin
+                </Link>
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="sm"
@@ -586,17 +594,20 @@ export function Navbar() {
               >
                 Home
               </Link>
-              <Link
-                href="/admin"
-                className={`block px-3 py-2 rounded-md text-sm font-medium transition-all ${
-                  isActive("/admin")
-                    ? "bg-slate-100 text-slate-900"
-                    : "text-slate-700 hover:bg-slate-50"
-                }`}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Admin Panel
-              </Link>
+              {/* Only show Admin Panel link if user is not test_reviewer */}
+              {actualRole !== "test_reviewer" && (
+                <Link
+                  href="/admin"
+                  className={`block px-3 py-2 rounded-md text-sm font-medium transition-all ${
+                    isActive("/admin")
+                      ? "bg-slate-100 text-slate-900"
+                      : "text-slate-700 hover:bg-slate-50"
+                  }`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Admin Panel
+                </Link>
+              )}
               <button
                 onClick={() => {
                   setShowTestInfoDialog(true)

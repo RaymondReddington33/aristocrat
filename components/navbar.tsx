@@ -156,9 +156,17 @@ export function Navbar() {
 
         if (data && data.length > 0) {
           setApps(data)
-          // Set the first app as selected by default if no app is selected
+          // Check localStorage for previously selected app, otherwise use first app
           if (!selectedAppId) {
-            setSelectedAppId(data[0].id)
+            const savedAppId = typeof window !== "undefined" ? localStorage.getItem("selectedAppId") : null
+            if (savedAppId && data.find(app => app.id === savedAppId)) {
+              setSelectedAppId(savedAppId)
+            } else {
+              setSelectedAppId(data[0].id)
+              if (typeof window !== "undefined") {
+                localStorage.setItem("selectedAppId", data[0].id)
+              }
+            }
           }
         } else {
           // No apps found - this is not an error, just empty state
@@ -192,9 +200,26 @@ export function Navbar() {
 
   const isActive = (path: string) => pathname === path || pathname?.startsWith(path + "/")
 
-  const handleAppSelect = (appId: string) => {
+  const handleAppSelect = async (appId: string) => {
     setSelectedAppId(appId)
-    // Optionally store in localStorage or context for persistence
+    // Store in localStorage for client-side persistence
+    if (typeof window !== "undefined") {
+      localStorage.setItem("selectedAppId", appId)
+      // Set cookie for server-side access
+      document.cookie = `selectedAppId=${appId}; path=/; max-age=31536000` // 1 year
+      // Dispatch custom event to notify other components
+      window.dispatchEvent(new CustomEvent("appChanged", { detail: { appId } }))
+      // Force navigation to current page to refresh server components
+      const currentPath = pathname
+      if (currentPath.startsWith("/preview")) {
+        // For preview pages, navigate to force server component refresh
+        router.push(`${currentPath}?appId=${appId}`)
+        router.refresh()
+      } else {
+        // For other pages, just refresh
+        router.refresh()
+      }
+    }
   }
 
   const handlePreviewSelect = (platform: "ios" | "android" | "brief") => {

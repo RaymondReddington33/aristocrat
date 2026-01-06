@@ -65,7 +65,23 @@ export default function AdminPanel() {
 
   const loadExistingData = useCallback(async () => {
     try {
-      const data = await getLatestAppData()
+      // Check localStorage for selected app first
+      let appIdToLoad: string | null = null
+      if (typeof window !== "undefined") {
+        const savedAppId = localStorage.getItem("selectedAppId")
+        if (savedAppId) {
+          appIdToLoad = savedAppId
+        }
+      }
+
+      let data
+      if (appIdToLoad) {
+        // Load the selected app
+        data = await getAppData(appIdToLoad)
+      } else {
+        // Fallback to latest app
+        data = await getLatestAppData()
+      }
 
       if (data) {
         setAppData(data)
@@ -144,6 +160,14 @@ export default function AdminPanel() {
       setValidationErrors({})
       await loadAppData(selectedAppId)
       await loadApps() // Refresh apps list
+      
+      // Sync with navbar by updating cookie and localStorage
+      if (typeof window !== "undefined") {
+        localStorage.setItem("selectedAppId", selectedAppId)
+        document.cookie = `selectedAppId=${selectedAppId}; path=/; max-age=31536000` // 1 year
+        // Dispatch custom event to notify navbar and other components
+        window.dispatchEvent(new CustomEvent("appChanged", { detail: { appId: selectedAppId } }))
+      }
     }
   }
 

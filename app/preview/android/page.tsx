@@ -4,15 +4,14 @@ import { Star, Share, Info, Shield, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { getScreenshots, getPreviewVideos } from "@/app/actions"
+import { getSelectedAppId, getAppDataOrLatest } from "@/lib/app-selection"
 
-export default async function AndroidPreview() {
-  const supabase = await createClient()
-  const { data: appData } = await supabase
-    .from("app_data")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle()
+export default async function AndroidPreview({ searchParams }: { searchParams?: { appId?: string } }) {
+  // Get selected app ID from query param (from navbar), cookie, or use latest app
+  const queryAppId = searchParams?.appId || null
+  const cookieAppId = await getSelectedAppId()
+  const selectedAppId = queryAppId || cookieAppId
+  const appData = await getAppDataOrLatest(selectedAppId)
 
   if (!appData) {
     redirect("/admin")

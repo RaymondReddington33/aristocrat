@@ -10,15 +10,14 @@ import { StorePagePreview } from "@/components/store-page-preview"
 import { getScreenshots, getScreenshotMessaging } from "@/app/actions"
 import { AppleSearchAdsConfig } from "@/components/apple-search-ads-config"
 import { CompetitorAnalysisManager } from "@/components/competitor-analysis-manager"
+import { getSelectedAppId, getAppDataOrLatest } from "@/lib/app-selection"
 
-export default async function CreativeBriefPreview() {
-  const supabase = await createClient()
-  const { data: appData } = await supabase
-    .from("app_data")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .single()
+export default async function CreativeBriefPreview({ searchParams }: { searchParams?: { appId?: string } }) {
+  // Get selected app ID from query param (from navbar), cookie, or use latest app
+  const queryAppId = searchParams?.appId || null
+  const cookieAppId = await getSelectedAppId()
+  const selectedAppId = queryAppId || cookieAppId
+  const appData = await getAppDataOrLatest(selectedAppId)
 
   if (!appData) {
     redirect("/admin")

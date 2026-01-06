@@ -138,7 +138,7 @@ export function KeywordResearchSection({ keywords, appData }: KeywordResearchSec
             <CardDescription>Side-by-side comparison of keywords configured in admin panel for iOS and Android</CardDescription>
           </CardHeader>
           <CardContent className="pt-4">
-            <PlatformComparison appData={appData} />
+            <PlatformComparison appData={appData} keywords={filteredKeywords} />
           </CardContent>
         </Card>
       )}

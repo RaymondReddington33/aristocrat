@@ -143,7 +143,14 @@ export function Navbar() {
           .limit(10)
 
         if (error) {
-          console.error("Supabase error fetching apps:", error)
+          // Log error details more comprehensively
+          console.error("Supabase error fetching apps:", {
+            message: error.message,
+            details: error.details,
+            hint: error.hint,
+            code: error.code,
+            fullError: error,
+          })
           return
         }
 
@@ -153,10 +160,25 @@ export function Navbar() {
           if (!selectedAppId) {
             setSelectedAppId(data[0].id)
           }
+        } else {
+          // No apps found - this is not an error, just empty state
+          setApps([])
         }
       } catch (error) {
-        console.error("Error fetching apps:", error)
+        // Handle client creation errors or network errors
+        const errorMessage = error instanceof Error ? error.message : String(error)
+        const errorDetails = error instanceof Error ? {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+        } : { error }
+        
+        console.error("Error fetching apps:", {
+          message: errorMessage,
+          details: errorDetails,
+        })
         // Silently fail - app can still work without the app selector
+        setApps([])
       }
     }
 

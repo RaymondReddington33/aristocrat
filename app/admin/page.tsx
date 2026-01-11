@@ -346,31 +346,32 @@ export default function AdminPanel() {
         const saveResult = await saveAppData(demoData, null)
         
         if (saveResult.success && saveResult.id) {
-          // Reset state
-          setIosScreenshots([])
-          setAndroidScreenshots([])
-          setKeywords([])
-          
-          // Set the new app data and ID
-          setAppData(demoData)
-          setAppId(saveResult.id)
-          setLastSaved(new Date())
-          
           // Clear localStorage selection to use the new app
           if (typeof window !== "undefined") {
             localStorage.removeItem("selectedAppId")
             localStorage.setItem("selectedAppId", saveResult.id)
           }
           
-          // Refresh apps list
+          // Refresh apps list first
           await loadApps()
           
-          // Load the newly created app data to ensure everything is in sync
-          if (saveResult.id) {
-            const loadedData = await getAppData(saveResult.id)
-            if (loadedData) {
-              setAppData(loadedData)
-            }
+          // Load the newly created app data from database to ensure everything is in sync
+          const loadedData = await getAppData(saveResult.id)
+          if (loadedData) {
+            // Reset state
+            setIosScreenshots([])
+            setAndroidScreenshots([])
+            setKeywords([])
+            
+            // Set the loaded app data and ID
+            setAppData(loadedData)
+            setAppId(loadedData.id)
+            setLastSaved(new Date(loadedData.updated_at || new Date()))
+          } else {
+            // Fallback if loading fails
+            setAppData(demoData)
+            setAppId(saveResult.id)
+            setLastSaved(new Date())
           }
           
           toast({

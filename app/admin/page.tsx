@@ -383,13 +383,13 @@ export default function AdminPanel() {
       // Title (30 chars): Brand + core theme - FIRST WORDS WEIGH MORE
       // Subtitle (30 chars): Value proposition - NO repetition from title  
       // Keywords (100 chars): Generic core keywords, NO spaces, NO plurals, NO repetition
-      ios_app_name: "RedRain Egyptian Riches Slots", // 30 chars ✅ 100% - Brand first (semantic priority)
+      ios_app_name: "RedRain: Egyptian Riches Slots", // 30 chars ✅ 100% - Brand first (semantic priority)
       ios_subtitle: "Premium Adventure Games", // 25 chars - Value prop, no repetition
       ios_description:
         "Embark on an epic slot adventure in Ancient Egypt! Unlock your fortune with premium 3D graphics, epic bonus rounds, and massive jackpots. Enjoy daily free spins, treasure chest levels, and pharaoh-inspired jackpot tables. RedRain offers a social casino experience without real betting (\"play for fun\"), with millions of free coins to start and achievement rewards. Play now and become a legend among the Egyptian gods!\n\nKEY FEATURES\n• Premium Egyptian-Themed Slot Games\n• Massive Jackpots & Daily Rewards\n• Epic Bonus Rounds & Treasure Chests\n• Stunning 3D Graphics & Smooth Gameplay\n• Daily Free Spins & Multipliers\n• Social Casino Fun - Play with Friends\n• No Real Money Required\n\nWHY PLAYERS LOVE US\n✓ Premium Quality 3D Graphics\n✓ Generous Daily Bonuses\n✓ Regular New Egyptian Slots\n✓ Smooth Performance\n✓ Social Features & Achievements\n\nCall to Action: \"Unlock Your Fortune\", \"Spin to Win\", \"Join the Adventure\"\n\nFor entertainment purposes only. No real money gambling. In-app purchases available.",
       ios_promotional_text:
         "Double Fortune Weekend: Get double free spins today!",
-      ios_keywords: "pharaoh,cleopatra,fortune,jackpot,treasure,ancient,pyramid,sphinx,legend,reward,wheel,prize,charm,win", // 100 chars ✅ 100% - Generic core, NO spaces, NO plurals, NO repetition
+      ios_keywords: "pharaoh,cleopatra,fortune,jackpot,treasure,ancient,pyramid,sphinx,legend,reward,wheel,prize,charm", // 97 chars (optimized - close to 100%) - Generic core, NO spaces, NO plurals, NO repetition
       ios_whats_new:
         "Discover new Egyptian slots and improvements! Optimised performance, minor bug fixes, and special launch bonuses.",
       ios_support_url: "https://support.redrain.com",

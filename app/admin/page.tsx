@@ -25,6 +25,7 @@ import { ColorPaletteDisplay } from "@/components/color-palette-display"
 import { TypographyDisplay } from "@/components/typography-display"
 import { AppleSearchAdsConfig } from "@/components/apple-search-ads-config"
 import { CompetitorAnalysisManager } from "@/components/competitor-analysis-manager"
+import { KeywordRepetitionAlert } from "@/components/keyword-repetition-alert"
 import { getUserWithRole } from "@/app/actions"
 import { getUserRole, canEdit, getRoleLabel, getEffectiveRole, type UserRole } from "@/lib/auth"
 
@@ -918,6 +919,7 @@ export default function AdminPanel() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
+                <KeywordRepetitionAlert appData={appData} platform="ios" />
                 <div className="space-y-2">
                   <Label htmlFor="ios_app_name">iOS App Name</Label>
                   <Input
@@ -1125,6 +1127,7 @@ export default function AdminPanel() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
+                <KeywordRepetitionAlert appData={appData} platform="android" />
                 <div className="space-y-2">
                   <Label htmlFor="android_app_name">App Name</Label>
                   <Input

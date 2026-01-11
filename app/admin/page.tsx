@@ -372,10 +372,50 @@ export default function AdminPanel() {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // For now, use a placeholder. In production, you'd upload to Supabase Storage
+    // Read file as base64 and save immediately
     const reader = new FileReader()
-    reader.onloadend = () => {
-      handleInputChange(field, reader.result as string)
+    reader.onloadend = async () => {
+      const imageData = reader.result as string
+      
+      // Update local state
+      const newAppData = { ...appData, [field]: imageData }
+      setAppData(newAppData)
+      
+      // Save immediately to database
+      setSaving(true)
+      try {
+        const result = await saveAppData(newAppData, appId)
+        if (result.success) {
+          if (!appId && result.id) {
+            setAppId(result.id)
+          }
+          setLastSaved(new Date())
+          setSaveSuccess(true)
+          setTimeout(() => setSaveSuccess(false), 2000)
+          
+          // Refresh apps list to update navbar icon
+          await loadApps()
+          
+          // Notify other components about the change
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new CustomEvent("appChanged", { detail: { appId: appId || result.id } }))
+          }
+          
+          toast({
+            title: "Image saved",
+            description: "The image has been uploaded and saved successfully.",
+          })
+        }
+      } catch (error) {
+        console.error("Error saving image:", error)
+        toast({
+          title: "Error",
+          description: "Failed to save image",
+          variant: "destructive",
+        })
+      } finally {
+        setSaving(false)
+      }
     }
     reader.readAsDataURL(file)
   }

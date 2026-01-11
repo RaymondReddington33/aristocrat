@@ -195,9 +195,22 @@ export function Navbar() {
 
     if (isMounted) {
       fetchApps()
-      // Refresh apps list every 5 seconds to catch new apps
-      const interval = setInterval(fetchApps, 5000)
-      return () => clearInterval(interval)
+      
+      // Listen for app changes (e.g., when icon is updated)
+      const handleAppChanged = () => {
+        console.log("[Navbar] App changed event received, refreshing...")
+        fetchApps()
+      }
+      
+      window.addEventListener("appChanged", handleAppChanged)
+      
+      // Also refresh on storage changes
+      window.addEventListener("storage", handleAppChanged)
+      
+      return () => {
+        window.removeEventListener("appChanged", handleAppChanged)
+        window.removeEventListener("storage", handleAppChanged)
+      }
     }
   }, [selectedAppId, isMounted])
 

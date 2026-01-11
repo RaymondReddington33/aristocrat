@@ -227,7 +227,9 @@ export default function AdminPanel() {
     const checkRole = async () => {
       try {
         const { user, role } = await getUserWithRole()
+        console.log("[checkRole] User:", user?.email, "Role from server:", role)
         const effectiveRole = typeof window !== "undefined" ? getEffectiveRole(user?.email) : role
+        console.log("[checkRole] Effective role:", effectiveRole, "canEdit:", canEdit(effectiveRole))
         setUserRole(effectiveRole)
         setIsReadOnly(!canEdit(effectiveRole))
       } catch (error) {
@@ -859,17 +861,16 @@ export default function AdminPanel() {
                 </SelectContent>
               </Select>
             )}
+            {/* Always show demo button, but New App only for owners */}
+            <Button onClick={handleCleanupAndLoadDemo} variant="outline" className="gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0 hover:from-purple-600 hover:to-pink-600">
+              <Sparkles className="h-4 w-4" />
+              Load Perfect ASO Demo
+            </Button>
             {!isReadOnly && (
-              <>
-                <Button onClick={handleCreateNewApp} variant="outline" className="gap-2">
-                  <Plus className="h-4 w-4" />
-                  New App
-                </Button>
-                <Button onClick={handleCleanupAndLoadDemo} variant="outline" className="gap-2 bg-transparent">
-                  <Sparkles className="h-4 w-4" />
-                  Load Perfect ASO Demo
-                </Button>
-              </>
+              <Button onClick={handleCreateNewApp} variant="outline" className="gap-2">
+                <Plus className="h-4 w-4" />
+                New App
+              </Button>
             )}
             <div className="flex items-center gap-3">
               {lastSaved && (

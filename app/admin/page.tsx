@@ -337,16 +337,8 @@ export default function AdminPanel() {
         return
       }
 
-      // Reset state first
-      setAppId(null)
-      setIosScreenshots([])
-      setAndroidScreenshots([])
-      setKeywords([])
-      setLastSaved(null)
-      
       // Load perfect demo data
       const demoData = getDemoCasinoAppData()
-      setAppData(demoData)
       
       // Save immediately to database
       setSaving(true)
@@ -354,6 +346,13 @@ export default function AdminPanel() {
         const saveResult = await saveAppData(demoData, null)
         
         if (saveResult.success && saveResult.id) {
+          // Reset state
+          setIosScreenshots([])
+          setAndroidScreenshots([])
+          setKeywords([])
+          
+          // Set the new app data and ID
+          setAppData(demoData)
           setAppId(saveResult.id)
           setLastSaved(new Date())
           
@@ -365,6 +364,14 @@ export default function AdminPanel() {
           
           // Refresh apps list
           await loadApps()
+          
+          // Load the newly created app data to ensure everything is in sync
+          if (saveResult.id) {
+            const loadedData = await getAppData(saveResult.id)
+            if (loadedData) {
+              setAppData(loadedData)
+            }
+          }
           
           toast({
             title: "Success",

@@ -641,95 +641,118 @@ export default function AdminPanel() {
         "═══════════════════════════════════════\nMULTI-MARKET LOCALISATION STRATEGY\n═══════════════════════════════════════\n\n🇬🇧 UNITED KINGDOM (Primary - 40% budget)\n• Language: British English\n• Currency: £ GBP\n• Focus keywords: fortune, premium, treasure\n• Cultural notes: Avoid 'gambling' terminology\n• Local events: Bank holidays, Royal occasions\n\n🇺🇸 UNITED STATES (Secondary - 30% budget)\n• Language: American English\n• Currency: $ USD\n• Focus keywords: jackpot, casino slots, Vegas\n• Cultural notes: More direct CTAs accepted\n• Local events: July 4th, Thanksgiving, Super Bowl\n\n🇨🇦 CANADA (Tertiary - 15% budget)\n• Language: English (mix UK/US accepted)\n• Currency: $ CAD\n• Notes: Stricter gambling advertising laws\n\n🇦🇺 AUSTRALIA (10% budget)\n• Language: Australian English\n• Currency: $ AUD\n• Notes: Responsible gambling messaging required\n\n🇪🇺 EUROPE (5% budget)\n• Markets: DE, FR, IT, ES\n• Approach: English-first, consider localisation\n\n═══════════════════════════════════════\nCPP (CUSTOM PRODUCT PAGES) STRATEGY\n═══════════════════════════════════════\n• CPP-UK: British English, £ pricing, UK testimonials\n• CPP-US: American English, $ pricing, Vegas references\n• CPP-Generic: Neutral English, universal appeal",
       
       // ASA Keyword Groups (structured campaign data)
+      // Note: Competitor keywords have LOW bids - we won't outrank brand owners
       creative_brief_asa_keyword_groups: [
         {
           id: "group-1",
           name: "Branded Keywords",
-          keywords: ["RedRain Slots Casino", "RedRain Casino"],
+          keywords: ["RedRain Slots", "RedRain Casino", "RedRain"],
           matchType: "exact",
           cppEnabled: true,
-          cppId: "CPP-001",
-          dailyBudget: 150,
-          targetCPA: 1.5,
+          cppId: "CPP-BRAND",
+          dailyBudget: 100,
+          targetCPA: 0.50,
         },
         {
           id: "group-2",
-          name: "Competition Keywords",
-          keywords: ["Royal Spin Palace", "Cleopatra Slots", "Pharaoh Riches"],
-          matchType: "exact",
+          name: "Generic High Volume (Priority)",
+          keywords: ["slots", "casino slots", "free slots", "slot machines", "casino games"],
+          matchType: "broad",
           cppEnabled: true,
-          cppId: "CPP-001",
-          dailyBudget: 100,
-          targetCPA: 2.0,
+          cppId: "CPP-GENERIC",
+          dailyBudget: 500,
+          targetCPA: 3.50,
         },
         {
           id: "group-3",
-          name: "Generic High Volume",
-          keywords: ["slots free", "casino games", "jackpot slot", "pyramid slots"],
-          matchType: "broad",
-          cppEnabled: false,
-          dailyBudget: 75,
-          targetCPA: 2.5,
+          name: "Thematic Egyptian (Niche Advantage)",
+          keywords: ["egyptian slots", "pharaoh slots", "cleopatra slots", "pyramid slots", "ancient egypt slots"],
+          matchType: "exact",
+          cppEnabled: true,
+          cppId: "CPP-EGYPT",
+          dailyBudget: 300,
+          targetCPA: 2.00,
         },
         {
           id: "group-4",
-          name: "Thematic Egyptian",
-          keywords: ["Egyptian slots", "ancient treasure slots", "Cleopatra casino"],
+          name: "Competitor Discovery (Low Priority)",
+          keywords: ["heart of vegas", "cashman casino", "slotomania", "huuuge casino"],
+          matchType: "broad",
+          cppEnabled: false,
+          dailyBudget: 50,
+          targetCPA: 5.00,
+        },
+        {
+          id: "group-5",
+          name: "Jackpot & Fortune Keywords",
+          keywords: ["jackpot slots", "fortune slots", "big win slots", "treasure slots"],
           matchType: "exact",
           cppEnabled: true,
-          cppId: "CPP-001",
-          dailyBudget: 80,
-          targetCPA: 1.8,
+          cppId: "CPP-JACKPOT",
+          dailyBudget: 200,
+          targetCPA: 2.50,
         },
       ],
       creative_brief_competitor_analysis: [
         {
           id: "comp-1",
-          name: "Royal Spin Casino",
-          appStoreUrl: "https://apps.apple.com/app/royal-spin-casino/id123456789",
-          playStoreUrl: "https://play.google.com/store/apps/details?id=com.royalspin.casino",
+          name: "Heart of Vegas",
+          appStoreUrl: "https://apps.apple.com/app/heart-of-vegas-casino-slots/id671736279",
+          playStoreUrl: "https://play.google.com/store/apps/details?id=com.productmadness.hovmobile",
           iconUrl: "",
-          strengths: ["Large jackpots", "Established presence", "Good graphics"],
-          weaknesses: ["Generic positioning", "No unique theme"],
-          ourAdvantage: "All competitors highlight large jackpots; RedRain differentiates with premium aesthetics and unique Egyptian narrative",
-          keywords: ["royal spin", "casino slots", "jackpot slots"],
-          notes: "All competitors highlight large jackpots; RedRain differentiates with premium aesthetics and unique Egyptian narrative"
+          strengths: ["Product Madness flagship", "Massive user base (50M+ downloads)", "Authentic Vegas experience", "Strong brand recognition", "Excellent retention mechanics"],
+          weaknesses: ["Vegas theme is saturated", "Less thematic differentiation", "Broad positioning"],
+          ourAdvantage: "RedRain's focused Egyptian theme provides unique differentiation vs generic Vegas positioning; premium narrative experience",
+          keywords: ["heart of vegas", "vegas slots", "casino slots"],
+          notes: "Product Madness (Aristocrat) flagship title. Market leader with strong UA spend. Won't compete on brand keywords."
         },
         {
           id: "comp-2",
-          name: "Pharaoh Slots",
-          appStoreUrl: "https://apps.apple.com/app/pharaoh-slots/id123456790",
-          playStoreUrl: "https://play.google.com/store/apps/details?id=com.pharaoh.slots",
+          name: "Cashman Casino",
+          appStoreUrl: "https://apps.apple.com/app/cashman-casino-vegas-slot-game/id872745565",
+          playStoreUrl: "https://play.google.com/store/apps/details?id=com.productmadness.cashmancasino",
           iconUrl: "",
-          strengths: ["Egyptian theme", "Thematic consistency"],
-          weaknesses: ["Smaller game library", "Less marketing budget", "Lower production quality"],
-          ourAdvantage: "Premium quality, better graphics, more games, stronger brand positioning",
-          keywords: ["pharaoh slots", "egyptian slots", "ancient egypt"],
-          notes: "Direct competitor with Egyptian theme, but we have premium positioning and better quality"
+          strengths: ["Product Madness title", "Strong jackpot mechanics", "Character-driven branding", "Good daily rewards"],
+          weaknesses: ["Character (Mr. Cashman) limits thematic flexibility", "Less immersive narrative"],
+          ourAdvantage: "Egyptian mythology offers richer storytelling potential vs single character mascot",
+          keywords: ["cashman casino", "cashman slots", "free casino games"],
+          notes: "Product Madness title. Strong character branding with Mr. Cashman. Focus on jackpot mechanics."
         },
         {
           id: "comp-3",
-          name: "Cleopatra's Fortune",
-          appStoreUrl: "https://apps.apple.com/app/cleopatra-fortune/id123456791",
-          playStoreUrl: "https://play.google.com/store/apps/details?id=com.cleopatra.fortune",
+          name: "Lightning Link Casino",
+          appStoreUrl: "https://apps.apple.com/app/lightning-link-casino-slots/id1189484498",
+          playStoreUrl: "https://play.google.com/store/apps/details?id=com.productmadness.lightninglinkslots",
           iconUrl: "",
-          strengths: ["Cleopatra theme", "Good visuals"],
-          weaknesses: ["Limited game variety", "Generic messaging"],
-          ourAdvantage: "More comprehensive Egyptian theme beyond just Cleopatra, premium positioning",
-          keywords: ["cleopatra slots", "cleopatra casino", "egyptian fortune"],
-          notes: "Good Cleopatra focus but limited to single character theme"
+          strengths: ["Product Madness/Aristocrat", "Famous land-based brand", "Hold & Spin mechanic recognition", "Cross-platform appeal"],
+          weaknesses: ["Appeals mainly to land-based players", "Less casual-friendly"],
+          ourAdvantage: "RedRain targets mobile-first casual players; Egyptian theme more universally appealing than technical slot mechanics",
+          keywords: ["lightning link", "lightning slots", "hold and spin slots"],
+          notes: "Based on Aristocrat's famous land-based slot series. Strong with experienced slot players."
         },
         {
           id: "comp-4",
-          name: "Vegas Casino Slots",
-          appStoreUrl: "https://apps.apple.com/app/vegas-casino-slots/id123456792",
-          playStoreUrl: "https://play.google.com/store/apps/details?id=com.vegas.casino.slots",
+          name: "Slotomania",
+          appStoreUrl: "https://apps.apple.com/app/slotomania-vegas-casino-slots/id284873059",
+          playStoreUrl: "https://play.google.com/store/apps/details?id=com.playtika.slotomania",
           iconUrl: "",
-          strengths: ["Vegas theme", "Large player base"],
-          weaknesses: ["Overused Vegas theme", "No differentiation"],
-          ourAdvantage: "Egyptian theme is more unique than generic Vegas, more focused and premium positioning",
-          keywords: ["vegas slots", "casino slots", "vegas casino"],
-          notes: "Vegas theme is overused; Egyptian theme provides differentiation"
+          strengths: ["Playtika flagship", "Market leader (100M+ downloads)", "Massive UA budget", "Strong social features", "Excellent live ops"],
+          weaknesses: ["Vegas-centric limits thematic appeal", "Aggressive monetization perception", "Less immersive storytelling"],
+          ourAdvantage: "RedRain offers focused Egyptian narrative vs Slotomania's mini-games approach; premium feel vs casual",
+          keywords: ["slotomania", "slot machines", "free slots"],
+          notes: "Playtika's flagship. #1 social casino by revenue. Impossible to rank for brand keyword - focus generic instead."
+        },
+        {
+          id: "comp-5",
+          name: "Huuuge Casino",
+          appStoreUrl: "https://apps.apple.com/app/huuuge-casino-slots-777-games/id582790430",
+          playStoreUrl: "https://play.google.com/store/apps/details?id=com.huuuge.casino.slots",
+          iconUrl: "",
+          strengths: ["Strong social/multiplayer", "Clubs/guilds system", "Good retention mechanics", "Competitive events"],
+          weaknesses: ["Social focus may alienate solo players", "Complex for casual users", "Cluttered UI"],
+          ourAdvantage: "RedRain's premium Egyptian experience appeals to players seeking immersive solo play and aesthetic quality",
+          keywords: ["huuuge casino", "casino games", "slots games"],
+          notes: "Huuuge Games' main title. Strong social features with clubs. Focus on competitive multiplayer slots."
         }
       ],
       
@@ -778,43 +801,47 @@ export default function AdminPanel() {
     }
   }
 
-  // Demo keywords from keyword research CSV - structured for reviewer analysis
+  // Demo keywords from keyword research - structured for reviewer analysis
+  // Note: Competitor keywords are LOW priority (we won't reach top 1 for competitor brands)
+  // Focus is on GENERIC high-volume keywords where we can compete
   const getDemoKeywords = (appDataId: string) => {
     return [
       // ═══════════════════════════════════════════════════════════════════════════
-      // BRANDED KEYWORDS - High priority, used in Title
+      // BRANDED KEYWORDS - Our brand, high priority, easy to rank #1
       // ═══════════════════════════════════════════════════════════════════════════
-      { app_data_id: appDataId, keyword: "redrain slots casino", search_volume: 12000, difficulty: 50, relevance_score: 95, category: "branded" as const, priority: "high" as const, platform: "both" as const, recommended_field: "title" as const, brand: true, chance: 70, kei: 150, results: 200000, maximum_reach: 500000, sort_order: 0 },
-      { app_data_id: appDataId, keyword: "redrain", search_volume: 8500, difficulty: 30, relevance_score: 98, category: "branded" as const, priority: "high" as const, platform: "both" as const, recommended_field: "title" as const, brand: true, chance: 95, kei: 280, results: 1200, maximum_reach: 8500, sort_order: 1 },
-      { app_data_id: appDataId, keyword: "redrain casino", search_volume: 6500, difficulty: 35, relevance_score: 97, category: "branded" as const, priority: "high" as const, platform: "both" as const, recommended_field: "title" as const, brand: true, chance: 85, kei: 185.7, results: 800, maximum_reach: 6500, sort_order: 2 },
+      { app_data_id: appDataId, keyword: "redrain slots casino", search_volume: 12000, difficulty: 15, relevance_score: 100, category: "branded" as const, priority: "high" as const, platform: "both" as const, recommended_field: "title" as const, brand: true, chance: 98, kei: 800, results: 50, maximum_reach: 12000, sort_order: 0 },
+      { app_data_id: appDataId, keyword: "redrain", search_volume: 8500, difficulty: 10, relevance_score: 100, category: "branded" as const, priority: "high" as const, platform: "both" as const, recommended_field: "title" as const, brand: true, chance: 99, kei: 850, results: 30, maximum_reach: 8500, sort_order: 1 },
+      { app_data_id: appDataId, keyword: "redrain casino", search_volume: 6500, difficulty: 12, relevance_score: 100, category: "branded" as const, priority: "high" as const, platform: "both" as const, recommended_field: "title" as const, brand: true, chance: 98, kei: 542, results: 40, maximum_reach: 6500, sort_order: 2 },
       
       // ═══════════════════════════════════════════════════════════════════════════
-      // GENERIC HIGH-VOLUME KEYWORDS - Core category keywords
+      // GENERIC HIGH-VOLUME KEYWORDS - Main focus, where we can compete
       // ═══════════════════════════════════════════════════════════════════════════
-      { app_data_id: appDataId, keyword: "casino slots", search_volume: 50000, difficulty: 30, relevance_score: 96, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "subtitle" as const, brand: false, chance: 60, kei: 1666, results: 1500000, maximum_reach: 1000000, sort_order: 3 },
-      { app_data_id: appDataId, keyword: "slots casino", search_volume: 45000, difficulty: 25, relevance_score: 94, category: "generic" as const, priority: "high" as const, platform: "android" as const, recommended_field: "title" as const, brand: false, chance: 65, kei: 1800, results: 1200000, maximum_reach: 800000, sort_order: 4 },
-      { app_data_id: appDataId, keyword: "free slots", search_volume: 47000, difficulty: 15, relevance_score: 97, category: "generic" as const, priority: "high" as const, platform: "android" as const, recommended_field: "subtitle" as const, brand: false, chance: 55, kei: 3133, results: 1100000, maximum_reach: 600000, sort_order: 5 },
-      { app_data_id: appDataId, keyword: "jackpot", search_volume: 245000, difficulty: 75, relevance_score: 89, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 45, kei: 3266, results: 3000000, maximum_reach: 2000000, sort_order: 6 },
-      { app_data_id: appDataId, keyword: "slots", search_volume: 320000, difficulty: 78, relevance_score: 95, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 45, kei: 4100, results: 45000, maximum_reach: 320000, sort_order: 7 },
-      { app_data_id: appDataId, keyword: "casino games", search_volume: 280000, difficulty: 75, relevance_score: 92, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 42, kei: 3733, results: 38000, maximum_reach: 280000, sort_order: 8 },
+      { app_data_id: appDataId, keyword: "slots", search_volume: 320000, difficulty: 85, relevance_score: 95, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 35, kei: 3765, results: 5000000, maximum_reach: 320000, sort_order: 3 },
+      { app_data_id: appDataId, keyword: "casino slots", search_volume: 150000, difficulty: 78, relevance_score: 96, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "subtitle" as const, brand: false, chance: 42, kei: 1923, results: 3500000, maximum_reach: 150000, sort_order: 4 },
+      { app_data_id: appDataId, keyword: "free slots", search_volume: 180000, difficulty: 72, relevance_score: 97, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 48, kei: 2500, results: 2800000, maximum_reach: 180000, sort_order: 5 },
+      { app_data_id: appDataId, keyword: "casino games", search_volume: 280000, difficulty: 80, relevance_score: 92, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 38, kei: 3500, results: 4200000, maximum_reach: 280000, sort_order: 6 },
+      { app_data_id: appDataId, keyword: "jackpot slots", search_volume: 95000, difficulty: 68, relevance_score: 94, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 52, kei: 1397, results: 1800000, maximum_reach: 95000, sort_order: 7 },
+      { app_data_id: appDataId, keyword: "slot machines", search_volume: 120000, difficulty: 75, relevance_score: 93, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 45, kei: 1600, results: 2200000, maximum_reach: 120000, sort_order: 8 },
       
       // ═══════════════════════════════════════════════════════════════════════════
-      // COMPETITOR KEYWORDS - Targeting competitor searches
+      // THEMATIC KEYWORDS - Egyptian theme, medium-high priority (niche advantage)
       // ═══════════════════════════════════════════════════════════════════════════
-      { app_data_id: appDataId, keyword: "royal spin", search_volume: 12000, difficulty: 45, relevance_score: 95, category: "competitor" as const, priority: "high" as const, platform: "both" as const, recommended_field: "title" as const, brand: false, chance: 50, kei: 266, results: 500000, maximum_reach: 300000, sort_order: 9 },
-      { app_data_id: appDataId, keyword: "royal spin palace", search_volume: 8500, difficulty: 35, relevance_score: 98, category: "competitor" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "title" as const, brand: false, chance: 40, kei: 242, results: 300000, maximum_reach: 200000, sort_order: 10 },
+      { app_data_id: appDataId, keyword: "egyptian slots", search_volume: 38000, difficulty: 45, relevance_score: 98, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 72, kei: 844, results: 85000, maximum_reach: 38000, sort_order: 9 },
+      { app_data_id: appDataId, keyword: "pharaoh slots", search_volume: 62000, difficulty: 48, relevance_score: 97, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 68, kei: 1292, results: 120000, maximum_reach: 62000, sort_order: 10 },
+      { app_data_id: appDataId, keyword: "cleopatra slots", search_volume: 45000, difficulty: 52, relevance_score: 95, category: "generic" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 58, kei: 865, results: 150000, maximum_reach: 45000, sort_order: 11 },
+      { app_data_id: appDataId, keyword: "pyramid slots", search_volume: 28000, difficulty: 40, relevance_score: 94, category: "generic" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 75, kei: 700, results: 65000, maximum_reach: 28000, sort_order: 12 },
+      { app_data_id: appDataId, keyword: "ancient egypt slots", search_volume: 22000, difficulty: 35, relevance_score: 96, category: "generic" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 78, kei: 629, results: 45000, maximum_reach: 22000, sort_order: 13 },
+      { app_data_id: appDataId, keyword: "treasure slots", search_volume: 35000, difficulty: 42, relevance_score: 90, category: "generic" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 70, kei: 833, results: 95000, maximum_reach: 35000, sort_order: 14 },
       
       // ═══════════════════════════════════════════════════════════════════════════
-      // THEMATIC KEYWORDS - Egyptian theme specific
+      // COMPETITOR KEYWORDS - LOW priority (won't reach top 1 for competitor brands)
+      // Included for awareness/discovery campaigns only, NOT for organic ranking focus
       // ═══════════════════════════════════════════════════════════════════════════
-      { app_data_id: appDataId, keyword: "egyptian slots", search_volume: 38000, difficulty: 50, relevance_score: 93, category: "generic" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 66, kei: 760, results: 3200, maximum_reach: 38000, sort_order: 11 },
-      { app_data_id: appDataId, keyword: "pharaoh slots", search_volume: 62000, difficulty: 52, relevance_score: 94, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 68, kei: 1192, results: 5400, maximum_reach: 62000, sort_order: 12 },
-      { app_data_id: appDataId, keyword: "egypt slots", search_volume: 88000, difficulty: 58, relevance_score: 96, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 65, kei: 1517, results: 8200, maximum_reach: 88000, sort_order: 13 },
-      { app_data_id: appDataId, keyword: "cleopatra slots", search_volume: 12000, difficulty: 20, relevance_score: 90, category: "generic" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 50, kei: 600, results: 800000, maximum_reach: 500000, sort_order: 14 },
-      { app_data_id: appDataId, keyword: "cleopatra casino", search_volume: 15000, difficulty: 38, relevance_score: 85, category: "generic" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 60, kei: 395, results: 3200, maximum_reach: 15000, sort_order: 15 },
-      { app_data_id: appDataId, keyword: "ancient treasure slots", search_volume: 25000, difficulty: 40, relevance_score: 88, category: "generic" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 58, kei: 625, results: 3500, maximum_reach: 25000, sort_order: 16 },
-      { app_data_id: appDataId, keyword: "pyramid slots", search_volume: 18000, difficulty: 35, relevance_score: 87, category: "generic" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 62, kei: 514, results: 2800, maximum_reach: 18000, sort_order: 17 },
-      { app_data_id: appDataId, keyword: "vegas", search_volume: 180000, difficulty: 70, relevance_score: 82, category: "generic" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 30, kei: 2571, results: 2500000, maximum_reach: 1500000, sort_order: 18 },
+      { app_data_id: appDataId, keyword: "heart of vegas", search_volume: 450000, difficulty: 95, relevance_score: 75, category: "competitor" as const, priority: "low" as const, platform: "both" as const, recommended_field: "description" as const, brand: false, chance: 5, kei: 4737, results: 800000, maximum_reach: 450000, sort_order: 15 },
+      { app_data_id: appDataId, keyword: "cashman casino", search_volume: 320000, difficulty: 92, relevance_score: 72, category: "competitor" as const, priority: "low" as const, platform: "both" as const, recommended_field: "description" as const, brand: false, chance: 8, kei: 3478, results: 650000, maximum_reach: 320000, sort_order: 16 },
+      { app_data_id: appDataId, keyword: "lightning link casino", search_volume: 280000, difficulty: 90, relevance_score: 70, category: "competitor" as const, priority: "low" as const, platform: "both" as const, recommended_field: "description" as const, brand: false, chance: 10, kei: 3111, results: 550000, maximum_reach: 280000, sort_order: 17 },
+      { app_data_id: appDataId, keyword: "slotomania", search_volume: 520000, difficulty: 98, relevance_score: 68, category: "competitor" as const, priority: "low" as const, platform: "both" as const, recommended_field: "description" as const, brand: false, chance: 3, kei: 5306, results: 1200000, maximum_reach: 520000, sort_order: 18 },
+      { app_data_id: appDataId, keyword: "huuuge casino", search_volume: 180000, difficulty: 88, relevance_score: 70, category: "competitor" as const, priority: "low" as const, platform: "both" as const, recommended_field: "description" as const, brand: false, chance: 12, kei: 2045, results: 420000, maximum_reach: 180000, sort_order: 19 },
     ]
   }
 

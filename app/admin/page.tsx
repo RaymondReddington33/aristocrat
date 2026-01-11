@@ -337,23 +337,56 @@ export default function AdminPanel() {
         return
       }
 
-      toast({
-        title: "Success",
-        description: result.message || "Apps cleaned up successfully",
-      })
-
-      // Load perfect demo data
-      loadDemoCasinoApp()
-      
-      // Reset state
+      // Reset state first
       setAppId(null)
       setIosScreenshots([])
       setAndroidScreenshots([])
       setKeywords([])
       setLastSaved(null)
       
-      // Refresh apps list
-      await loadApps()
+      // Load perfect demo data
+      const demoData = getDemoCasinoAppData()
+      setAppData(demoData)
+      
+      // Save immediately to database
+      setSaving(true)
+      try {
+        const saveResult = await saveAppData(demoData, null)
+        
+        if (saveResult.success && saveResult.id) {
+          setAppId(saveResult.id)
+          setLastSaved(new Date())
+          
+          // Clear localStorage selection to use the new app
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("selectedAppId")
+            localStorage.setItem("selectedAppId", saveResult.id)
+          }
+          
+          // Refresh apps list
+          await loadApps()
+          
+          toast({
+            title: "Success",
+            description: "Perfect ASO demo data loaded and saved successfully",
+          })
+        } else {
+          toast({
+            title: "Error",
+            description: saveResult.error || "Failed to save demo data",
+            variant: "destructive",
+          })
+        }
+      } catch (saveError) {
+        console.error("Error saving demo data:", saveError)
+        toast({
+          title: "Error",
+          description: "Failed to save demo data",
+          variant: "destructive",
+        })
+      } finally {
+        setSaving(false)
+      }
       
       setShowCleanupDialog(false)
     } catch (error) {
@@ -367,8 +400,8 @@ export default function AdminPanel() {
     }
   }
 
-  const loadDemoCasinoApp = () => {
-    setAppData({
+  const getDemoCasinoAppData = () => {
+    return {
       app_name: "RedRain Slots Casino",
       app_subtitle: "Premium Egyptian Slots Adventure",
       category: "Casino",
@@ -573,7 +606,7 @@ export default function AdminPanel() {
         "Golden Coin Pack (10k coins) – £1.99\n\nPremium Coin Pack (50k coins) – £4.99\n\nVIP Monthly Membership – £9.99\n• Includes extra daily bonuses\n• Exclusive bonus rounds\n• Priority support\n• Special events access",
       android_in_app_products:
         "Golden Coin Pack (10k coins) – £1.99\n\nPremium Coin Pack (50k coins) – £4.99\n\nVIP Monthly Membership – £9.99\n• Includes extra daily bonuses\n• Exclusive bonus rounds\n• Priority support\n• Special events access",
-    })
+    }
   }
 
   const getCharCount = (text: string | undefined, max: number) => {

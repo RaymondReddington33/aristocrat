@@ -1,0 +1,17 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/api/auth/simple-login/route": "app/api/auth/simple-login/route.js",
+  "/api/auth/simple-logout/route": "app/api/auth/simple-logout/route.js",
+  "/apple-icon.png/route": "app/apple-icon.png/route.js",
+  "/auth/callback/route": "app/auth/callback/route.js",
+  "/auth/login/page": "app/auth/login/page.js",
+  "/icon.png/route": "app/icon.png/route.js",
+  "/page": "app/page.js",
+  "/preview/android/page": "app/preview/android/page.js",
+  "/preview/brief/page": "app/preview/brief/page.js",
+  "/preview/ios/page": "app/preview/ios/page.js",
+  "/preview/keywords/page": "app/preview/keywords/page.js",
+  "/preview/page": "app/preview/page.js"
+}

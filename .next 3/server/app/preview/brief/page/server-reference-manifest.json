@@ -1,0 +1,335 @@
+{
+  "node": {
+    "0060b45fcb8f37399a642fa1ef3ec21d1573ba7d77": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "getUserWithRole",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "getUserWithRole",
+      "filename": "app/actions.ts"
+    },
+    "0062e179a90f05ec0f78bde97d14d289d13107adc3": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "getLatestAppData",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "getLatestAppData",
+      "filename": "app/actions.ts"
+    },
+    "00632015401b86dce8e6578fd63c5f2f965105e60d": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "signOut",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "signOut",
+      "filename": "app/actions.ts"
+    },
+    "00731ec9748a8f20eba4d7bb20e3bc736544e4a53e": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "getUser",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "getUser",
+      "filename": "app/actions.ts"
+    },
+    "00a1f8fa8614c62963129920ae2934454cc12f69a4": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "getAllApps",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "getAllApps",
+      "filename": "app/actions.ts"
+    },
+    "400962667eedcf008e7487e51b6e14b9af144184b9": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "generateOptimizedKeywordSetsAction",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "generateOptimizedKeywordSetsAction",
+      "filename": "app/actions.ts"
+    },
+    "40243c69bb071caa3fcf8366e568c27751a202415c": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "bulkImportScreenshotMessaging",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "bulkImportScreenshotMessaging",
+      "filename": "app/actions.ts"
+    },
+    "4033b3592ce28ca9de051e9cab1a913874be7a99ee": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "getAppData",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "getAppData",
+      "filename": "app/actions.ts"
+    },
+    "4035b19f0007b5430642c3c3c187b3710191ec8620": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "deleteKeyword",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "deleteKeyword",
+      "filename": "app/actions.ts"
+    },
+    "405adf11205d3b801905a96f2cc6de60eaa0fac092": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "bulkImportKeywords",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "bulkImportKeywords",
+      "filename": "app/actions.ts"
+    },
+    "406f665661b7dba4a6e381d970167aa27f13828c66": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "bulkDeleteKeywords",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "bulkDeleteKeywords",
+      "filename": "app/actions.ts"
+    },
+    "4073f24bfeb9bdd36dd56612e47f5fcbc6cb56623b": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "getScreenshotMessaging",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "getScreenshotMessaging",
+      "filename": "app/actions.ts"
+    },
+    "4095954540ae4529a37fbfdb71175ba4ab3027f5c4": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "deleteScreenshot",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "deleteScreenshot",
+      "filename": "app/actions.ts"
+    },
+    "40c2225d31bf159d9624695176eaccd44a9c25f601": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "saveKeyword",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "saveKeyword",
+      "filename": "app/actions.ts"
+    },
+    "603f242d7a1d0c7d87a6450c0749c008ee6c61a45d": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "saveScreenshotMessaging",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "saveScreenshotMessaging",
+      "filename": "app/actions.ts"
+    },
+    "6045cdcf0e3fc63944e329ff8e05358612ce032a2f": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "updateScreenshotOrder",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "updateScreenshotOrder",
+      "filename": "app/actions.ts"
+    },
+    "60694f5fd9549491379f4945506a4219b961192044": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "getKeywords",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "getKeywords",
+      "filename": "app/actions.ts"
+    },
+    "606fff770ac4fbab03820e581af113f041d6b33533": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "saveAppData",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "saveAppData",
+      "filename": "app/actions.ts"
+    },
+    "6074d5e068113ae8f9fa68a44f81c90a381a9b11b9": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "getScreenshots",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "getScreenshots",
+      "filename": "app/actions.ts"
+    },
+    "60cc4ed7d3fb1063ca26fff9ec03075f626841bf51": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "getPreviewVideos",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "getPreviewVideos",
+      "filename": "app/actions.ts"
+    },
+    "7c8d4a8beed06bc6629dc4196358285391111cb89d": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "savePreviewVideo",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "savePreviewVideo",
+      "filename": "app/actions.ts"
+    },
+    "7cc119af3c40e87d6ac536a741c7dc9f6c15b03108": {
+      "workers": {
+        "app/preview/brief/page": {
+          "moduleId": 76265,
+          "async": false,
+          "exportedName": "saveScreenshot",
+          "filename": "app/actions.ts"
+        }
+      },
+      "layer": {
+        "app/preview/brief/page": "rsc"
+      },
+      "exportedName": "saveScreenshot",
+      "filename": "app/actions.ts"
+    }
+  },
+  "edge": {}
+}

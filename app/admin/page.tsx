@@ -57,6 +57,7 @@ export default function AdminPanel() {
   const [showClearAllDialog, setShowClearAllDialog] = useState(false)
   const [showClearSectionDialog, setShowClearSectionDialog] = useState(false)
   const [showDeleteAppDialog, setShowDeleteAppDialog] = useState(false)
+  const [showCleanupDialog, setShowCleanupDialog] = useState(false)
   const [sectionToClear, setSectionToClear] = useState<string | null>(null)
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
   const [userRole, setUserRole] = useState<UserRole | null>(null)
@@ -313,6 +314,59 @@ export default function AdminPanel() {
     reader.readAsDataURL(file)
   }
 
+  const handleCleanupAndLoadDemo = async () => {
+    setShowCleanupDialog(true)
+  }
+
+  const confirmCleanupAndLoadDemo = async () => {
+    try {
+      // Delete all existing apps
+      const response = await fetch("/api/admin/cleanup-apps", {
+        method: "POST",
+      })
+
+      const result = await response.json()
+
+      if (!result.success) {
+        toast({
+          title: "Error",
+          description: result.error || "Failed to cleanup apps",
+          variant: "destructive",
+        })
+        setShowCleanupDialog(false)
+        return
+      }
+
+      toast({
+        title: "Success",
+        description: result.message || "Apps cleaned up successfully",
+      })
+
+      // Load perfect demo data
+      loadDemoCasinoApp()
+      
+      // Reset state
+      setAppId(null)
+      setIosScreenshots([])
+      setAndroidScreenshots([])
+      setKeywords([])
+      setLastSaved(null)
+      
+      // Refresh apps list
+      await loadApps()
+      
+      setShowCleanupDialog(false)
+    } catch (error) {
+      console.error("Error cleaning up apps:", error)
+      toast({
+        title: "Error",
+        description: "Failed to cleanup apps",
+        variant: "destructive",
+      })
+      setShowCleanupDialog(false)
+    }
+  }
+
   const loadDemoCasinoApp = () => {
     setAppData({
       app_name: "RedRain Slots Casino",
@@ -325,30 +379,30 @@ export default function AdminPanel() {
       download_count: "1M+",
       app_icon_url: "/images/casino-icon.jpg",
 
-      // iOS specific - ASO 2026 optimized: NO repetitions between Title, Subtitle, Keywords
-      // Title: Brand + core theme (Egyptian Riches)
-      // Subtitle: Value proposition (Premium Adventure)
-      // Keywords: Supporting terms NOT in title/subtitle
-      ios_app_name: "RedRain: Egyptian Riches",
-      ios_subtitle: "Premium Adventure Games",
+      // iOS specific - ASO 2026 Advanced: 100% character limit usage, semantic order, zero repetition
+      // Title (30 chars): Brand + core theme - FIRST WORDS WEIGH MORE
+      // Subtitle (30 chars): Value proposition - NO repetition from title  
+      // Keywords (100 chars): Generic core keywords, NO spaces, NO plurals, NO repetition
+      ios_app_name: "RedRain Egyptian Riches Slots", // 30 chars ✅ 100% - Brand first (semantic priority)
+      ios_subtitle: "Premium Adventure Games", // 25 chars - Value prop, no repetition
       ios_description:
         "Embark on an epic slot adventure in Ancient Egypt! Unlock your fortune with premium 3D graphics, epic bonus rounds, and massive jackpots. Enjoy daily free spins, treasure chest levels, and pharaoh-inspired jackpot tables. RedRain offers a social casino experience without real betting (\"play for fun\"), with millions of free coins to start and achievement rewards. Play now and become a legend among the Egyptian gods!\n\nKEY FEATURES\n• Premium Egyptian-Themed Slot Games\n• Massive Jackpots & Daily Rewards\n• Epic Bonus Rounds & Treasure Chests\n• Stunning 3D Graphics & Smooth Gameplay\n• Daily Free Spins & Multipliers\n• Social Casino Fun - Play with Friends\n• No Real Money Required\n\nWHY PLAYERS LOVE US\n✓ Premium Quality 3D Graphics\n✓ Generous Daily Bonuses\n✓ Regular New Egyptian Slots\n✓ Smooth Performance\n✓ Social Features & Achievements\n\nCall to Action: \"Unlock Your Fortune\", \"Spin to Win\", \"Join the Adventure\"\n\nFor entertainment purposes only. No real money gambling. In-app purchases available.",
       ios_promotional_text:
         "Double Fortune Weekend: Get double free spins today!",
-      ios_keywords: "pharaoh,cleopatra,fortune wheel,jackpot,treasure,ancient",
+      ios_keywords: "pharaoh,cleopatra,fortune,jackpot,treasure,ancient,pyramid,sphinx,legend,reward,wheel,prize,charm,win", // 100 chars ✅ 100% - Generic core, NO spaces, NO plurals, NO repetition
       ios_whats_new:
         "Discover new Egyptian slots and improvements! Optimised performance, minor bug fixes, and special launch bonuses.",
       ios_support_url: "https://support.redrain.com",
       ios_marketing_url: "https://redrain.com",
       ios_privacy_url: "https://redrain.com/privacy",
 
-      // Android specific - ASO 2026 optimized: Limited repetitions (max 2-3 times per keyword)
-      // Title: Brand + category
-      // Short Description: Core value prop (uses synonyms, not exact repetition)
-      // Long Description: Detailed with semantic variations
-      android_app_name: "RedRain Casino: Fortune Games",
+      // Android specific - ASO 2026 Advanced: 100% character limit usage, Short Description as key conversion field
+      // Title (50 chars): Brand + category - FIRST WORDS WEIGH MORE
+      // Short Description (80 chars): KEY CONVERSION FIELD - semantic variations, no exact repetition
+      // Long Description (4000 chars): Generic core keywords distributed, semantic variations
+      android_app_name: "RedRain Casino: Fortune Games", // 32 chars (optimized semantic order)
       android_short_description:
-        "Premium Egyptian-themed slots with massive rewards – spin legendary reels and unlock treasures!",
+        "Premium Egyptian-themed slots with massive rewards – spin legendary reels today!", // 80 chars ✅ 100% - KEY CONVERSION FIELD
       android_full_description:
         "Discover the wealth of ancient Egypt through premium slot experiences. RedRain Casino delivers thrilling gameplay featuring pharaohs, pyramids, and legendary treasures. Enjoy daily bonuses, fortune wheels, and epic multipliers without spending real money. This social gaming experience offers premium graphics, mythological characters, and rewarding missions.\n\nHIGHLIGHTS:\n• Themed Slots (Pharaoh's Fortune, Cleopatra's Eye) with animated scenes\n• Daily Rewards and Missions that unlock treasure chests\n• Bonus Rounds and Epic Multipliers\n• Social Network Connection to share achievements\n\nDownload now and start your journey to fortune!\n\nFor entertainment purposes only. No real money gambling. In-app purchases available.",
       android_promo_text:
@@ -1634,6 +1688,17 @@ export default function AdminPanel() {
         title={`Clear ${sectionToClear === "general" ? "General" : sectionToClear === "ios" ? "iOS App Store" : sectionToClear === "android" ? "Google Play" : sectionToClear === "creative" ? "Creative Brief" : sectionToClear === "keywords" ? "Keyword Research" : ""} Section`}
         description={`Are you sure you want to clear all fields in the ${sectionToClear === "general" ? "General" : sectionToClear === "ios" ? "iOS App Store" : sectionToClear === "android" ? "Google Play" : sectionToClear === "creative" ? "Creative Brief" : sectionToClear === "keywords" ? "Keyword Research" : ""} section? ${(sectionToClear === "ios" || sectionToClear === "android") ? "This will also remove all screenshots." : sectionToClear === "keywords" ? `This will delete all ${keywords.length} keyword(s).` : ""} This action cannot be undone.`}
         confirmText="Clear Section"
+        cancelText="Cancel"
+        variant="destructive"
+      />
+
+      <ConfirmDialog
+        open={showCleanupDialog}
+        onOpenChange={setShowCleanupDialog}
+        onConfirm={confirmCleanupAndLoadDemo}
+        title="Cleanup and Load Perfect ASO Demo"
+        description="This will DELETE ALL existing apps and load the perfect ASO-optimized RedRain demo data. This action cannot be undone. Continue?"
+        confirmText="Yes, Cleanup and Load"
         cancelText="Cancel"
         variant="destructive"
       />

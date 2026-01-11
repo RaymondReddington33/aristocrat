@@ -67,10 +67,13 @@ export default function AdminPanel() {
 
   const loadExistingData = useCallback(async () => {
     try {
+      console.log("[loadExistingData] Starting to load data...")
+      
       // Check localStorage for selected app first
       let appIdToLoad: string | null = null
       if (typeof window !== "undefined") {
         const savedAppId = localStorage.getItem("selectedAppId")
+        console.log("[loadExistingData] localStorage savedAppId:", savedAppId)
         if (savedAppId) {
           appIdToLoad = savedAppId
         }
@@ -80,22 +83,28 @@ export default function AdminPanel() {
       
       // Try to load the selected app from localStorage
       if (appIdToLoad) {
+        console.log("[loadExistingData] Trying to load app with ID:", appIdToLoad)
         data = await getAppData(appIdToLoad)
+        console.log("[loadExistingData] Result from getAppData:", data ? `Found: ${data.app_name}` : "Not found")
         
         // If the saved app doesn't exist anymore, clear localStorage and try latest
         if (!data) {
-          console.log("Saved app ID not found, clearing localStorage and loading latest")
+          console.log("[loadExistingData] Saved app ID not found, clearing localStorage and loading latest")
           if (typeof window !== "undefined") {
             localStorage.removeItem("selectedAppId")
           }
           data = await getLatestAppData()
+          console.log("[loadExistingData] Latest app data:", data ? `Found: ${data.app_name}` : "No apps in DB")
         }
       } else {
         // No saved ID, load latest app
+        console.log("[loadExistingData] No saved ID, loading latest app")
         data = await getLatestAppData()
+        console.log("[loadExistingData] Latest app data:", data ? `Found: ${data.app_name}` : "No apps in DB")
       }
 
       if (data) {
+        console.log("[loadExistingData] Setting app data:", data.app_name, "ID:", data.id)
         setAppData(data)
         setAppId(data.id || null)
         if (data.updated_at) {
@@ -120,7 +129,10 @@ export default function AdminPanel() {
         }
       } else {
         // No apps exist at all - reset to empty state
-        console.log("No apps found in database")
+        console.log("[loadExistingData] No apps found in database - resetting to empty state")
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("selectedAppId")
+        }
         setAppData({
           app_name: "",
           category: "",
@@ -137,7 +149,7 @@ export default function AdminPanel() {
         setKeywords([])
       }
     } catch (error) {
-      console.error("Error loading existing data:", error)
+      console.error("[loadExistingData] Error loading existing data:", error)
     }
   }, [])
 
@@ -360,12 +372,15 @@ export default function AdminPanel() {
 
   const confirmCleanupAndLoadDemo = async () => {
     try {
+      console.log("[confirmCleanupAndLoadDemo] Starting cleanup...")
+      
       // Delete all existing apps
       const response = await fetch("/api/admin/cleanup-apps", {
         method: "POST",
       })
 
       const result = await response.json()
+      console.log("[confirmCleanupAndLoadDemo] Cleanup result:", result)
 
       if (!result.success) {
         toast({
@@ -377,26 +392,40 @@ export default function AdminPanel() {
         return
       }
 
+      // Clear localStorage immediately after cleanup
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("selectedAppId")
+        console.log("[confirmCleanupAndLoadDemo] Cleared localStorage")
+      }
+
       // Load perfect demo data
       const demoData = getDemoCasinoAppData()
+      console.log("[confirmCleanupAndLoadDemo] Demo data prepared:", demoData.app_name)
       
       // Save immediately to database
       setSaving(true)
       try {
+        console.log("[confirmCleanupAndLoadDemo] Saving to database...")
         const saveResult = await saveAppData(demoData, null)
+        console.log("[confirmCleanupAndLoadDemo] Save result:", saveResult)
         
         if (saveResult.success && saveResult.id) {
-          // Clear localStorage selection to use the new app
+          console.log("[confirmCleanupAndLoadDemo] Saved with ID:", saveResult.id)
+          
+          // Set localStorage to the new app ID
           if (typeof window !== "undefined") {
-            localStorage.removeItem("selectedAppId")
             localStorage.setItem("selectedAppId", saveResult.id)
+            console.log("[confirmCleanupAndLoadDemo] Set localStorage to:", saveResult.id)
           }
           
           // Refresh apps list first
           await loadApps()
+          console.log("[confirmCleanupAndLoadDemo] Apps list refreshed")
           
           // Load the newly created app data from database to ensure everything is in sync
           const loadedData = await getAppData(saveResult.id)
+          console.log("[confirmCleanupAndLoadDemo] Loaded data from DB:", loadedData ? loadedData.app_name : "NULL")
+          
           if (loadedData) {
             // Reset state
             setIosScreenshots([])
@@ -407,8 +436,10 @@ export default function AdminPanel() {
             setAppData(loadedData)
             setAppId(loadedData.id)
             setLastSaved(new Date(loadedData.updated_at || new Date()))
+            console.log("[confirmCleanupAndLoadDemo] State updated successfully")
           } else {
             // Fallback if loading fails
+            console.log("[confirmCleanupAndLoadDemo] Fallback: using local demo data")
             setAppData(demoData)
             setAppId(saveResult.id)
             setLastSaved(new Date())

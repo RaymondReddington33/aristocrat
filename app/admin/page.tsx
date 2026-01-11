@@ -76,20 +76,35 @@ export default function AdminPanel() {
         }
       }
 
-      let data
+      let data = null
+      
+      // Try to load the selected app from localStorage
       if (appIdToLoad) {
-        // Load the selected app
         data = await getAppData(appIdToLoad)
+        
+        // If the saved app doesn't exist anymore, clear localStorage and try latest
+        if (!data) {
+          console.log("Saved app ID not found, clearing localStorage and loading latest")
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("selectedAppId")
+          }
+          data = await getLatestAppData()
+        }
       } else {
-        // Fallback to latest app
+        // No saved ID, load latest app
         data = await getLatestAppData()
       }
 
       if (data) {
         setAppData(data)
-        setAppId(data.id)
+        setAppId(data.id || null)
         if (data.updated_at) {
           setLastSaved(new Date(data.updated_at))
+        }
+        
+        // Save this app ID to localStorage for future loads
+        if (data.id && typeof window !== "undefined") {
+          localStorage.setItem("selectedAppId", data.id)
         }
         
         // Load screenshots and keywords in parallel when data is loaded
@@ -103,6 +118,23 @@ export default function AdminPanel() {
           setAndroidScreenshots(android)
           setKeywords(keywordsData)
         }
+      } else {
+        // No apps exist at all - reset to empty state
+        console.log("No apps found in database")
+        setAppData({
+          app_name: "",
+          category: "",
+          price: "Free",
+          age_rating: "4+",
+          rating: 0,
+          review_count: 0,
+          download_count: "",
+        })
+        setAppId(null)
+        setLastSaved(null)
+        setIosScreenshots([])
+        setAndroidScreenshots([])
+        setKeywords([])
       }
     } catch (error) {
       console.error("Error loading existing data:", error)
@@ -114,6 +146,11 @@ export default function AdminPanel() {
   }
 
   const confirmCreateNewApp = () => {
+    // Clear localStorage when creating a new app
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("selectedAppId")
+    }
+    
     setAppData({
       app_name: "",
       category: "",

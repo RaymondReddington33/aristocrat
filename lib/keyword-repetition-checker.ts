@@ -1,9 +1,9 @@
 /**
  * Keyword Repetition Checker - ASO 2026 Rules
  * 
- * Regla base: NO repetir keywords exactas entre campos indexables
- * - iOS: Título, Subtítulo, Keywords field
- * - Android: Título, Short Description, Long Description
+ * Base rule: DO NOT repeat exact keywords between indexable fields
+ * - iOS: Title, Subtitle, Keywords field
+ * - Android: Title, Short Description, Long Description
  */
 
 export interface KeywordRepetitionIssue {
@@ -83,10 +83,10 @@ export function checkIOSRepetitions(data: {
       if (areKeywordsEquivalent(titleKw, subtitleKw)) {
         issues.push({
           keyword: titleKw,
-          fields: ["Título", "Subtítulo"],
+          fields: ["Title", "Subtitle"],
           severity: "error",
-          message: `"${titleKw}" está repetida entre Título y Subtítulo`,
-          recommendation: "Usa variaciones semánticas o sinónimos en lugar de repetir la misma palabra"
+          message: `"${titleKw}" is repeated between Title and Subtitle`,
+          recommendation: "Use semantic variations or synonyms instead of repeating the same word"
         })
       }
     }
@@ -98,10 +98,10 @@ export function checkIOSRepetitions(data: {
       if (areKeywordsEquivalent(titleKw, kwField)) {
         issues.push({
           keyword: titleKw,
-          fields: ["Título", "Keywords field"],
+          fields: ["Title", "Keywords field"],
           severity: "error",
-          message: `"${titleKw}" está repetida entre Título y Keywords field`,
-          recommendation: "Elimina esta keyword del campo Keywords y usa variaciones semánticas"
+          message: `"${titleKw}" is repeated between Title and Keywords field`,
+          recommendation: "Remove this keyword from the Keywords field and use semantic variations"
         })
       }
     }
@@ -113,10 +113,10 @@ export function checkIOSRepetitions(data: {
       if (areKeywordsEquivalent(subtitleKw, kwField)) {
         issues.push({
           keyword: subtitleKw,
-          fields: ["Subtítulo", "Keywords field"],
+          fields: ["Subtitle", "Keywords field"],
           severity: "error",
-          message: `"${subtitleKw}" está repetida entre Subtítulo y Keywords field`,
-          recommendation: "Elimina esta keyword del campo Keywords y usa variaciones semánticas"
+          message: `"${subtitleKw}" is repeated between Subtitle and Keywords field`,
+          recommendation: "Remove this keyword from the Keywords field and use semantic variations"
         })
       }
     }
@@ -153,7 +153,7 @@ export function checkAndroidRepetitions(data: {
   const keywordCounts = new Map<string, { count: number; fields: string[] }>()
   
   const allFields = [
-    { keywords: titleKeywords, fieldName: "Título" },
+    { keywords: titleKeywords, fieldName: "Title" },
     { keywords: shortDescKeywords, fieldName: "Short Description" },
     { keywords: longDescKeywords, fieldName: "Long Description" }
   ]
@@ -181,26 +181,26 @@ export function checkAndroidRepetitions(data: {
         keyword,
         fields,
         severity: "error",
-        message: `"${keyword}" aparece ${count} veces en múltiples campos`,
-        recommendation: "Reduce las repeticiones. Google Play penaliza el keyword stuffing (máximo 2-3 repeticiones)"
+        message: `"${keyword}" appears ${count} times across multiple fields`,
+        recommendation: "Reduce repetitions. Google Play penalizes keyword stuffing (maximum 2-3 repetitions)"
       })
     } else if (count > 2 && fields.length > 2) {
       issues.push({
         keyword,
         fields,
         severity: "warning",
-        message: `"${keyword}" aparece ${count} veces en ${fields.length} campos diferentes`,
-        recommendation: "Considera usar variaciones semánticas para evitar sobreoptimización"
+        message: `"${keyword}" appears ${count} times in ${fields.length} different fields`,
+        recommendation: "Consider using semantic variations to avoid over-optimization"
       })
     } else if (count === 2 && fields.length === 2) {
       // Check if it's repeated between critical fields (Title + Short Desc)
-      if (fields.includes("Título") && fields.includes("Short Description")) {
+      if (fields.includes("Title") && fields.includes("Short Description")) {
         issues.push({
           keyword,
           fields,
           severity: "warning",
-          message: `"${keyword}" está repetida entre Título y Short Description`,
-          recommendation: "Usa variaciones semánticas para maximizar el espacio semántico"
+          message: `"${keyword}" is repeated between Title and Short Description`,
+          recommendation: "Use semantic variations to maximize semantic coverage"
         })
       }
     }
@@ -236,15 +236,15 @@ export function getASOScoreSummary(
   const recommendations: string[] = []
   
   if (iosResult.hasIssues) {
-    recommendations.push(`iOS: ${iosResult.issues.length} problema(s) de repetición detectado(s)`)
+    recommendations.push(`iOS: ${iosResult.issues.length} repetition issue(s) detected`)
   }
   
   if (androidResult.hasIssues) {
-    recommendations.push(`Android: ${androidResult.issues.length} problema(s) de repetición detectado(s)`)
+    recommendations.push(`Android: ${androidResult.issues.length} repetition issue(s) detected`)
   }
   
   if (!hasIssues) {
-    recommendations.push("✅ No se detectaron repeticiones. Tu estrategia ASO está optimizada según las reglas 2026")
+    recommendations.push("✅ No repetitions detected. Your ASO strategy is optimized according to 2026 rules")
   }
   
   return {

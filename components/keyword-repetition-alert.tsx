@@ -27,9 +27,9 @@ export function KeywordRepetitionAlert({ appData, platform }: KeywordRepetitionA
     return (
       <Alert className="border-green-500 bg-green-50">
         <CheckCircle2 className="h-4 w-4 text-green-600" />
-        <AlertTitle className="text-green-800 font-semibold">ASO 2026: Sin repeticiones detectadas</AlertTitle>
+        <AlertTitle className="text-green-800 font-semibold">ASO 2026: No repetitions detected</AlertTitle>
         <AlertDescription className="text-green-700">
-          ✅ No se detectaron repeticiones de keywords entre campos indexables. Tu estrategia cumple con las mejores prácticas ASO 2026.
+          ✅ No keyword repetitions detected between indexable fields. Your strategy complies with ASO 2026 best practices.
         </AlertDescription>
       </Alert>
     )
@@ -47,14 +47,14 @@ export function KeywordRepetitionAlert({ appData, platform }: KeywordRepetitionA
         <AlertTriangle className="h-4 w-4 text-amber-600" />
       )}
       <AlertTitle className={hasErrors ? "text-red-800 font-semibold" : "text-amber-800 font-semibold"}>
-        ASO 2026: {result.issues.length} problema(s) de repetición detectado(s)
+        ASO 2026: {result.issues.length} repetition issue(s) detected
       </AlertTitle>
       <AlertDescription className={hasErrors ? "text-red-700" : "text-amber-700"}>
         <div className="space-y-3 mt-2">
           {/* Error Issues */}
           {errorIssues.length > 0 && (
             <div>
-              <div className="font-semibold mb-2">Errores críticos ({errorIssues.length}):</div>
+              <div className="font-semibold mb-2">Critical errors ({errorIssues.length}):</div>
               <ul className="list-disc list-inside space-y-1.5 ml-2">
                 {errorIssues.map((issue, index) => (
                   <li key={index}>
@@ -71,7 +71,7 @@ export function KeywordRepetitionAlert({ appData, platform }: KeywordRepetitionA
           {/* Warning Issues */}
           {warningIssues.length > 0 && (
             <div>
-              <div className="font-semibold mb-2">Advertencias ({warningIssues.length}):</div>
+              <div className="font-semibold mb-2">Warnings ({warningIssues.length}):</div>
               <ul className="list-disc list-inside space-y-1.5 ml-2">
                 {warningIssues.map((issue, index) => (
                   <li key={index}>
@@ -88,9 +88,9 @@ export function KeywordRepetitionAlert({ appData, platform }: KeywordRepetitionA
           {/* Score */}
           <div className="pt-2 border-t border-current/20">
             <div className="text-sm">
-              <span className="font-semibold">Puntuación ASO:</span> {result.score}/100
+              <span className="font-semibold">ASO Score:</span> {result.score}/100
               {result.score < 70 && (
-                <span className="ml-2">⚠️ Se recomienda mejorar las repeticiones</span>
+                <span className="ml-2">⚠️ Improvement recommended</span>
               )}
             </div>
           </div>

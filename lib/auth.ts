@@ -8,12 +8,12 @@ export function getUserRole(email: string | undefined | null): UserRole {
   // Normalize email: trim whitespace and convert to lowercase
   const normalizedEmail = email.trim().toLowerCase()
   
-  // Test Owner: claramuntoriol@gmail.com (correcto) y claramutoriol@gmail.com (compatibilidad)
+  // Test Owner: claramuntoriol@gmail.com (correct) and claramutoriol@gmail.com (legacy compatibility)
   if (normalizedEmail === "claramuntoriol@gmail.com" || normalizedEmail === "claramutoriol@gmail.com") {
     return "test_owner"
   }
   
-  // Test Reviewer: cualquier email con @aristocrat.com o @productmadness.com
+  // Test Reviewer: any email with @aristocrat.com or @productmadness.com
   if (normalizedEmail.endsWith("@aristocrat.com") || normalizedEmail.endsWith("@productmadness.com")) {
     return "test_reviewer"
   }

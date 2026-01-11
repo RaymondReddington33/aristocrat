@@ -62,10 +62,19 @@ export default function AdminPanel() {
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
   const [userRole, setUserRole] = useState<UserRole | null>(null)
   const [isReadOnly, setIsReadOnly] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [hasLoadedInitialData, setHasLoadedInitialData] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
 
   const loadExistingData = useCallback(async () => {
+    // Prevent loading multiple times
+    if (hasLoadedInitialData) {
+      console.log("[loadExistingData] Already loaded, skipping...")
+      return
+    }
+    
+    setIsLoading(true)
     try {
       console.log("[loadExistingData] Starting to load data...")
       
@@ -148,10 +157,14 @@ export default function AdminPanel() {
         setAndroidScreenshots([])
         setKeywords([])
       }
+      
+      setHasLoadedInitialData(true)
     } catch (error) {
       console.error("[loadExistingData] Error loading existing data:", error)
+    } finally {
+      setIsLoading(false)
     }
-  }, [])
+  }, [hasLoadedInitialData])
 
   const handleCreateNewApp = () => {
     setShowNewAppDialog(true)
@@ -298,12 +311,11 @@ export default function AdminPanel() {
     loadApps()
   }, [loadApps])
 
-  // Auto-save with debounce
+  // Auto-save DISABLED - use manual save button instead
+  // This was causing issues with data disappearing
+  /*
   useEffect(() => {
-    // Don't auto-save if there's no meaningful data
     if (!appData.app_name || appData.app_name.trim() === "") return
-    
-    // Don't auto-save if we're currently saving (to avoid conflicts)
     if (saving) return
     
     const timeoutId = setTimeout(async () => {
@@ -311,10 +323,9 @@ export default function AdminPanel() {
       try {
         const result = await saveAppData(appData, appId)
         if (result.success) {
-          // If we just created a new app, update the appId and refresh apps list
           if (!appId && result.id) {
             setAppId(result.id)
-            loadApps() // Refresh apps list to include the new app
+            loadApps()
           }
           setLastSaved(new Date())
           setSaveSuccess(true)
@@ -325,10 +336,11 @@ export default function AdminPanel() {
       } finally {
         setSaving(false)
       }
-    }, 2000) // 2 second debounce
+    }, 2000)
 
     return () => clearTimeout(timeoutId)
   }, [appData, appId, loadApps, saving])
+  */
 
   const handleSave = async () => {
     setSaving(true)
@@ -835,6 +847,18 @@ export default function AdminPanel() {
     })
   }
 
+  // Show loading state while initial data is being fetched
+  if (isLoading && !hasLoadedInitialData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-purple-600" />
+          <p className="text-slate-600">Loading app data...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
@@ -881,7 +905,7 @@ export default function AdminPanel() {
               {saving && (
                 <div className="flex items-center gap-2 text-sm text-slate-600">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Auto-saving...</span>
+                  <span>Saving...</span>
                 </div>
               )}
             </div>

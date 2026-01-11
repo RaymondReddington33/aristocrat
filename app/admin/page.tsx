@@ -786,9 +786,9 @@ export default function AdminPanel() {
                   <Plus className="h-4 w-4" />
                   New App
                 </Button>
-                <Button onClick={loadDemoCasinoApp} variant="outline" className="gap-2 bg-transparent">
+                <Button onClick={handleCleanupAndLoadDemo} variant="outline" className="gap-2 bg-transparent">
                   <Sparkles className="h-4 w-4" />
-                  Load Demo Casino App
+                  Load Perfect ASO Demo
                 </Button>
               </>
             )}

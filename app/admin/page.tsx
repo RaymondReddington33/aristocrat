@@ -252,6 +252,9 @@ export default function AdminPanel() {
     // Don't auto-save if there's no meaningful data
     if (!appData.app_name || appData.app_name.trim() === "") return
     
+    // Don't auto-save if we're currently saving (to avoid conflicts)
+    if (saving) return
+    
     const timeoutId = setTimeout(async () => {
       setSaving(true)
       try {
@@ -274,7 +277,7 @@ export default function AdminPanel() {
     }, 2000) // 2 second debounce
 
     return () => clearTimeout(timeoutId)
-  }, [appData, appId, loadApps])
+  }, [appData, appId, loadApps, saving])
 
   const handleSave = async () => {
     setSaving(true)

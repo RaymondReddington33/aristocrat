@@ -231,27 +231,42 @@ export function Navbar() {
 
   const handleLogout = async () => {
     try {
-      setRoleOverride(null) // Clear role override on logout
+      console.log("[Logout] Starting logout process...")
       
-      // Check if supervisor session exists
-      const supervisorSession = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("supervisor_session="))
-      
-      if (supervisorSession) {
-        // Logout supervisor
-        await fetch("/api/auth/simple-logout", { method: "POST" })
-        document.cookie = "supervisor_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
-      } else {
-        // Logout Supabase
-        const supabase = createClient()
-        await supabase.auth.signOut()
+      // Clear all local storage
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("user_role_override")
+        localStorage.removeItem("selectedAppId")
       }
       
-      router.push("/")
-      router.refresh()
+      setRoleOverride(null) // Clear role override on logout
+      
+      // Always try to clear both session types
+      // 1. Clear supervisor session cookie
+      document.cookie = "supervisor_session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
+      await fetch("/api/auth/simple-logout", { method: "POST" }).catch(() => {})
+      
+      // 2. Clear Supabase session
+      try {
+        const supabase = createClient()
+        await supabase.auth.signOut()
+        console.log("[Logout] Supabase signOut completed")
+      } catch (supabaseError) {
+        console.log("[Logout] Supabase signOut error (may be expected):", supabaseError)
+      }
+      
+      // Clear user state
+      setUser(null)
+      setUserRole(null)
+      
+      console.log("[Logout] Redirecting to login...")
+      
+      // Force navigation to login page
+      window.location.href = "/auth/login"
     } catch (error) {
-      console.error("Error signing out:", error)
+      console.error("[Logout] Error signing out:", error)
+      // Force redirect even on error
+      window.location.href = "/auth/login"
     }
   }
 

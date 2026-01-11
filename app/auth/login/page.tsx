@@ -165,16 +165,22 @@ export default function LoginPage() {
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-slate-900 text-xs sm:text-sm mb-1.5 sm:mb-2">Access Roles</h3>
                         <div className="space-y-2 sm:space-y-2.5">
-                          <div>
-                            <div className="font-semibold text-slate-900 text-xs mb-0.5 sm:mb-1">Test Owner (Admin)</div>
-                            <p className="text-slate-600 text-xs leading-relaxed break-words">
-                              Full access to create, edit, and manage all test data. Email: <span className="font-medium text-slate-900 break-all">claramuntoriol@gmail.com</span>
+                          <div className="p-2 bg-green-50 rounded-lg border border-green-200">
+                            <div className="font-semibold text-green-800 text-xs mb-0.5 sm:mb-1 flex items-center gap-1">
+                              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                              Admin (Full Access)
+                            </div>
+                            <p className="text-green-700 text-xs leading-relaxed break-words">
+                              Can edit all fields, manage apps, and access the Admin panel. Uses Magic Link login.
                             </p>
                           </div>
-                          <div>
-                            <div className="font-semibold text-slate-900 text-xs mb-0.5 sm:mb-1">Supervisor (Test Reviewer)</div>
-                            <p className="text-slate-600 text-xs leading-relaxed break-words">
-                              Read-only access to review the test submission. Use username and password login.
+                          <div className="p-2 bg-blue-50 rounded-lg border border-blue-200">
+                            <div className="font-semibold text-blue-800 text-xs mb-0.5 sm:mb-1 flex items-center gap-1">
+                              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                              Reviewer (View Only)
+                            </div>
+                            <p className="text-blue-700 text-xs leading-relaxed break-words">
+                              Can view and analyse the exercise. Cannot edit. Uses Supervisor Login.
                             </p>
                           </div>
                         </div>

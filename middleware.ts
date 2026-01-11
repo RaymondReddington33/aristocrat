@@ -53,7 +53,8 @@ export async function middleware(request: NextRequest) {
         error: authError,
       } = await supabase.auth.getUser()
 
-      if (authError) {
+      // Only log non-session-missing errors (session missing is expected when not logged in)
+      if (authError && authError.name !== "AuthSessionMissingError") {
         console.error("Error getting user in middleware:", authError)
       } else {
         user = supabaseUser
@@ -73,35 +74,18 @@ export async function middleware(request: NextRequest) {
 
     // Protect /admin and / (home) routes
     if (isAdminPath || isHomePath) {
-      // Check if user is authenticated (either Supabase or supervisor session)
-      const isAuthenticated = user || hasSupervisorSession
-      
-      if (!isAuthenticated) {
-        const url = request.nextUrl.clone()
-        url.pathname = "/auth/login"
-        url.searchParams.set("next", pathname)
-        return NextResponse.redirect(url)
-      }
-      
-      // Block supervisor (test_reviewer) from accessing /admin
-      if (isAdminPath && hasSupervisorSession) {
-        // Supervisor can only view previews, not edit admin
-        const url = request.nextUrl.clone()
-        url.pathname = "/"
-        return NextResponse.redirect(url)
-      }
-      
-      // If supervisor session for home page, allow access (test_reviewer role)
-      if (hasSupervisorSession && !isAdminPath) {
-        return response
-      }
-      
+      // Prioritize Supabase user over supervisor session if both exist
       // For Supabase users, check if user has valid role
-      if (user) {
+      if (user && user.email) {
         try {
+          // Debug: log the email being checked
+          console.log("[Middleware] Checking role for email:", user.email)
           const role = getUserRole(user.email)
+          console.log("[Middleware] Detected role:", role, "for path:", pathname)
+          
           if (!role) {
             // User doesn't have a valid role, redirect to login with error
+            console.log("[Middleware] No valid role found, redirecting to login")
             const url = request.nextUrl.clone()
             url.pathname = "/auth/login"
             url.searchParams.set("error", "unauthorized")
@@ -110,9 +94,21 @@ export async function middleware(request: NextRequest) {
           
           // Block test_reviewer from accessing /admin
           if (isAdminPath && role === "test_reviewer") {
+            console.log("[Middleware] test_reviewer blocked from /admin")
             const url = request.nextUrl.clone()
             url.pathname = "/"
             return NextResponse.redirect(url)
+          }
+          
+          // Allow test_owner to access /admin
+          if (isAdminPath && role === "test_owner") {
+            console.log("[Middleware] test_owner allowed to access /admin")
+            return response
+          }
+          
+          // For home page, allow if user has any valid role
+          if (!isAdminPath && role) {
+            return response
           }
         } catch (error) {
           console.error("Error checking user role in middleware:", error)
@@ -122,6 +118,30 @@ export async function middleware(request: NextRequest) {
           url.searchParams.set("error", "unauthorized")
           return NextResponse.redirect(url)
         }
+      }
+      
+      // If no Supabase user, check supervisor session
+      if (hasSupervisorSession) {
+        // Block supervisor (test_reviewer) from accessing /admin
+        if (isAdminPath) {
+          // Supervisor can only view previews, not edit admin
+          const url = request.nextUrl.clone()
+          url.pathname = "/"
+          return NextResponse.redirect(url)
+        }
+        
+        // If supervisor session for home page, allow access (test_reviewer role)
+        if (!isAdminPath) {
+          return response
+        }
+      }
+      
+      // No authentication found, redirect to login
+      if (!user && !hasSupervisorSession) {
+        const url = request.nextUrl.clone()
+        url.pathname = "/auth/login"
+        url.searchParams.set("next", pathname)
+        return NextResponse.redirect(url)
       }
     }
 

@@ -56,6 +56,7 @@ export interface AppData {
   creative_brief_screenshot_5_message?: string
   creative_brief_platform_considerations?: string
   creative_brief_asa_strategy?: string
+  creative_brief_cross_locations_strategy?: string
   creative_brief_asa_keyword_groups?: Array<{
     id: string
     name: string

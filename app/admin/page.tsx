@@ -582,6 +582,7 @@ export default function AdminPanel() {
           newData.creative_brief_screenshot_5_message = ""
           newData.creative_brief_platform_considerations = ""
           newData.creative_brief_asa_strategy = ""
+          newData.creative_brief_cross_locations_strategy = ""
           newData.creative_brief_color_palette = []
           newData.creative_brief_typography = []
           newData.creative_brief_visual_references = []
@@ -1544,6 +1545,17 @@ export default function AdminPanel() {
                       />
                     </div>
                   )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="creative_brief_cross_locations_strategy">Cross-Locations Strategy</Label>
+                  <Textarea
+                    id="creative_brief_cross_locations_strategy"
+                    value={appData.creative_brief_cross_locations_strategy || ""}
+                    onChange={(e) => handleInputChange("creative_brief_cross_locations_strategy", e.target.value)}
+                    placeholder="Strategy for multi-market/cross-location campaigns (e.g., localization approach, market-specific adaptations, budget allocation across regions...)"
+                    rows={4}
+                  />
+                  <p className="text-xs text-slate-500">Define your approach for managing campaigns across multiple markets/locations</p>
                 </div>
                 <div className="space-y-2">
                   <Label>Competitor Analysis</Label>

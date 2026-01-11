@@ -593,6 +593,24 @@ export default async function CreativeBriefPreview({ searchParams }: { searchPar
                 </div>
               )}
             </div>
+            
+            {/* Cross-Locations Strategy */}
+            {appData.creative_brief_cross_locations_strategy && (
+              <div>
+                <div className="text-xs font-medium text-purple-600 uppercase mb-4 flex items-center gap-2">
+                  <Globe className="h-4 w-4" />
+                  Cross-Locations Strategy
+                </div>
+                <div className="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                  <div className="prose prose-slate max-w-none">
+                    <p className="text-slate-700 leading-relaxed whitespace-pre-line text-sm">
+                      {appData.creative_brief_cross_locations_strategy}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             {appData.creative_brief_competitor_analysis && Array.isArray(appData.creative_brief_competitor_analysis) && appData.creative_brief_competitor_analysis.length > 0 && (
               <div>
                 <div className="text-xs font-medium text-amber-600 uppercase mb-4 flex items-center gap-2">

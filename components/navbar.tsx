@@ -78,9 +78,12 @@ export function Navbar() {
         const supabase = createClient()
         const { data: { user: authUser } } = await supabase.auth.getUser()
         const authUserObj = authUser ? { email: authUser.email } : null
+        console.log("[Navbar] User email detected:", authUserObj?.email)
         setUser(authUserObj)
         if (authUserObj?.email) {
-          setUserRole(getEffectiveRole(authUserObj.email))
+          const role = getEffectiveRole(authUserObj.email)
+          console.log("[Navbar] Role detected for", authUserObj.email, ":", role)
+          setUserRole(role)
         } else {
           setUserRole(null)
         }

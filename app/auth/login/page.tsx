@@ -324,6 +324,7 @@ export default function LoginPage() {
                           onChange={(e) => setEmail(e.target.value)}
                           required
                           disabled={loading}
+                          autoComplete="off"
                           className="h-10 sm:h-11 text-sm sm:text-base"
                         />
                       </div>

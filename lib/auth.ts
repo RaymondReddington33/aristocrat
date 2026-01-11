@@ -5,14 +5,16 @@ const ROLE_OVERRIDE_KEY = "user_role_override"
 export function getUserRole(email: string | undefined | null): UserRole {
   if (!email) return null
   
-  // Test Owner: solo claramuntoriol@gmail.com
-  if (email.toLowerCase() === "claramuntoriol@gmail.com") {
+  // Normalize email: trim whitespace and convert to lowercase
+  const normalizedEmail = email.trim().toLowerCase()
+  
+  // Test Owner: claramuntoriol@gmail.com (correcto) y claramutoriol@gmail.com (compatibilidad)
+  if (normalizedEmail === "claramuntoriol@gmail.com" || normalizedEmail === "claramutoriol@gmail.com") {
     return "test_owner"
   }
   
   // Test Reviewer: cualquier email con @aristocrat.com o @productmadness.com
-  const emailLower = email.toLowerCase()
-  if (emailLower.endsWith("@aristocrat.com") || emailLower.endsWith("@productmadness.com")) {
+  if (normalizedEmail.endsWith("@aristocrat.com") || normalizedEmail.endsWith("@productmadness.com")) {
     return "test_reviewer"
   }
   

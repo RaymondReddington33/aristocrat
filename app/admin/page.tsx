@@ -493,76 +493,99 @@ export default function AdminPanel() {
     }
   }
 
-  const getDemoCasinoAppData = () => {
+  const getDemoCasinoAppData = (): Partial<AppData> => {
     return {
+      // ═══════════════════════════════════════════════════════════════════════════
+      // GENERAL APP INFORMATION
+      // ═══════════════════════════════════════════════════════════════════════════
       app_name: "RedRain Slots Casino",
       app_subtitle: "Premium Egyptian Slots Adventure",
       category: "Casino",
       price: "Free",
       age_rating: "17+",
       rating: 4.8,
-      review_count: 10000,
-      download_count: "1M+",
+      review_count: 125000,
+      download_count: "5M+",
       app_icon_url: "/images/casino-icon.jpg",
 
-      // iOS specific - ASO 2026 Advanced: 100% character limit usage, semantic order, zero repetition
+      // ═══════════════════════════════════════════════════════════════════════════
+      // iOS APP STORE - ASO 2026 OPTIMIZED
+      // ═══════════════════════════════════════════════════════════════════════════
+      // STRATEGY: Zero keyword repetition between indexable fields
       // Title (30 chars): Brand + core theme - FIRST WORDS WEIGH MORE
       // Subtitle (30 chars): Value proposition - NO repetition from title  
       // Keywords (100 chars): Generic core keywords, NO spaces, NO plurals, NO repetition
-      ios_app_name: "RedRain: Egyptian Riches Slots", // 30 chars ✅ 100% - Brand first (semantic priority)
-      ios_subtitle: "Premium Adventure Games", // 25 chars - Value prop, no repetition
+      
+      ios_app_name: "RedRain: Egyptian Riches Slots", // 30 chars ✅ 100%
+      ios_subtitle: "Premium Adventure & Fortune", // 27 chars - Value prop, zero repetition
       ios_description:
-        "Embark on an epic slot adventure in Ancient Egypt! Unlock your fortune with premium 3D graphics, epic bonus rounds, and massive jackpots. Enjoy daily free spins, treasure chest levels, and pharaoh-inspired jackpot tables. RedRain offers a social casino experience without real betting (\"play for fun\"), with millions of free coins to start and achievement rewards. Play now and become a legend among the Egyptian gods!\n\nKEY FEATURES\n• Premium Egyptian-Themed Slot Games\n• Massive Jackpots & Daily Rewards\n• Epic Bonus Rounds & Treasure Chests\n• Stunning 3D Graphics & Smooth Gameplay\n• Daily Free Spins & Multipliers\n• Social Casino Fun - Play with Friends\n• No Real Money Required\n\nWHY PLAYERS LOVE US\n✓ Premium Quality 3D Graphics\n✓ Generous Daily Bonuses\n✓ Regular New Egyptian Slots\n✓ Smooth Performance\n✓ Social Features & Achievements\n\nCall to Action: \"Unlock Your Fortune\", \"Spin to Win\", \"Join the Adventure\"\n\nFor entertainment purposes only. No real money gambling. In-app purchases available.",
+        "Embark on an epic slot adventure in Ancient Egypt! Unlock your fortune with premium 3D graphics, epic bonus rounds, and massive jackpots. Enjoy daily free spins, treasure chest levels, and pharaoh-inspired jackpot tables.\n\nRedRain offers a social casino experience without real betting (\"play for fun\"), with millions of free coins to start and achievement rewards. Play now and become a legend among the Egyptian gods!\n\n═══════════════════════════════════════\nKEY FEATURES\n═══════════════════════════════════════\n• Premium Egyptian-Themed Slot Games\n• Massive Jackpots & Daily Rewards\n• Epic Bonus Rounds & Treasure Chests\n• Stunning 3D Graphics & Smooth Gameplay\n• Daily Free Spins & Multipliers\n• Social Casino Fun - Play with Friends\n• No Real Money Required\n\n═══════════════════════════════════════\nWHY PLAYERS LOVE US\n═══════════════════════════════════════\n✓ Premium Quality 3D Graphics\n✓ Generous Daily Bonuses\n✓ Regular New Egyptian Slots\n✓ Smooth Performance on All Devices\n✓ Social Features & Achievements\n✓ Offline Play Available\n\n═══════════════════════════════════════\nCALL TO ACTION\n═══════════════════════════════════════\n\"Unlock Your Fortune\" • \"Spin to Win\" • \"Join the Adventure\"\n\n▼ DISCLAIMER ▼\nFor entertainment purposes only. No real money gambling. In-app purchases available. Must be 17+ to play.",
       ios_promotional_text:
-        "Double Fortune Weekend: Get double free spins today!",
-      ios_keywords: "pharaoh,cleopatra,fortune,jackpot,treasure,ancient,pyramid,sphinx,legend,reward,wheel,prize,charm", // 97 chars (optimized - close to 100%) - Generic core, NO spaces, NO plurals, NO repetition
+        "🎰 DOUBLE FORTUNE WEEKEND: Get 2x free spins + bonus coins today only!",
+      ios_keywords: "pharaoh,cleopatra,fortune,jackpot,treasure,ancient,pyramid,sphinx,legend,reward,wheel,prize,charm", // 97 chars ✅
       ios_whats_new:
-        "Discover new Egyptian slots and improvements! Optimised performance, minor bug fixes, and special launch bonuses.",
+        "🆕 Version 3.2.0\n• NEW: Royal Pharaoh's Chamber slot with 50 paylines\n• NEW: Daily Fortune Wheel with bigger rewards\n• IMPROVED: Faster loading times\n• FIXED: Minor bugs and stability improvements\n• BONUS: Special launch rewards for all players!",
       ios_support_url: "https://support.redrain.com",
       ios_marketing_url: "https://redrain.com",
       ios_privacy_url: "https://redrain.com/privacy",
 
-      // Android specific - ASO 2026 Advanced: 100% character limit usage, Short Description as key conversion field
+      // ═══════════════════════════════════════════════════════════════════════════
+      // GOOGLE PLAY STORE - ASO 2026 OPTIMIZED
+      // ═══════════════════════════════════════════════════════════════════════════
+      // STRATEGY: Limited repetition (max 2-3x), Short Description is KEY conversion field
       // Title (50 chars): Brand + category - FIRST WORDS WEIGH MORE
-      // Short Description (80 chars): KEY CONVERSION FIELD - semantic variations, no exact repetition
-      // Long Description (4000 chars): Generic core keywords distributed, semantic variations
-      android_app_name: "RedRain Casino: Fortune Games", // 32 chars (optimized semantic order)
+      // Short Description (80 chars): KEY CONVERSION FIELD - semantic variations
+      // Long Description (4000 chars): Keyword distribution with semantic variations
+      
+      android_app_name: "RedRain Casino: Fortune Games", // 29 chars
       android_short_description:
-        "Premium Egyptian-themed slots with massive rewards – spin legendary reels today!", // 80 chars ✅ 100% - KEY CONVERSION FIELD
+        "Premium Egyptian-themed slots with massive rewards – spin legendary reels today!", // 80 chars ✅ 100%
       android_full_description:
-        "Discover the wealth of ancient Egypt through premium slot experiences. RedRain Casino delivers thrilling gameplay featuring pharaohs, pyramids, and legendary treasures. Enjoy daily bonuses, fortune wheels, and epic multipliers without spending real money. This social gaming experience offers premium graphics, mythological characters, and rewarding missions.\n\nHIGHLIGHTS:\n• Themed Slots (Pharaoh's Fortune, Cleopatra's Eye) with animated scenes\n• Daily Rewards and Missions that unlock treasure chests\n• Bonus Rounds and Epic Multipliers\n• Social Network Connection to share achievements\n\nDownload now and start your journey to fortune!\n\nFor entertainment purposes only. No real money gambling. In-app purchases available.",
+        "Discover the wealth of ancient Egypt through premium slot experiences. RedRain Casino delivers thrilling gameplay featuring pharaohs, pyramids, and legendary treasures.\n\n═══════════════════════════════════════\n🎰 EXPERIENCE THE MAGIC OF EGYPT\n═══════════════════════════════════════\nEnjoy daily bonuses, fortune wheels, and epic multipliers without spending real money. This social gaming experience offers premium graphics, mythological characters, and rewarding missions.\n\n═══════════════════════════════════════\n✨ GAME HIGHLIGHTS\n═══════════════════════════════════════\n• Themed Slots (Pharaoh's Fortune, Cleopatra's Eye, Sphinx's Secret)\n• Daily Rewards and Missions that unlock treasure chests\n• Bonus Rounds with Epic Multipliers up to 1000x\n• Social Network Connection to share achievements\n• Regular new content updates\n• Works offline - play anywhere!\n\n═══════════════════════════════════════\n🏆 WHY MILLIONS CHOOSE REDRAIN\n═══════════════════════════════════════\n✓ Premium 3D graphics and animations\n✓ Fair gameplay mechanics\n✓ Generous daily bonuses\n✓ Active community of players\n✓ 24/7 customer support\n\nDownload now and start your journey to fortune!\n\n▼ DISCLAIMER ▼\nFor entertainment purposes only. No real money gambling. In-app purchases available. Must be 17+ to play.",
       android_promo_text:
-        "Double Coins Weekend!",
+        "🎁 Double Coins Weekend! Download now for bonus rewards!",
       android_recent_changes:
-        "New 'Royal Pharaoh' slot added, +3 treasure chest levels, improved game balance.",
+        "Version 3.2.0:\n• NEW: Royal Pharaoh's Chamber slot\n• NEW: Fortune Wheel with bigger prizes\n• IMPROVED: Performance optimisations\n• FIXED: Bug fixes and stability",
 
-      // Creative Brief - Task 2 Structure
+      // ═══════════════════════════════════════════════════════════════════════════
+      // CREATIVE BRIEF - COMPLETE MARKETING STRATEGY
+      // ═══════════════════════════════════════════════════════════════════════════
       creative_brief_store_page_type: "cpp",
       creative_brief_target_market: "United Kingdom (en-GB)",
       creative_brief_primary_platform: "ios",
+      
       creative_brief_objective:
-        "Position the app as the most prestigious Egyptian slot machine in the UK market, maximising organic downloads and conversions. Highlight the free-to-play nature (no real betting) and premium quality.",
+        "BUSINESS OBJECTIVE:\nPosition RedRain as the #1 premium Egyptian-themed social casino in the UK market.\n\nKEY GOALS:\n• Increase organic downloads by 40% in Q1 2026\n• Achieve Top 10 ranking in Casino category\n• Improve conversion rate from impression to install by 25%\n• Reduce CPA (Cost Per Acquisition) to under £2.00\n\nSTRATEGIC APPROACH:\n• Emphasise 'premium' and 'free-to-play' positioning\n• Highlight unique Egyptian narrative vs. generic Vegas competitors\n• Build trust with clear 'no real money gambling' messaging",
+      
       creative_brief_creative_concept:
-        "Real Adventure in the Pharaoh's Tomb: Combine classic Egyptian symbols and gods with high-quality golden graphics. Use metaphors of hidden treasures (hieroglyphs, pyramids, Cleopatra) to convey that the player 'unearths a fortune'. Employ modern Egyptian-inspired instrumental music.",
+        "CONCEPT: \"Unearth Your Fortune\"\n\nNARRATIVE:\nTransport players to Ancient Egypt where they discover hidden treasures in pharaoh's tombs. Every spin brings them closer to legendary riches.\n\nVISUAL METAPHORS:\n• Pyramids at sunset = mystery and adventure\n• Golden hieroglyphs = wealth and ancient secrets\n• Cleopatra = elegance and luxury\n• Scarab beetles = luck and fortune\n\nEMOTIONAL TRIGGERS:\n• Excitement: \"Massive jackpots await\"\n• Exclusivity: \"Premium Egyptian experience\"\n• Urgency: \"Limited-time bonuses\"\n• Social proof: \"Join millions of players\"\n\nAUDIO DIRECTION:\nModern Egyptian-inspired instrumental music with subtle electronic elements. Satisfying coin sounds and celebratory effects for wins.",
+      
       creative_brief_target_audience:
-        "Adult players interested in social casino games, lovers of mythology or Egyptian aesthetics, with emphasis on UK (British English). Also capture users of generic slots, highlighting thematic differentiators.",
+        "PRIMARY AUDIENCE:\n• Age: 25-54\n• Gender: 60% Male, 40% Female\n• Location: United Kingdom (primary), US/CA/AU (secondary)\n• Interests: Social casino games, mythology, puzzle games\n• Behaviour: Plays 15-30 min daily, responds to daily bonuses\n\nSECONDARY AUDIENCE:\n• Mythology enthusiasts (Egyptian, Greek themes)\n• Casual gamers looking for relaxation\n• Previous users of competitor apps\n\nPSYCHOGRAPHICS:\n• Seeks entertainment without financial risk\n• Values premium graphics and smooth gameplay\n• Enjoys collection/achievement mechanics\n• Shares progress on social media",
+      
       creative_brief_key_message:
-        "Key Copy: \"Unlock Your Fortune – Play premium Egyptian slots now!\"; \"Daily Gold Bonuses Await\"; \"Spin legendary slots for FREE\". Include clear CTAs like \"Play Now!\", \"Join the Pharaoh's Challenge\", \"Win Big\". Conversion messages (\"unlock\", \"free spins\", \"win big\") create urgency and benefit.",
+        "HERO MESSAGE:\n\"Unlock Your Fortune – Play Premium Egyptian Slots Today!\"\n\nSUPPORTING MESSAGES:\n• \"Daily Gold Bonuses Await\"\n• \"Spin Legendary Reels for FREE\"\n• \"Join 5 Million Players Worldwide\"\n• \"No Real Money Required\"\n\nCTAs (Call-To-Action):\n• \"Play Now\" - primary\n• \"Join the Adventure\" - engagement\n• \"Claim Your Bonus\" - conversion\n• \"Spin to Win\" - action-oriented\n\nTONE OF VOICE:\n• Exciting but not aggressive\n• Premium but accessible\n• Fun but trustworthy",
+      
       creative_brief_visual_style:
-        "Sober and luxurious. Main colours: gold, sapphire blue, and royal purple, with accents in sand and black. Illustrations of golden hieroglyphs on a night-time pyramid background. Clean iconography (e.g., stylised roulette with pharaonic crown). Images suggesting wealth and mystery, always within a sober framework.",
+        "COLOUR PALETTE:\n• Primary: Gold (#FFD700) - wealth and prestige\n• Secondary: Sapphire Blue (#0F52BA) - trust and luxury\n• Accent: Royal Purple (#6B46C1) - premium quality\n• Neutral: Sand (#C2B280) - Egyptian authenticity\n• Contrast: Black (#000000) - sophistication\n\nIMAGERY STYLE:\n• High-quality 3D renders with golden lighting\n• Night-time pyramid backgrounds with starry skies\n• Elegant Egyptian symbols (ankh, scarab, eye of Horus)\n• Coin explosions and treasure chest animations\n\nGRAPHIC ELEMENTS:\n• Subtle golden gradients and metallic effects\n• Clean iconography with pharaonic elements\n• Luxury-inspired borders and frames\n• Professional typography hierarchy",
+      
       creative_brief_brand_guidelines:
-        "Logo: Golden logo on dark blue background. Typography: Classic serif titles (simulating carved stone) combined with modern sans-serif body text. Consistent use of soft shadows and metallic reliefs. Always clarify \"Free to Play, no actual money gambling\" in promotional texts. Avoid language that violates policies (\"bet\", \"earn real money\" are prohibited).",
-      creative_brief_screenshot_1_message: "Epic Egyptian Slots – Unlock Pharaoh's Treasure!",
-      creative_brief_screenshot_2_message: "Huge Jackpots & Free Spins Every Day",
-      creative_brief_screenshot_3_message: "Bonus Levels & Legendary Rewards",
-      creative_brief_screenshot_4_message: "Play With Friends – Social Casino Fun",
-      creative_brief_screenshot_5_message: "Limited-Time Bonus: Double Coins Weekend!",
+        "LOGO USAGE:\n• Primary: Golden logo on dark blue background\n• Secondary: White logo on dark backgrounds\n• Minimum size: 48px height\n• Clear space: 1x logo height on all sides\n\nTYPOGRAPHY:\n• Headlines: Classic Serif (carved stone effect)\n• Body: Modern Sans-Serif (clean, readable)\n• UI: SF Pro (iOS) / Roboto (Android)\n\nDO's:\n✓ Use premium, luxury-focused language\n✓ Include 'For entertainment only' disclaimer\n✓ Showcase actual gameplay screenshots\n✓ Highlight social/free-to-play aspects\n\nDON'Ts:\n✗ Use 'bet', 'gamble', 'earn real money'\n✗ Show misleading win amounts\n✗ Use aggressive or predatory language\n✗ Imply guaranteed winnings",
+      
+      creative_brief_screenshot_1_message: "🏛️ Epic Egyptian Slots – Unlock Pharaoh's Treasure!",
+      creative_brief_screenshot_2_message: "💰 Huge Jackpots & Free Spins Every Day",
+      creative_brief_screenshot_3_message: "🎁 Bonus Levels & Legendary Rewards",
+      creative_brief_screenshot_4_message: "👥 Play With Friends – Social Casino Fun",
+      creative_brief_screenshot_5_message: "⚡ Limited-Time Bonus: Double Coins Weekend!",
+      
       creative_brief_platform_considerations:
-        "iOS-Specific Considerations:\n• Respect age limit (17+) indicating \"+17\" in description\n• Do not use suggestive icons or text\n• Do not include \"Free\" or real currency symbols in title/subtitle\n• Promotional Text will appear before images, use as hook\n• Comply with privacy policy by uploading corresponding URL\n\nRecommended Disclaimer Text:\n'For entertainment purposes only. No real money gambling. In-app purchases available.'\n\nKey Compliance Points:\n• Clear 'just for fun' messaging\n• No real money claims\n• Appropriate age rating (17+)\n• Transparent about in-app purchases",
+        "═══════════════════════════════════════\niOS APP STORE GUIDELINES\n═══════════════════════════════════════\n\n✓ REQUIREMENTS:\n• Age rating: 17+ (required for simulated gambling)\n• Privacy policy URL: Must be provided\n• No 'Free' in title/subtitle\n• No real currency symbols in metadata\n• Promotional Text: Use as conversion hook\n\n✗ PROHIBITED:\n• Suggestive or misleading imagery\n• Real money gambling references\n• Guaranteed win claims\n• Under-18 targeting\n\n═══════════════════════════════════════\nGOOGLE PLAY STORE GUIDELINES\n═══════════════════════════════════════\n\n✓ REQUIREMENTS:\n• Content rating: Mature 17+\n• Clear 'simulated gambling' disclosure\n• Accurate screenshots only\n• Privacy policy linked\n\n✗ PROHIBITED:\n• Keyword stuffing (max 2-3 repetitions)\n• Fake reviews or ratings\n• Misleading promotional content\n\n═══════════════════════════════════════\nREQUIRED DISCLAIMER\n═══════════════════════════════════════\n'For entertainment purposes only. No real money gambling. In-app purchases available. Must be 17+ to play.'",
+      
       creative_brief_asa_strategy:
-        "Segmentation by groups: Create ad groups by keyword type – (a) Brand (e.g., RedRain, RoyalSpin), (b) Competition (Royal Spin Casino, Cleopatra Slots), (c) Generic terms (slots, jackpot, casino game).\n\nAligned Creativity: Use creatives (images and copies) consistent with Store Page (message \"Unlock Your Fortune\"). Align visual texts with keywords of each ad to improve CTR. For example, \"jackpot\" ads can show a large jackpot cage with corresponding screenshot text.\n\nPPC/Bids: Start with exact match and broad match modifier, moderate bids. Use tools (Search Ads) to exclude irrelevant keywords.\n\nKPIs and Optimisation: Measure TTR (Tap-Through-Rate) and CPT (Cost per Tap), reallocate budget to best-performing ads. Apply best practices: custom product pages (CPP) improve relevance and conversions. Continue adjusting bids based on performance.",
+        "═══════════════════════════════════════\nAPPLE SEARCH ADS STRATEGY\n═══════════════════════════════════════\n\nCAMPAIGN STRUCTURE:\n\n1️⃣ BRAND CAMPAIGNS\n• Keywords: RedRain, RedRain Slots, RedRain Casino\n• Match Type: Exact\n• Daily Budget: £150\n• Target CPA: £1.50\n• CPP: Enabled (Brand-focused creative)\n\n2️⃣ COMPETITOR CAMPAIGNS\n• Keywords: Royal Spin, Cleopatra Slots, Pharaoh Games\n• Match Type: Exact\n• Daily Budget: £100\n• Target CPA: £2.00\n• CPP: Enabled (Comparison messaging)\n\n3️⃣ GENERIC CAMPAIGNS\n• Keywords: slots free, casino games, jackpot\n• Match Type: Broad\n• Daily Budget: £75\n• Target CPA: £2.50\n• CPP: Disabled (Default page)\n\n4️⃣ DISCOVERY CAMPAIGNS\n• Search Match: Enabled\n• Daily Budget: £50\n• Purpose: Find new keyword opportunities\n\nOPTIMISATION TACTICS:\n• A/B test ad variations weekly\n• Negative keyword list for irrelevant terms\n• Bid adjustments based on device/time\n• CPP relevance matching for top keywords",
+      
       creative_brief_cross_locations_strategy:
-        "Multi-market approach for UK, US, CA, AU, and European markets:\n\n• Primary Market (UK): Focus on \"fortune\", \"premium\", British English spelling\n• US Market: Adapt messaging for \"jackpot\", \"casino slots\", American English\n• Localization Strategy: Core creative remains consistent (Egyptian theme), but adapt:\n  - Currency symbols (£ for UK, $ for US)\n  - Cultural references (adjust timing for regional events)\n  - Language variants (en-GB vs en-US)\n• Budget Allocation: 40% UK, 30% US, 15% CA, 10% AU, 5% Europe\n• CPP Strategy: Create market-specific Custom Product Pages for top 3 markets (UK, US, CA)\n• Performance Monitoring: Track market-specific KPIs and adjust budget based on ROI per location",
+        "═══════════════════════════════════════\nMULTI-MARKET LOCALISATION STRATEGY\n═══════════════════════════════════════\n\n🇬🇧 UNITED KINGDOM (Primary - 40% budget)\n• Language: British English\n• Currency: £ GBP\n• Focus keywords: fortune, premium, treasure\n• Cultural notes: Avoid 'gambling' terminology\n• Local events: Bank holidays, Royal occasions\n\n🇺🇸 UNITED STATES (Secondary - 30% budget)\n• Language: American English\n• Currency: $ USD\n• Focus keywords: jackpot, casino slots, Vegas\n• Cultural notes: More direct CTAs accepted\n• Local events: July 4th, Thanksgiving, Super Bowl\n\n🇨🇦 CANADA (Tertiary - 15% budget)\n• Language: English (mix UK/US accepted)\n• Currency: $ CAD\n• Notes: Stricter gambling advertising laws\n\n🇦🇺 AUSTRALIA (10% budget)\n• Language: Australian English\n• Currency: $ AUD\n• Notes: Responsible gambling messaging required\n\n🇪🇺 EUROPE (5% budget)\n• Markets: DE, FR, IT, ES\n• Approach: English-first, consider localisation\n\n═══════════════════════════════════════\nCPP (CUSTOM PRODUCT PAGES) STRATEGY\n═══════════════════════════════════════\n• CPP-UK: British English, £ pricing, UK testimonials\n• CPP-US: American English, $ pricing, Vegas references\n• CPP-Generic: Neutral English, universal appeal",
       
       // ASA Keyword Groups (structured campaign data)
       creative_brief_asa_keyword_groups: [

@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { CheckCircle2, Loader2, Sparkles, Plus, Undo2, Redo2, Trash2 } from "lucide-react"
 import type { AppData, AppScreenshot, AppKeyword } from "@/lib/types"
-import { getLatestAppData, getAllApps, getAppData, saveAppData, saveScreenshot, savePreviewVideo, getScreenshots, deleteScreenshot, updateScreenshotOrder, getKeywords, bulkDeleteKeywords, deleteApp } from "@/app/actions"
+import { getLatestAppData, getAllApps, getAppData, saveAppData, saveScreenshot, savePreviewVideo, getScreenshots, deleteScreenshot, updateScreenshotOrder, getKeywords, bulkDeleteKeywords, bulkSaveKeywords, deleteApp } from "@/app/actions"
 import { useToast } from "@/hooks/use-toast"
 import { ConfirmDialog } from "@/components/confirm-dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -484,13 +484,26 @@ export default function AdminPanel() {
             // Reset state
             setIosScreenshots([])
             setAndroidScreenshots([])
-            setKeywords([])
+            
+            // Save demo keywords
+            console.log("[confirmCleanupAndLoadDemo] Saving demo keywords...")
+            const demoKeywords = getDemoKeywords(saveResult.id)
+            const keywordsResult = await bulkSaveKeywords(demoKeywords)
+            if (keywordsResult.success) {
+              console.log("[confirmCleanupAndLoadDemo] Saved", keywordsResult.count, "keywords")
+              // Load keywords from database
+              const loadedKeywords = await getKeywords(saveResult.id)
+              setKeywords(loadedKeywords)
+            } else {
+              console.error("[confirmCleanupAndLoadDemo] Failed to save keywords:", keywordsResult.error)
+              setKeywords([])
+            }
             
             // Set the loaded app data and ID
             setAppData(loadedData)
             setAppId(loadedData.id)
             setLastSaved(new Date(loadedData.updated_at || new Date()))
-            console.log("[confirmCleanupAndLoadDemo] State updated successfully")
+            console.log("[confirmCleanupAndLoadDemo] State updated successfully with keywords")
           } else {
             // Fallback if loading fails
             console.log("[confirmCleanupAndLoadDemo] Fallback: using local demo data")
@@ -763,6 +776,46 @@ export default function AdminPanel() {
       android_in_app_products:
         "Golden Coin Pack (10k coins) – £1.99\n\nPremium Coin Pack (50k coins) – £4.99\n\nVIP Monthly Membership – £9.99\n• Includes extra daily bonuses\n• Exclusive bonus rounds\n• Priority support\n• Special events access",
     }
+  }
+
+  // Demo keywords from keyword research CSV - structured for reviewer analysis
+  const getDemoKeywords = (appDataId: string) => {
+    return [
+      // ═══════════════════════════════════════════════════════════════════════════
+      // BRANDED KEYWORDS - High priority, used in Title
+      // ═══════════════════════════════════════════════════════════════════════════
+      { app_data_id: appDataId, keyword: "redrain slots casino", search_volume: 12000, difficulty: 50, relevance_score: 95, category: "branded" as const, priority: "high" as const, platform: "both" as const, recommended_field: "title" as const, brand: true, chance: 70, kei: 150, results: 200000, maximum_reach: 500000, sort_order: 0 },
+      { app_data_id: appDataId, keyword: "redrain", search_volume: 8500, difficulty: 30, relevance_score: 98, category: "branded" as const, priority: "high" as const, platform: "both" as const, recommended_field: "title" as const, brand: true, chance: 95, kei: 280, results: 1200, maximum_reach: 8500, sort_order: 1 },
+      { app_data_id: appDataId, keyword: "redrain casino", search_volume: 6500, difficulty: 35, relevance_score: 97, category: "branded" as const, priority: "high" as const, platform: "both" as const, recommended_field: "title" as const, brand: true, chance: 85, kei: 185.7, results: 800, maximum_reach: 6500, sort_order: 2 },
+      
+      // ═══════════════════════════════════════════════════════════════════════════
+      // GENERIC HIGH-VOLUME KEYWORDS - Core category keywords
+      // ═══════════════════════════════════════════════════════════════════════════
+      { app_data_id: appDataId, keyword: "casino slots", search_volume: 50000, difficulty: 30, relevance_score: 96, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "subtitle" as const, brand: false, chance: 60, kei: 1666, results: 1500000, maximum_reach: 1000000, sort_order: 3 },
+      { app_data_id: appDataId, keyword: "slots casino", search_volume: 45000, difficulty: 25, relevance_score: 94, category: "generic" as const, priority: "high" as const, platform: "android" as const, recommended_field: "title" as const, brand: false, chance: 65, kei: 1800, results: 1200000, maximum_reach: 800000, sort_order: 4 },
+      { app_data_id: appDataId, keyword: "free slots", search_volume: 47000, difficulty: 15, relevance_score: 97, category: "generic" as const, priority: "high" as const, platform: "android" as const, recommended_field: "subtitle" as const, brand: false, chance: 55, kei: 3133, results: 1100000, maximum_reach: 600000, sort_order: 5 },
+      { app_data_id: appDataId, keyword: "jackpot", search_volume: 245000, difficulty: 75, relevance_score: 89, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 45, kei: 3266, results: 3000000, maximum_reach: 2000000, sort_order: 6 },
+      { app_data_id: appDataId, keyword: "slots", search_volume: 320000, difficulty: 78, relevance_score: 95, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 45, kei: 4100, results: 45000, maximum_reach: 320000, sort_order: 7 },
+      { app_data_id: appDataId, keyword: "casino games", search_volume: 280000, difficulty: 75, relevance_score: 92, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 42, kei: 3733, results: 38000, maximum_reach: 280000, sort_order: 8 },
+      
+      // ═══════════════════════════════════════════════════════════════════════════
+      // COMPETITOR KEYWORDS - Targeting competitor searches
+      // ═══════════════════════════════════════════════════════════════════════════
+      { app_data_id: appDataId, keyword: "royal spin", search_volume: 12000, difficulty: 45, relevance_score: 95, category: "competitor" as const, priority: "high" as const, platform: "both" as const, recommended_field: "title" as const, brand: false, chance: 50, kei: 266, results: 500000, maximum_reach: 300000, sort_order: 9 },
+      { app_data_id: appDataId, keyword: "royal spin palace", search_volume: 8500, difficulty: 35, relevance_score: 98, category: "competitor" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "title" as const, brand: false, chance: 40, kei: 242, results: 300000, maximum_reach: 200000, sort_order: 10 },
+      
+      // ═══════════════════════════════════════════════════════════════════════════
+      // THEMATIC KEYWORDS - Egyptian theme specific
+      // ═══════════════════════════════════════════════════════════════════════════
+      { app_data_id: appDataId, keyword: "egyptian slots", search_volume: 38000, difficulty: 50, relevance_score: 93, category: "generic" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 66, kei: 760, results: 3200, maximum_reach: 38000, sort_order: 11 },
+      { app_data_id: appDataId, keyword: "pharaoh slots", search_volume: 62000, difficulty: 52, relevance_score: 94, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 68, kei: 1192, results: 5400, maximum_reach: 62000, sort_order: 12 },
+      { app_data_id: appDataId, keyword: "egypt slots", search_volume: 88000, difficulty: 58, relevance_score: 96, category: "generic" as const, priority: "high" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 65, kei: 1517, results: 8200, maximum_reach: 88000, sort_order: 13 },
+      { app_data_id: appDataId, keyword: "cleopatra slots", search_volume: 12000, difficulty: 20, relevance_score: 90, category: "generic" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 50, kei: 600, results: 800000, maximum_reach: 500000, sort_order: 14 },
+      { app_data_id: appDataId, keyword: "cleopatra casino", search_volume: 15000, difficulty: 38, relevance_score: 85, category: "generic" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 60, kei: 395, results: 3200, maximum_reach: 15000, sort_order: 15 },
+      { app_data_id: appDataId, keyword: "ancient treasure slots", search_volume: 25000, difficulty: 40, relevance_score: 88, category: "generic" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 58, kei: 625, results: 3500, maximum_reach: 25000, sort_order: 16 },
+      { app_data_id: appDataId, keyword: "pyramid slots", search_volume: 18000, difficulty: 35, relevance_score: 87, category: "generic" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 62, kei: 514, results: 2800, maximum_reach: 18000, sort_order: 17 },
+      { app_data_id: appDataId, keyword: "vegas", search_volume: 180000, difficulty: 70, relevance_score: 82, category: "generic" as const, priority: "medium" as const, platform: "both" as const, recommended_field: "keywords" as const, brand: false, chance: 30, kei: 2571, results: 2500000, maximum_reach: 1500000, sort_order: 18 },
+    ]
   }
 
   const getCharCount = (text: string | undefined, max: number) => {

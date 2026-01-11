@@ -378,6 +378,48 @@ export async function saveKeyword(keyword: Partial<AppKeyword> & { app_data_id: 
   }
 }
 
+export async function bulkSaveKeywords(keywords: Array<Omit<AppKeyword, 'id'> & { app_data_id: string }>) {
+  const supabase = await createClient()
+
+  try {
+    const keywordsToInsert = keywords.map((kw, index) => ({
+      app_data_id: kw.app_data_id,
+      keyword: kw.keyword,
+      search_volume: kw.search_volume || 0,
+      difficulty: kw.difficulty || 0,
+      relevance_score: kw.relevance_score || 0,
+      category: kw.category || "generic",
+      priority: kw.priority || "medium",
+      platform: kw.platform || "both",
+      recommended_field: kw.recommended_field,
+      brand: kw.brand ?? false,
+      chance: kw.chance ?? null,
+      kei: kw.kei ?? null,
+      results: kw.results ?? null,
+      growth_yesterday: kw.growth_yesterday ?? null,
+      monthly_downloads: kw.monthly_downloads ?? null,
+      maximum_reach: kw.maximum_reach ?? null,
+      conversion_rate: kw.conversion_rate ?? null,
+      sort_order: kw.sort_order ?? index,
+    }))
+
+    const { data, error } = await supabase
+      .from("app_keywords")
+      .insert(keywordsToInsert)
+      .select()
+
+    if (error) throw error
+
+    revalidatePath("/admin")
+    revalidatePath("/preview")
+
+    return { success: true, count: data?.length || 0 }
+  } catch (error) {
+    console.error("Error bulk saving keywords:", error)
+    return { success: false, error: String(error) }
+  }
+}
+
 export async function deleteKeyword(keywordId: string) {
   const supabase = await createClient()
 

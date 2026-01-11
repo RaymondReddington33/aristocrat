@@ -325,26 +325,32 @@ export default function AdminPanel() {
       download_count: "1M+",
       app_icon_url: "/images/casino-icon.jpg",
 
-      // iOS specific
-      ios_app_name: "RedRain Slots Casino: Egyptian Riches",
-      ios_subtitle: "Premium Slots Adventure",
+      // iOS specific - ASO 2026 optimized: NO repetitions between Title, Subtitle, Keywords
+      // Title: Brand + core theme (Egyptian Riches)
+      // Subtitle: Value proposition (Premium Adventure)
+      // Keywords: Supporting terms NOT in title/subtitle
+      ios_app_name: "RedRain: Egyptian Riches",
+      ios_subtitle: "Premium Adventure Games",
       ios_description:
         "Embark on an epic slot adventure in Ancient Egypt! Unlock your fortune with premium 3D graphics, epic bonus rounds, and massive jackpots. Enjoy daily free spins, treasure chest levels, and pharaoh-inspired jackpot tables. RedRain offers a social casino experience without real betting (\"play for fun\"), with millions of free coins to start and achievement rewards. Play now and become a legend among the Egyptian gods!\n\nKEY FEATURES\n• Premium Egyptian-Themed Slot Games\n• Massive Jackpots & Daily Rewards\n• Epic Bonus Rounds & Treasure Chests\n• Stunning 3D Graphics & Smooth Gameplay\n• Daily Free Spins & Multipliers\n• Social Casino Fun - Play with Friends\n• No Real Money Required\n\nWHY PLAYERS LOVE US\n✓ Premium Quality 3D Graphics\n✓ Generous Daily Bonuses\n✓ Regular New Egyptian Slots\n✓ Smooth Performance\n✓ Social Features & Achievements\n\nCall to Action: \"Unlock Your Fortune\", \"Spin to Win\", \"Join the Adventure\"\n\nFor entertainment purposes only. No real money gambling. In-app purchases available.",
       ios_promotional_text:
         "Double Fortune Weekend: Get double free spins today!",
-      ios_keywords: "slots,casino,free slots,jackpot,egyptian slots,bonus spins",
+      ios_keywords: "pharaoh,cleopatra,fortune wheel,jackpot,treasure,ancient",
       ios_whats_new:
         "Discover new Egyptian slots and improvements! Optimised performance, minor bug fixes, and special launch bonuses.",
       ios_support_url: "https://support.redrain.com",
       ios_marketing_url: "https://redrain.com",
       ios_privacy_url: "https://redrain.com/privacy",
 
-      // Android specific
-      android_app_name: "RedRain Slots Casino",
+      // Android specific - ASO 2026 optimized: Limited repetitions (max 2-3 times per keyword)
+      // Title: Brand + category
+      // Short Description: Core value prop (uses synonyms, not exact repetition)
+      // Long Description: Detailed with semantic variations
+      android_app_name: "RedRain Casino: Fortune Games",
       android_short_description:
-        "Egyptian-themed slot machine with HUGE jackpots – unlock free spins and bonus gold!",
+        "Premium Egyptian-themed slots with massive rewards – spin legendary reels and unlock treasures!",
       android_full_description:
-        "Dive into the wealth of ancient Egypt without spending real money. RedRain Slots Casino offers a free slot adventure with premium graphics, mythological characters, and daily rewards. Spin the pharaoh-inspired wheels, Cleopatra and Osiris, to win free spins, bonus coins, and millennial jackpots.\n\nHIGHLIGHTS:\n• Themed Slots (Pharaoh's Fortune, Cleopatra's Eye) with animated scenes\n• Daily Bonuses and Missions that unlock treasure chests\n• Free Spin Storms and Epic Multipliers\n• Social Network Connection to share achievements\n\nDownload now and start your journey to fortune!\n\nFor entertainment purposes only. No real money gambling. In-app purchases available.",
+        "Discover the wealth of ancient Egypt through premium slot experiences. RedRain Casino delivers thrilling gameplay featuring pharaohs, pyramids, and legendary treasures. Enjoy daily bonuses, fortune wheels, and epic multipliers without spending real money. This social gaming experience offers premium graphics, mythological characters, and rewarding missions.\n\nHIGHLIGHTS:\n• Themed Slots (Pharaoh's Fortune, Cleopatra's Eye) with animated scenes\n• Daily Rewards and Missions that unlock treasure chests\n• Bonus Rounds and Epic Multipliers\n• Social Network Connection to share achievements\n\nDownload now and start your journey to fortune!\n\nFor entertainment purposes only. No real money gambling. In-app purchases available.",
       android_promo_text:
         "Double Coins Weekend!",
       android_recent_changes:
@@ -375,6 +381,8 @@ export default function AdminPanel() {
         "iOS-Specific Considerations:\n• Respect age limit (17+) indicating \"+17\" in description\n• Do not use suggestive icons or text\n• Do not include \"Free\" or real currency symbols in title/subtitle\n• Promotional Text will appear before images, use as hook\n• Comply with privacy policy by uploading corresponding URL\n\nRecommended Disclaimer Text:\n'For entertainment purposes only. No real money gambling. In-app purchases available.'\n\nKey Compliance Points:\n• Clear 'just for fun' messaging\n• No real money claims\n• Appropriate age rating (17+)\n• Transparent about in-app purchases",
       creative_brief_asa_strategy:
         "Segmentation by groups: Create ad groups by keyword type – (a) Brand (e.g., RedRain, RoyalSpin), (b) Competition (Royal Spin Casino, Cleopatra Slots), (c) Generic terms (slots, jackpot, casino game).\n\nAligned Creativity: Use creatives (images and copies) consistent with Store Page (message \"Unlock Your Fortune\"). Align visual texts with keywords of each ad to improve CTR. For example, \"jackpot\" ads can show a large jackpot cage with corresponding screenshot text.\n\nPPC/Bids: Start with exact match and broad match modifier, moderate bids. Use tools (Search Ads) to exclude irrelevant keywords.\n\nKPIs and Optimisation: Measure TTR (Tap-Through-Rate) and CPT (Cost per Tap), reallocate budget to best-performing ads. Apply best practices: custom product pages (CPP) improve relevance and conversions. Continue adjusting bids based on performance.",
+      creative_brief_cross_locations_strategy:
+        "Multi-market approach for UK, US, CA, AU, and European markets:\n\n• Primary Market (UK): Focus on \"fortune\", \"premium\", British English spelling\n• US Market: Adapt messaging for \"jackpot\", \"casino slots\", American English\n• Localization Strategy: Core creative remains consistent (Egyptian theme), but adapt:\n  - Currency symbols (£ for UK, $ for US)\n  - Cultural references (adjust timing for regional events)\n  - Language variants (en-GB vs en-US)\n• Budget Allocation: 40% UK, 30% US, 15% CA, 10% AU, 5% Europe\n• CPP Strategy: Create market-specific Custom Product Pages for top 3 markets (UK, US, CA)\n• Performance Monitoring: Track market-specific KPIs and adjust budget based on ROI per location",
       
       // ASA Keyword Groups (structured campaign data)
       creative_brief_asa_keyword_groups: [

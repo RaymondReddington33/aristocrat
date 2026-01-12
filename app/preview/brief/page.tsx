@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ExportButtons } from "@/components/export-buttons"
+import { AdminLink } from "@/components/admin-link"
 import Link from "next/link"
 import Image from "next/image"
 import { redirect } from "next/navigation"
@@ -50,9 +50,9 @@ export default async function CreativeBriefPreview({ searchParams }: { searchPar
               ← Back to previews
             </Link>
           </div>
-          <Button asChild size="sm" variant="outline">
-            <Link href="/admin">Edit Brief</Link>
-          </Button>
+          <AdminLink href="/admin" size="sm" variant="outline">
+            Edit Brief
+          </AdminLink>
         </div>
       </div>
 

@@ -49,14 +49,47 @@ export default function Home() {
         if (user?.email) {
           const role = getEffectiveRole(user.email)
           setUserRole(role)
+        } else {
+          // If no user, check localStorage for role override
+          const roleOverride = typeof window !== "undefined" ? localStorage.getItem("roleOverride") : null
+          if (roleOverride === "test_reviewer") {
+            setUserRole("test_reviewer")
+          }
         }
       } catch (error) {
         console.error("Error checking role:", error)
+        // Default to reviewer if error (safer)
+        setUserRole("test_reviewer")
       }
     }
     
     if (isMounted) {
       checkRole()
+      
+      // Listen for auth changes
+      const supabase = createClient()
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        // Check supervisor session first
+        const supervisorSession = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("supervisor_session="))
+        
+        if (supervisorSession && supervisorSession.includes("supervisor_")) {
+          setUserRole("test_reviewer")
+          return
+        }
+        
+        const authUser = session?.user ? { email: session.user.email } : null
+        if (authUser?.email) {
+          setUserRole(getEffectiveRole(authUser.email))
+        } else {
+          setUserRole(null)
+        }
+      })
+
+      return () => {
+        subscription.unsubscribe()
+      }
     }
   }, [isMounted])
   return (

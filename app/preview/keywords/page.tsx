@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { KeywordResearchSection } from "@/components/keyword-research-section"
 import { KeywordResearchUpload } from "@/components/keyword-research-upload"
+import { AdminLink } from "@/components/admin-link"
 import { Search, FileSpreadsheet, Target } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
@@ -33,9 +33,9 @@ export default async function KeywordsPreview({ searchParams }: { searchParams?:
               ← Back to previews
             </Link>
           </div>
-          <Button asChild size="sm" variant="outline">
-            <Link href="/admin">Edit Keywords</Link>
-          </Button>
+          <AdminLink href="/admin" size="sm" variant="outline">
+            Edit Keywords
+          </AdminLink>
         </div>
       </div>
 

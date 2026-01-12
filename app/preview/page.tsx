@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { AdminLink } from "@/components/admin-link"
 import { Apple, Smartphone, FileText, Settings, Search } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
 
@@ -31,23 +32,17 @@ export default async function PreviewSelector() {
               <Button asChild variant="outline" className="w-full sm:w-auto bg-transparent">
                 <Link href="/">Home</Link>
               </Button>
-              <Button asChild variant="outline" className="w-full sm:w-auto bg-transparent">
-                <Link href="/admin">
-                  <Settings className="mr-2 h-4 w-4" />
-                  Admin Panel
-                </Link>
-              </Button>
+              <AdminLink href="/admin" variant="outline" className="w-full sm:w-auto bg-transparent">
+                <Settings className="mr-2 h-4 w-4" />
+                Admin Panel
+              </AdminLink>
             </div>
           </div>
 
           {!hasData && (
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-8 text-center">
               <p className="text-amber-800 text-sm">
-                No app data found. Please{" "}
-                <Link href="/admin" className="underline font-medium">
-                  configure your app details
-                </Link>{" "}
-                in the admin panel first.
+                No app data found. Please contact the administrator to configure app details.
               </p>
             </div>
           )}

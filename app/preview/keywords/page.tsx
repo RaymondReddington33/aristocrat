@@ -69,26 +69,65 @@ export default async function KeywordsPreview({ searchParams }: { searchParams?:
 
         {/* Full Keyword Research Section */}
         {keywordResearchData.length > 0 && (
-          <Card>
-            <CardHeader>
+          <Card className="mt-8 border-2 border-purple-200">
+            <CardHeader className="bg-gradient-to-r from-purple-50 to-indigo-50">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-purple-100">
-                  <FileSpreadsheet className="h-5 w-5 text-purple-600" />
+                <div className="p-3 rounded-lg bg-purple-100">
+                  <FileSpreadsheet className="h-6 w-6 text-purple-600" />
                 </div>
                 <div>
-                  <CardTitle>Complete Keyword Research (Reference)</CardTitle>
-                  <CardDescription>
-                    Full keyword research data showing the analysis methodology and all researched keywords
+                  <CardTitle className="text-xl">Complete Keyword Research (Reference)</CardTitle>
+                  <CardDescription className="text-base">
+                    Full keyword research data showing the analysis methodology and all {keywordResearchData.length} researched keywords
                   </CardDescription>
                 </div>
               </div>
+              
+              {/* Summary Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <p className="text-2xl font-bold text-purple-600">{keywordResearchData.length}</p>
+                  <p className="text-sm text-slate-600">Total Keywords</p>
+                </div>
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <p className="text-2xl font-bold text-blue-600">
+                    {keywordResearchData.filter(k => k.category === 'branded').length}
+                  </p>
+                  <p className="text-sm text-slate-600">Branded</p>
+                </div>
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <p className="text-2xl font-bold text-green-600">
+                    {keywordResearchData.filter(k => k.category === 'generic').length}
+                  </p>
+                  <p className="text-sm text-slate-600">Generic</p>
+                </div>
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <p className="text-2xl font-bold text-red-600">
+                    {keywordResearchData.filter(k => k.category === 'competitor').length}
+                  </p>
+                  <p className="text-sm text-slate-600">Competitor</p>
+                </div>
+              </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
               <KeywordResearchUpload
                 data={keywordResearchData}
                 onChange={() => {}}
                 editable={false}
               />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* No Keyword Research Data Message */}
+        {keywordResearchData.length === 0 && (
+          <Card className="mt-8 border-dashed border-2 border-slate-300">
+            <CardContent className="py-12 text-center">
+              <FileSpreadsheet className="h-12 w-12 mx-auto mb-4 text-slate-300" />
+              <p className="text-slate-500">No keyword research data uploaded yet.</p>
+              <p className="text-sm text-slate-400 mt-2">
+                The admin can upload a CSV with the complete keyword research in the Admin panel.
+              </p>
             </CardContent>
           </Card>
         )}

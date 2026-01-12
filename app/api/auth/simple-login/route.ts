@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       const sessionToken = `supervisor_${Date.now()}_${Math.random().toString(36).substring(7)}`
       
       cookieStore.set("supervisor_session", sessionToken, {
-        httpOnly: true,
+        httpOnly: false, // Must be false so client-side JS can read it
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         maxAge: 60 * 60 * 24 * 7, // 7 days

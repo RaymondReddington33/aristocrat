@@ -61,18 +61,41 @@ export function Navbar() {
     setIsMounted(true)
   }, [])
 
+  // Helper function to check supervisor session
+  const checkSupervisorSession = (): boolean => {
+    if (typeof document === "undefined") return false
+    try {
+      const allCookies = document.cookie
+      const supervisorSession = allCookies
+        .split("; ")
+        .find((row) => row.trim().startsWith("supervisor_session="))
+      
+      if (supervisorSession) {
+        const value = supervisorSession.split("=")[1]
+        const hasSupervisorSession = value && value.startsWith("supervisor_")
+        console.log("[Navbar] Supervisor session check:", { 
+          found: !!supervisorSession, 
+          value: value?.substring(0, 20) + "...", 
+          hasSupervisor: hasSupervisorSession 
+        })
+        return hasSupervisorSession
+      }
+      return false
+    } catch (error) {
+      console.error("Error checking supervisor session:", error)
+      return false
+    }
+  }
+
   useEffect(() => {
     // Check auth state
     const checkAuth = async () => {
       try {
         // Check for supervisor session first
-        const supervisorSession = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("supervisor_session="))
-        
-        if (supervisorSession && supervisorSession.includes("supervisor_")) {
+        if (checkSupervisorSession()) {
           setUser({ email: "laura@supervisor", username: "Laura" })
           setUserRole("test_reviewer")
+          console.log("[Navbar] Supervisor session detected - role set to test_reviewer")
           return
         }
         
@@ -92,13 +115,30 @@ export function Navbar() {
         
         // Listen for role override changes
         const handleStorageChange = () => {
+          // Re-check supervisor session on storage change
+          if (checkSupervisorSession()) {
+            setUser({ email: "laura@supervisor", username: "Laura" })
+            setUserRole("test_reviewer")
+            return
+          }
           if (authUserObj?.email) {
             setUserRole(getEffectiveRole(authUserObj.email))
           }
         }
         
         window.addEventListener("storage", handleStorageChange)
-        return () => window.removeEventListener("storage", handleStorageChange)
+        // Also check periodically for supervisor session changes
+        const intervalId = setInterval(() => {
+          if (checkSupervisorSession() && userRole !== "test_reviewer") {
+            setUser({ email: "laura@supervisor", username: "Laura" })
+            setUserRole("test_reviewer")
+          }
+        }, 1000) // Check every second
+        
+        return () => {
+          window.removeEventListener("storage", handleStorageChange)
+          clearInterval(intervalId)
+        }
       } catch (error) {
         console.error("Error checking auth:", error)
       }
@@ -111,11 +151,7 @@ export function Navbar() {
       const supabase = createClient()
       const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
         // Check supervisor session first
-        const supervisorSession = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("supervisor_session="))
-        
-        if (supervisorSession && supervisorSession.includes("supervisor_")) {
+        if (checkSupervisorSession()) {
           setUser({ email: "laura@supervisor", username: "Laura" })
           setUserRole("test_reviewer")
           return
@@ -134,7 +170,7 @@ export function Navbar() {
         subscription.unsubscribe()
       }
     }
-  }, [isMounted])
+  }, [isMounted, userRole])
 
   useEffect(() => {
     // Fetch all apps for selector with retry logic

@@ -29,17 +29,40 @@ export default function Home() {
   const [userRole, setUserRole] = useState<"test_owner" | "test_reviewer" | null>(null)
   const [isMounted, setIsMounted] = useState(false)
 
+  // Helper function to check supervisor session
+  const checkSupervisorSession = (): boolean => {
+    if (typeof document === "undefined") return false
+    try {
+      const allCookies = document.cookie
+      const supervisorSession = allCookies
+        .split("; ")
+        .find((row) => row.trim().startsWith("supervisor_session="))
+      
+      if (supervisorSession) {
+        const value = supervisorSession.split("=")[1]
+        const hasSupervisorSession = value && value.startsWith("supervisor_")
+        console.log("[Home] Supervisor session check:", { 
+          found: !!supervisorSession, 
+          value: value?.substring(0, 20) + "...", 
+          hasSupervisor: hasSupervisorSession 
+        })
+        return hasSupervisorSession
+      }
+      return false
+    } catch (error) {
+      console.error("Error checking supervisor session:", error)
+      return false
+    }
+  }
+
   useEffect(() => {
     setIsMounted(true)
     const checkRole = async () => {
       try {
         // Check for supervisor session first
-        const supervisorSession = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("supervisor_session="))
-        
-        if (supervisorSession && supervisorSession.includes("supervisor_")) {
+        if (checkSupervisorSession()) {
           setUserRole("test_reviewer")
+          console.log("[Home] Supervisor session detected - role set to test_reviewer")
           return
         }
         
@@ -50,16 +73,11 @@ export default function Home() {
           const role = getEffectiveRole(user.email)
           setUserRole(role)
         } else {
-          // If no user, check localStorage for role override
-          const roleOverride = typeof window !== "undefined" ? localStorage.getItem("roleOverride") : null
-          if (roleOverride === "test_reviewer") {
-            setUserRole("test_reviewer")
-          }
+          setUserRole(null)
         }
       } catch (error) {
         console.error("Error checking role:", error)
-        // Default to reviewer if error (safer)
-        setUserRole("test_reviewer")
+        setUserRole(null)
       }
     }
     
@@ -70,11 +88,7 @@ export default function Home() {
       const supabase = createClient()
       const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
         // Check supervisor session first
-        const supervisorSession = document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("supervisor_session="))
-        
-        if (supervisorSession && supervisorSession.includes("supervisor_")) {
+        if (checkSupervisorSession()) {
           setUserRole("test_reviewer")
           return
         }
@@ -87,11 +101,19 @@ export default function Home() {
         }
       })
 
+      // Also check periodically for supervisor session changes
+      const intervalId = setInterval(() => {
+        if (checkSupervisorSession() && userRole !== "test_reviewer") {
+          setUserRole("test_reviewer")
+        }
+      }, 1000) // Check every second
+
       return () => {
         subscription.unsubscribe()
+        clearInterval(intervalId)
       }
     }
-  }, [isMounted])
+  }, [isMounted, userRole])
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-white to-slate-50 flex flex-col">
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">

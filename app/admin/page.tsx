@@ -718,6 +718,61 @@ export default function AdminPanel() {
       creative_brief_cross_locations_strategy:
         "MULTI-MARKET LOCALISATION STRATEGY\n\n[UK] UNITED KINGDOM (Primary - 40% budget)\n- Language: British English\n- Currency: GBP\n- Focus keywords: fortune, premium, treasure\n- Cultural notes: Avoid 'gambling' terminology\n- Local events: Bank holidays, Royal occasions\n\n[US] UNITED STATES (Secondary - 30% budget)\n- Language: American English\n- Currency: USD\n- Focus keywords: jackpot, casino slots, Vegas\n- Cultural notes: More direct CTAs accepted\n- Local events: July 4th, Thanksgiving, Super Bowl\n\n[CA] CANADA (Tertiary - 15% budget)\n- Language: English (mix UK/US accepted)\n- Currency: CAD\n- Notes: Stricter gambling advertising laws\n\n[AU] AUSTRALIA (10% budget)\n- Language: Australian English\n- Currency: AUD\n- Notes: Responsible gambling messaging required\n\n[EU] EUROPE (5% budget)\n- Markets: DE, FR, IT, ES\n- Approach: English-first, consider localisation\n\nCPP (CUSTOM PRODUCT PAGES) STRATEGY\n\n- CPP-UK: British English, GBP pricing, UK testimonials\n- CPP-US: American English, USD pricing, Vegas references\n- CPP-Generic: Neutral English, universal appeal",
       
+      // Negative Keywords - Exclude irrelevant or harmful terms
+      negative_keywords: [
+        "hack",
+        "mod apk",
+        "cheat",
+        "free download",
+        "unlimited coins",
+        "unlimited spins",
+        "real money",
+        "cash out",
+        "withdraw",
+        "deposit",
+        "bet real money",
+        "gamble money",
+        "win cash",
+        "earn money",
+        "make money",
+        "payout",
+        "prize money",
+        "lottery",
+        "sports betting",
+        "poker",
+        "blackjack",
+        "roulette",
+        "baccarat",
+        "craps",
+        "sportsbook",
+        "online betting",
+        "casino online real money",
+        "gambling addiction",
+        "problem gambling",
+        "underage",
+        "kid",
+        "child",
+        "teen",
+        "for kids",
+        "educational",
+        "learning",
+        "tutorial",
+        "how to",
+        "guide",
+        "review",
+        "comparison",
+        "vs",
+        "alternative",
+        "competitor",
+        "better than",
+        "scam",
+        "fraud",
+        "fake",
+        "virus",
+        "malware",
+        "spyware",
+      ],
+      
       // ASA Keyword Groups (structured campaign data)
       // Note: Competitor keywords have LOW bids - we won't outrank brand owners
       creative_brief_asa_keyword_groups: [
@@ -2056,6 +2111,42 @@ export default function AdminPanel() {
                   onChange={(data) => handleAutoSaveField("keyword_research_data", data)}
                   editable={true}
                 />
+              </CardContent>
+            </Card>
+
+            {/* Negative Keywords */}
+            <Card>
+              <CardHeader>
+                <div>
+                  <CardTitle>Negative Keywords</CardTitle>
+                  <CardDescription>
+                    Keywords to exclude from targeting. Enter one keyword per line or separated by commas.
+                  </CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <Textarea
+                    placeholder="Enter negative keywords, one per line or separated by commas&#10;Example:&#10;free download&#10;hack&#10;mod apk"
+                    value={Array.isArray(appData.negative_keywords) ? appData.negative_keywords.join("\n") : ""}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      const keywords = value
+                        .split(/[,\n]/)
+                        .map(k => k.trim())
+                        .filter(k => k.length > 0)
+                      handleAutoSaveField("negative_keywords", keywords)
+                    }}
+                    rows={8}
+                    disabled={isReadOnly}
+                    className="font-mono text-sm"
+                  />
+                  {Array.isArray(appData.negative_keywords) && appData.negative_keywords.length > 0 && (
+                    <div className="text-sm text-slate-600">
+                      {appData.negative_keywords.length} negative keyword{appData.negative_keywords.length !== 1 ? "s" : ""} configured
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

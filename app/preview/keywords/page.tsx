@@ -113,6 +113,37 @@ export default async function KeywordsPreview({ searchParams }: { searchParams?:
             </CardContent>
           </Card>
         )}
+
+        {/* Negative Keywords Section */}
+        {appData.negative_keywords && Array.isArray(appData.negative_keywords) && appData.negative_keywords.length > 0 && (
+          <Card className="mt-8 border-2 border-red-200">
+            <CardHeader className="bg-gradient-to-r from-red-50 to-orange-50">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-lg bg-red-100">
+                  <Search className="h-6 w-6 text-red-600" />
+                </div>
+                <div>
+                  <CardTitle className="text-xl">Negative Keywords</CardTitle>
+                  <CardDescription className="text-base">
+                    Keywords to exclude from targeting - {appData.negative_keywords.length} negative keywords
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                {appData.negative_keywords.map((keyword, index) => (
+                  <div 
+                    key={index} 
+                    className="px-4 py-2 bg-red-50 rounded-md border border-red-200 hover:bg-red-100 transition-colors"
+                  >
+                    <span className="text-sm font-medium text-red-900">{keyword}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   )

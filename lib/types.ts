@@ -99,6 +99,9 @@ export interface AppData {
     recommended_field: string
   }>
 
+  // Negative Keywords (keywords to exclude)
+  negative_keywords?: string[]
+
   is_published: boolean
 }
 

@@ -7,6 +7,51 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Image from "next/image"
 
+// Helper function to compress image
+const compressImage = (file: File, maxWidth: number = 1200, maxHeight: number = 1200, quality: number = 0.8): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const img = new window.Image()
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        let width = img.width
+        let height = img.height
+
+        // Calculate new dimensions
+        if (width > height) {
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width
+            width = maxWidth
+          }
+        } else {
+          if (height > maxHeight) {
+            width = (width * maxHeight) / height
+            height = maxHeight
+          }
+        }
+
+        canvas.width = width
+        canvas.height = height
+
+        const ctx = canvas.getContext('2d')
+        if (!ctx) {
+          reject(new Error('Could not get canvas context'))
+          return
+        }
+
+        ctx.drawImage(img, 0, 0, width, height)
+        const compressedDataUrl = canvas.toDataURL('image/jpeg', quality)
+        resolve(compressedDataUrl)
+      }
+      img.onerror = reject
+      img.src = e.target?.result as string
+    }
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
 interface VisualReferencesUploadProps {
   images: string[]
   onImagesChange: (images: string[]) => void
@@ -15,10 +60,11 @@ interface VisualReferencesUploadProps {
 
 export function VisualReferencesUpload({ images, onImagesChange, maxImages = 10 }: VisualReferencesUploadProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
+  const [isDraggingFiles, setIsDraggingFiles] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [previewIndex, setPreviewIndex] = useState<number | null>(null)
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
     const remainingSlots = maxImages - images.length
     
@@ -28,22 +74,26 @@ export function VisualReferencesUpload({ images, onImagesChange, maxImages = 10 
 
     const filesToProcess = files.slice(0, remainingSlots)
     const newImageUrls: string[] = []
-    let loadedCount = 0
 
-    filesToProcess.forEach((file) => {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        const imageUrl = reader.result as string
-        newImageUrls.push(imageUrl)
-        loadedCount++
-        
-        // When all images are loaded, update state once with all new images
-        if (loadedCount === filesToProcess.length) {
-          onImagesChange([...images, ...newImageUrls])
+    try {
+      // Compress and process all images
+      for (const file of filesToProcess) {
+        // Check file size (max 10MB before compression)
+        if (file.size > 10 * 1024 * 1024) {
+          console.warn(`File ${file.name} is too large (${(file.size / 1024 / 1024).toFixed(2)}MB), compressing...`)
         }
+        
+        // Compress image to reduce base64 size
+        const compressedImage = await compressImage(file, 1200, 1200, 0.75)
+        newImageUrls.push(compressedImage)
       }
-      reader.readAsDataURL(file)
-    })
+
+      // Update state with all compressed images at once
+      onImagesChange([...images, ...newImageUrls])
+    } catch (error) {
+      console.error("Error processing images:", error)
+      alert("Error processing images. Please try again with smaller files.")
+    }
 
     // Reset input
     if (fileInputRef.current) {
@@ -64,6 +114,34 @@ export function VisualReferencesUpload({ images, onImagesChange, maxImages = 10 
   const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault()
     e.dataTransfer.dropEffect = "move"
+  }
+
+  const handleFileDrop = async (e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDraggingFiles(false)
+    
+    const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'))
+    if (files.length === 0) return
+
+    const remainingSlots = maxImages - images.length
+    if (remainingSlots <= 0) return
+
+    const filesToProcess = files.slice(0, remainingSlots)
+    const newImageUrls: string[] = []
+
+    try {
+      for (const file of filesToProcess) {
+        if (file.size > 10 * 1024 * 1024) {
+          console.warn(`File ${file.name} is too large, compressing...`)
+        }
+        const compressedImage = await compressImage(file, 1200, 1200, 0.75)
+        newImageUrls.push(compressedImage)
+      }
+      onImagesChange([...images, ...newImageUrls])
+    } catch (error) {
+      console.error("Error processing dropped images:", error)
+      alert("Error processing images. Please try again with smaller files.")
+    }
   }
 
   const handleDrop = (e: React.DragEvent, dropIndex: number) => {
@@ -90,8 +168,18 @@ export function VisualReferencesUpload({ images, onImagesChange, maxImages = 10 
       {/* Upload Button */}
       {images.length < maxImages && (
         <div
-          className="border-2 border-dashed border-slate-300 rounded-lg p-6 hover:border-slate-400 transition-colors cursor-pointer bg-slate-50"
+          className={`border-2 border-dashed rounded-lg p-6 transition-colors cursor-pointer ${
+            isDraggingFiles 
+              ? 'border-purple-500 bg-purple-50' 
+              : 'border-slate-300 hover:border-slate-400 bg-slate-50'
+          }`}
           onClick={() => fileInputRef.current?.click()}
+          onDragOver={(e) => {
+            e.preventDefault()
+            setIsDraggingFiles(true)
+          }}
+          onDragLeave={() => setIsDraggingFiles(false)}
+          onDrop={handleFileDrop}
         >
           <div className="flex flex-col items-center justify-center gap-2">
             <Upload className="h-8 w-8 text-slate-400" />

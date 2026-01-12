@@ -283,7 +283,10 @@ export default function AdminPanel() {
     return Object.keys(errors).length === 0
   }
 
-  const handleInputChange = useCallback((field: keyof AppData, value: string | number | boolean | string[] | any) => {
+  const handleInputChange = useCallback(async (field: keyof AppData, value: string | number | boolean | string[] | any) => {
+    // Fields that should auto-save immediately
+    const autoSaveFields = ["creative_brief_visual_references", "keyword_research_data", "app_icon_url"]
+    
     setAppData((prev) => {
       const newData = { ...prev, [field]: value }
       // Clear validation error for this field
@@ -294,9 +297,29 @@ export default function AdminPanel() {
           return newErrors
         })
       }
+      
+      // Auto-save for special fields (images, keyword research)
+      if (autoSaveFields.includes(field)) {
+        // Use setTimeout to ensure state is updated before saving
+        setTimeout(async () => {
+          const dataToSave = { ...newData }
+          const result = await saveAppData(dataToSave, appId)
+          if (result.success) {
+            console.log(`[handleInputChange] Auto-saved ${field}`)
+            if (!appId && result.id) {
+              setAppId(result.id)
+              localStorage.setItem("selectedAppId", result.id)
+            }
+            setLastSaved(new Date())
+          } else {
+            console.error(`[handleInputChange] Failed to auto-save ${field}:`, result.error)
+          }
+        }, 100)
+      }
+      
       return newData
     })
-  }, [validationErrors])
+  }, [validationErrors, appId])
 
   // Load apps list
   const loadApps = useCallback(async () => {
@@ -583,12 +606,12 @@ export default function AdminPanel() {
       ios_app_name: "RedRain: Egyptian Riches Slots", // 30 chars ✅ 100%
       ios_subtitle: "Premium Adventure & Fortune", // 27 chars - Value prop, zero repetition
       ios_description:
-        "Embark on an epic slot adventure in Ancient Egypt! Unlock your fortune with premium 3D graphics, epic bonus rounds, and massive jackpots. Enjoy daily free spins, treasure chest levels, and pharaoh-inspired jackpot tables.\n\nRedRain offers a social casino experience without real betting (\"play for fun\"), with millions of free coins to start and achievement rewards. Play now and become a legend among the Egyptian gods!\n\n═══════════════════════════════════════\nKEY FEATURES\n═══════════════════════════════════════\n• Premium Egyptian-Themed Slot Games\n• Massive Jackpots & Daily Rewards\n• Epic Bonus Rounds & Treasure Chests\n• Stunning 3D Graphics & Smooth Gameplay\n• Daily Free Spins & Multipliers\n• Social Casino Fun - Play with Friends\n• No Real Money Required\n\n═══════════════════════════════════════\nWHY PLAYERS LOVE US\n═══════════════════════════════════════\n✓ Premium Quality 3D Graphics\n✓ Generous Daily Bonuses\n✓ Regular New Egyptian Slots\n✓ Smooth Performance on All Devices\n✓ Social Features & Achievements\n✓ Offline Play Available\n\n═══════════════════════════════════════\nCALL TO ACTION\n═══════════════════════════════════════\n\"Unlock Your Fortune\" • \"Spin to Win\" • \"Join the Adventure\"\n\n▼ DISCLAIMER ▼\nFor entertainment purposes only. No real money gambling. In-app purchases available. Must be 17+ to play.",
+        "Step into the world of Ancient Egypt, claim your 5 MILLION FREE VIRTUAL COINS, and enjoy free virtual spins on amazing online slot machines! You must be 17+ to access this game. This game does not offer gambling or an opportunity to win real money or prizes. Practice or success at social gaming does not imply future success at gambling.\n\nRedRain Casino includes both 5-reel and 3-reel classic virtual slot machines for a free social casino experience like no other! The creators bring you a collection of Egyptian-themed social casino games that you love!\n\nSlot machines straight to your phone:\n- Watch the virtual big wins erupt in Pharaoh's Fortune slots\n- Enter the exotic world of Cleopatra's Palace\n- Strike gold with virtual huge Jackpots in Pyramid Treasures\n\nThe best virtual bonuses of any online slots game! With RedRain Casino, the more you spin, the more you win! No other social casino slots game offers what we do, with MEGA virtual bonuses every day, hour, and 15 MINUTES! Spin the jackpot wheel every day and get your virtual rewards!\n\nYour Privacy Rights: https://redrain.com/privacy",
       ios_promotional_text:
-        "🎰 DOUBLE FORTUNE WEEKEND: Get 2x free spins + bonus coins today only!",
-      ios_keywords: "pharaoh,cleopatra,fortune,jackpot,treasure,ancient,pyramid,sphinx,legend,reward,wheel,prize,charm", // 97 chars ✅
+        "DOUBLE FORTUNE WEEKEND: Get 2x free spins plus bonus coins today only!",
+      ios_keywords: "pharaoh,cleopatra,fortune,jackpot,treasure,ancient,pyramid,sphinx,legend,reward,wheel,prize,charm", // 97 chars
       ios_whats_new:
-        "🆕 Version 3.2.0\n• NEW: Royal Pharaoh's Chamber slot with 50 paylines\n• NEW: Daily Fortune Wheel with bigger rewards\n• IMPROVED: Faster loading times\n• FIXED: Minor bugs and stability improvements\n• BONUS: Special launch rewards for all players!",
+        "Version 3.2.0\n- NEW: Royal Pharaoh's Chamber slot with 50 paylines\n- NEW: Daily Fortune Wheel with bigger rewards\n- IMPROVED: Faster loading times\n- FIXED: Minor bugs and stability improvements\n- BONUS: Special launch rewards for all players!",
       ios_support_url: "https://support.redrain.com",
       ios_marketing_url: "https://redrain.com",
       ios_privacy_url: "https://redrain.com/privacy",
@@ -605,11 +628,11 @@ export default function AdminPanel() {
       android_short_description:
         "Premium Egyptian-themed slots with massive rewards – spin legendary reels today!", // 80 chars ✅ 100%
       android_full_description:
-        "Discover the wealth of ancient Egypt through premium slot experiences. RedRain Casino delivers thrilling gameplay featuring pharaohs, pyramids, and legendary treasures.\n\n═══════════════════════════════════════\n🎰 EXPERIENCE THE MAGIC OF EGYPT\n═══════════════════════════════════════\nEnjoy daily bonuses, fortune wheels, and epic multipliers without spending real money. This social gaming experience offers premium graphics, mythological characters, and rewarding missions.\n\n═══════════════════════════════════════\n✨ GAME HIGHLIGHTS\n═══════════════════════════════════════\n• Themed Slots (Pharaoh's Fortune, Cleopatra's Eye, Sphinx's Secret)\n• Daily Rewards and Missions that unlock treasure chests\n• Bonus Rounds with Epic Multipliers up to 1000x\n• Social Network Connection to share achievements\n• Regular new content updates\n• Works offline - play anywhere!\n\n═══════════════════════════════════════\n🏆 WHY MILLIONS CHOOSE REDRAIN\n═══════════════════════════════════════\n✓ Premium 3D graphics and animations\n✓ Fair gameplay mechanics\n✓ Generous daily bonuses\n✓ Active community of players\n✓ 24/7 customer support\n\nDownload now and start your journey to fortune!\n\n▼ DISCLAIMER ▼\nFor entertainment purposes only. No real money gambling. In-app purchases available. Must be 17+ to play.",
+        "Step into the world of Ancient Egypt, claim your 5 MILLION FREE VIRTUAL COINS, and enjoy free virtual spins on amazing online slot machines in this slots paradise! You must be 17+ to access this game. This game does not offer gambling or an opportunity to win real money or prizes. Practice or success at social gaming does not imply future success at gambling.\n\nRedRain Casino includes both 5-reel and 3-reel 777 classic virtual slot machines for a free social casino experience like no other!\n\nEXPERIENCE THE MAGIC OF EGYPT\n\nSlot machines from Egyptian-style casinos, straight to your phone:\n- Watch the virtual big wins erupt in Pharaoh's Fortune slots\n- Enter the exotic world of Cleopatra's Palace\n- Strike gold with virtual huge Jackpots in Pyramid Treasures\n\nGAME HIGHLIGHTS\n\n- Themed Slots: Pharaoh's Fortune, Cleopatra's Eye, Sphinx's Secret\n- Daily Rewards and Missions that unlock treasure chests\n- Bonus Rounds with Epic Multipliers up to 1000x\n- Social Network Connection to share achievements\n- Regular new content updates\n- Works offline - play anywhere!\n\nThe best virtual bonuses of any online slots game out there! With RedRain Casino, the more you spin, the more you win! No other social casino slots game offers what RedRain Casino does, with MEGA virtual bonuses every day, hour, and 15 MINUTES!\n\nDownload now and start your journey to fortune!\n\nYour Privacy Rights: https://redrain.com/privacy\nDo Not Sell My Personal Information: https://redrain.com/dnsmpi",
       android_promo_text:
-        "🎁 Double Coins Weekend! Download now for bonus rewards!",
+        "Double Coins Weekend! Download now for bonus rewards!",
       android_recent_changes:
-        "Version 3.2.0:\n• NEW: Royal Pharaoh's Chamber slot\n• NEW: Fortune Wheel with bigger prizes\n• IMPROVED: Performance optimisations\n• FIXED: Bug fixes and stability",
+        "Version 3.2.0:\n- NEW: Royal Pharaoh's Chamber slot\n- NEW: Fortune Wheel with bigger prizes\n- IMPROVED: Performance optimisations\n- FIXED: Bug fixes and stability",
 
       // ═══════════════════════════════════════════════════════════════════════════
       // CREATIVE BRIEF - COMPLETE MARKETING STRATEGY
@@ -634,22 +657,22 @@ export default function AdminPanel() {
         "COLOUR PALETTE:\n• Primary: Gold (#FFD700) - wealth and prestige\n• Secondary: Sapphire Blue (#0F52BA) - trust and luxury\n• Accent: Royal Purple (#6B46C1) - premium quality\n• Neutral: Sand (#C2B280) - Egyptian authenticity\n• Contrast: Black (#000000) - sophistication\n\nIMAGERY STYLE:\n• High-quality 3D renders with golden lighting\n• Night-time pyramid backgrounds with starry skies\n• Elegant Egyptian symbols (ankh, scarab, eye of Horus)\n• Coin explosions and treasure chest animations\n\nGRAPHIC ELEMENTS:\n• Subtle golden gradients and metallic effects\n• Clean iconography with pharaonic elements\n• Luxury-inspired borders and frames\n• Professional typography hierarchy",
       
       creative_brief_brand_guidelines:
-        "LOGO USAGE:\n• Primary: Golden logo on dark blue background\n• Secondary: White logo on dark backgrounds\n• Minimum size: 48px height\n• Clear space: 1x logo height on all sides\n\nTYPOGRAPHY:\n• Headlines: Classic Serif (carved stone effect)\n• Body: Modern Sans-Serif (clean, readable)\n• UI: SF Pro (iOS) / Roboto (Android)\n\nDO's:\n✓ Use premium, luxury-focused language\n✓ Include 'For entertainment only' disclaimer\n✓ Showcase actual gameplay screenshots\n✓ Highlight social/free-to-play aspects\n\nDON'Ts:\n✗ Use 'bet', 'gamble', 'earn real money'\n✗ Show misleading win amounts\n✗ Use aggressive or predatory language\n✗ Imply guaranteed winnings",
+        "LOGO USAGE:\n- Primary: Golden logo on dark blue background\n- Secondary: White logo on dark backgrounds\n- Minimum size: 48px height\n- Clear space: 1x logo height on all sides\n\nTYPOGRAPHY:\n- Headlines: Classic Serif (carved stone effect)\n- Body: Modern Sans-Serif (clean, readable)\n- UI: SF Pro (iOS) / Roboto (Android)\n\nDOs:\n[+] Use premium, luxury-focused language\n[+] Include 'For entertainment only' disclaimer\n[+] Showcase actual gameplay screenshots\n[+] Highlight social/free-to-play aspects\n\nDON'Ts:\n[-] Use 'bet', 'gamble', 'earn real money'\n[-] Show misleading win amounts\n[-] Use aggressive or predatory language\n[-] Imply guaranteed winnings",
       
-      creative_brief_screenshot_1_message: "🏛️ Epic Egyptian Slots – Unlock Pharaoh's Treasure!",
-      creative_brief_screenshot_2_message: "💰 Huge Jackpots & Free Spins Every Day",
-      creative_brief_screenshot_3_message: "🎁 Bonus Levels & Legendary Rewards",
-      creative_brief_screenshot_4_message: "👥 Play With Friends – Social Casino Fun",
-      creative_brief_screenshot_5_message: "⚡ Limited-Time Bonus: Double Coins Weekend!",
+      creative_brief_screenshot_1_message: "Epic Egyptian Slots - Unlock Pharaoh's Treasure!",
+      creative_brief_screenshot_2_message: "Huge Jackpots and Free Spins Every Day",
+      creative_brief_screenshot_3_message: "Bonus Levels and Legendary Rewards",
+      creative_brief_screenshot_4_message: "Play With Friends - Social Casino Fun",
+      creative_brief_screenshot_5_message: "Limited-Time Bonus: Double Coins Weekend!",
       
       creative_brief_platform_considerations:
-        "═══════════════════════════════════════\niOS APP STORE GUIDELINES\n═══════════════════════════════════════\n\n✓ REQUIREMENTS:\n• Age rating: 17+ (required for simulated gambling)\n• Privacy policy URL: Must be provided\n• No 'Free' in title/subtitle\n• No real currency symbols in metadata\n• Promotional Text: Use as conversion hook\n\n✗ PROHIBITED:\n• Suggestive or misleading imagery\n• Real money gambling references\n• Guaranteed win claims\n• Under-18 targeting\n\n═══════════════════════════════════════\nGOOGLE PLAY STORE GUIDELINES\n═══════════════════════════════════════\n\n✓ REQUIREMENTS:\n• Content rating: Mature 17+\n• Clear 'simulated gambling' disclosure\n• Accurate screenshots only\n• Privacy policy linked\n\n✗ PROHIBITED:\n• Keyword stuffing (max 2-3 repetitions)\n• Fake reviews or ratings\n• Misleading promotional content\n\n═══════════════════════════════════════\nREQUIRED DISCLAIMER\n═══════════════════════════════════════\n'For entertainment purposes only. No real money gambling. In-app purchases available. Must be 17+ to play.'",
+        "iOS APP STORE GUIDELINES\n\nREQUIREMENTS:\n[+] Age rating: 17+ (required for simulated gambling)\n[+] Privacy policy URL: Must be provided\n[+] No 'Free' in title/subtitle\n[+] No real currency symbols in metadata\n[+] Promotional Text: Use as conversion hook\n\nPROHIBITED:\n[-] Suggestive or misleading imagery\n[-] Real money gambling references\n[-] Guaranteed win claims\n[-] Under-18 targeting\n\nGOOGLE PLAY STORE GUIDELINES\n\nREQUIREMENTS:\n[+] Content rating: Mature 17+\n[+] Clear 'simulated gambling' disclosure\n[+] Accurate screenshots only\n[+] Privacy policy linked\n\nPROHIBITED:\n[-] Keyword stuffing (max 2-3 repetitions)\n[-] Fake reviews or ratings\n[-] Misleading promotional content\n\nREQUIRED DISCLAIMER:\n'For entertainment purposes only. No real money gambling. In-app purchases available. Must be 17+ to play.'",
       
       creative_brief_asa_strategy:
-        "═══════════════════════════════════════\nAPPLE SEARCH ADS STRATEGY\n═══════════════════════════════════════\n\nCAMPAIGN STRUCTURE:\n\n1️⃣ BRAND CAMPAIGNS\n• Keywords: RedRain, RedRain Slots, RedRain Casino\n• Match Type: Exact\n• Daily Budget: £150\n• Target CPA: £1.50\n• CPP: Enabled (Brand-focused creative)\n\n2️⃣ COMPETITOR CAMPAIGNS\n• Keywords: Royal Spin, Cleopatra Slots, Pharaoh Games\n• Match Type: Exact\n• Daily Budget: £100\n• Target CPA: £2.00\n• CPP: Enabled (Comparison messaging)\n\n3️⃣ GENERIC CAMPAIGNS\n• Keywords: slots free, casino games, jackpot\n• Match Type: Broad\n• Daily Budget: £75\n• Target CPA: £2.50\n• CPP: Disabled (Default page)\n\n4️⃣ DISCOVERY CAMPAIGNS\n• Search Match: Enabled\n• Daily Budget: £50\n• Purpose: Find new keyword opportunities\n\nOPTIMISATION TACTICS:\n• A/B test ad variations weekly\n• Negative keyword list for irrelevant terms\n• Bid adjustments based on device/time\n• CPP relevance matching for top keywords",
+        "APPLE SEARCH ADS STRATEGY\n\nCAMPAIGN STRUCTURE:\n\n[1] BRAND CAMPAIGNS\n- Keywords: RedRain, RedRain Slots, RedRain Casino\n- Match Type: Exact\n- Daily Budget: GBP 150\n- Target CPA: GBP 1.50\n- CPP: Enabled (Brand-focused creative)\n\n[2] COMPETITOR CAMPAIGNS\n- Keywords: Royal Spin, Cleopatra Slots, Pharaoh Games\n- Match Type: Exact\n- Daily Budget: GBP 100\n- Target CPA: GBP 2.00\n- CPP: Enabled (Comparison messaging)\n\n[3] GENERIC CAMPAIGNS\n- Keywords: slots free, casino games, jackpot\n- Match Type: Broad\n- Daily Budget: GBP 75\n- Target CPA: GBP 2.50\n- CPP: Disabled (Default page)\n\n[4] DISCOVERY CAMPAIGNS\n- Search Match: Enabled\n- Daily Budget: GBP 50\n- Purpose: Find new keyword opportunities\n\nOPTIMISATION TACTICS:\n- A/B test ad variations weekly\n- Negative keyword list for irrelevant terms\n- Bid adjustments based on device/time\n- CPP relevance matching for top keywords",
       
       creative_brief_cross_locations_strategy:
-        "═══════════════════════════════════════\nMULTI-MARKET LOCALISATION STRATEGY\n═══════════════════════════════════════\n\n🇬🇧 UNITED KINGDOM (Primary - 40% budget)\n• Language: British English\n• Currency: £ GBP\n• Focus keywords: fortune, premium, treasure\n• Cultural notes: Avoid 'gambling' terminology\n• Local events: Bank holidays, Royal occasions\n\n🇺🇸 UNITED STATES (Secondary - 30% budget)\n• Language: American English\n• Currency: $ USD\n• Focus keywords: jackpot, casino slots, Vegas\n• Cultural notes: More direct CTAs accepted\n• Local events: July 4th, Thanksgiving, Super Bowl\n\n🇨🇦 CANADA (Tertiary - 15% budget)\n• Language: English (mix UK/US accepted)\n• Currency: $ CAD\n• Notes: Stricter gambling advertising laws\n\n🇦🇺 AUSTRALIA (10% budget)\n• Language: Australian English\n• Currency: $ AUD\n• Notes: Responsible gambling messaging required\n\n🇪🇺 EUROPE (5% budget)\n• Markets: DE, FR, IT, ES\n• Approach: English-first, consider localisation\n\n═══════════════════════════════════════\nCPP (CUSTOM PRODUCT PAGES) STRATEGY\n═══════════════════════════════════════\n• CPP-UK: British English, £ pricing, UK testimonials\n• CPP-US: American English, $ pricing, Vegas references\n• CPP-Generic: Neutral English, universal appeal",
+        "MULTI-MARKET LOCALISATION STRATEGY\n\n[UK] UNITED KINGDOM (Primary - 40% budget)\n- Language: British English\n- Currency: GBP\n- Focus keywords: fortune, premium, treasure\n- Cultural notes: Avoid 'gambling' terminology\n- Local events: Bank holidays, Royal occasions\n\n[US] UNITED STATES (Secondary - 30% budget)\n- Language: American English\n- Currency: USD\n- Focus keywords: jackpot, casino slots, Vegas\n- Cultural notes: More direct CTAs accepted\n- Local events: July 4th, Thanksgiving, Super Bowl\n\n[CA] CANADA (Tertiary - 15% budget)\n- Language: English (mix UK/US accepted)\n- Currency: CAD\n- Notes: Stricter gambling advertising laws\n\n[AU] AUSTRALIA (10% budget)\n- Language: Australian English\n- Currency: AUD\n- Notes: Responsible gambling messaging required\n\n[EU] EUROPE (5% budget)\n- Markets: DE, FR, IT, ES\n- Approach: English-first, consider localisation\n\nCPP (CUSTOM PRODUCT PAGES) STRATEGY\n\n- CPP-UK: British English, GBP pricing, UK testimonials\n- CPP-US: American English, USD pricing, Vegas references\n- CPP-Generic: Neutral English, universal appeal",
       
       // ASA Keyword Groups (structured campaign data)
       // Note: Competitor keywords have LOW bids - we won't outrank brand owners

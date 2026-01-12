@@ -1987,7 +1987,7 @@ export default function AdminPanel() {
                 <KeywordResearchUpload
                   data={Array.isArray(appData.keyword_research_data) ? appData.keyword_research_data : []}
                   onChange={(data) => handleInputChange("keyword_research_data", data as any)}
-                  editable={!isReadOnly}
+                  editable={true}
                 />
               </CardContent>
             </Card>

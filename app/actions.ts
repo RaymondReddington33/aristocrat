@@ -79,6 +79,10 @@ export async function saveAppData(appData: Partial<AppData>, appId: string | nul
     if (dataToSave.creative_brief_competitor_analysis && Array.isArray(dataToSave.creative_brief_competitor_analysis)) {
       // Supabase will automatically convert arrays to JSONB
     }
+    if (dataToSave.keyword_research_data && Array.isArray(dataToSave.keyword_research_data)) {
+      // Supabase will automatically convert arrays to JSONB
+      console.log("[saveAppData] Saving keyword_research_data with", dataToSave.keyword_research_data.length, "keywords")
+    }
 
     if (appId) {
       // Update existing

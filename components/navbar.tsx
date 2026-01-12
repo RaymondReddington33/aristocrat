@@ -43,8 +43,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { createClient } from "@/lib/supabase/client"
 import { getUserRole, getRoleLabel, getEffectiveRole, setRoleOverride, type UserRole } from "@/lib/auth"
+import { useToast } from "@/hooks/use-toast"
 
 export function Navbar() {
+  const { toast } = useToast()
   const pathname = usePathname()
   const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -154,8 +156,8 @@ export function Navbar() {
         const { data, error } = await Promise.race([queryPromise, timeoutPromise]) as any
 
         if (error) {
-          // Log error but don't throw - allow retry
-          console.warn("Supabase error fetching apps (attempt " + (retryCount + 1) + "):", error.message || error)
+          const errorMessage = error.message || String(error)
+          console.error("Supabase error fetching apps (attempt " + (retryCount + 1) + "):", errorMessage)
           
           // Retry up to 2 times with exponential backoff
           if (retryCount < 2) {
@@ -163,7 +165,13 @@ export function Navbar() {
             return
           }
           
-          // After retries, just use empty array
+          // After retries, show error to user - Supabase connection is critical
+          toast({
+            title: "Supabase Connection Error",
+            description: `Failed to connect to Supabase after ${retryCount + 1} attempts. Error: ${errorMessage}`,
+            variant: "destructive",
+            duration: 10000, // Show for 10 seconds
+          })
           setApps([])
           return
         }
@@ -190,7 +198,7 @@ export function Navbar() {
         // Handle client creation errors, network errors, or timeouts
         const errorMessage = error instanceof Error ? error.message : String(error)
         
-        console.warn("Error fetching apps (attempt " + (retryCount + 1) + "):", errorMessage)
+        console.error("Error fetching apps (attempt " + (retryCount + 1) + "):", errorMessage)
         
         // Retry up to 2 times with exponential backoff
         if (retryCount < 2 && !errorMessage.includes("Missing Supabase")) {
@@ -198,7 +206,13 @@ export function Navbar() {
           return
         }
         
-        // After retries or if it's a config error, silently fail
+        // After retries or if it's a config error, show error to user - Supabase is critical
+        toast({
+          title: "Supabase Configuration Error",
+          description: `Unable to connect to Supabase. ${errorMessage}`,
+          variant: "destructive",
+          duration: 10000, // Show for 10 seconds
+        })
         setApps([])
       }
     }

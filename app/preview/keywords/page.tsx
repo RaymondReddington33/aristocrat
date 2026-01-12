@@ -1,7 +1,8 @@
-import { createClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { KeywordResearchSection } from "@/components/keyword-research-section"
-import { Search } from "lucide-react"
+import { KeywordResearchUpload } from "@/components/keyword-research-upload"
+import { Search, FileSpreadsheet, Target } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { getKeywords } from "@/app/actions"
@@ -20,6 +21,7 @@ export default async function KeywordsPreview({ searchParams }: { searchParams?:
   }
 
   const keywords: AppKeyword[] = await getKeywords(appData.id!)
+  const keywordResearchData = Array.isArray(appData.keyword_research_data) ? appData.keyword_research_data : []
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-slate-100">
@@ -47,8 +49,49 @@ export default async function KeywordsPreview({ searchParams }: { searchParams?:
           <p className="text-lg text-slate-600">Comprehensive keyword analysis and optimization for maximum visibility</p>
         </div>
 
-        {/* Keyword Research Section with Filters */}
-        <KeywordResearchSection keywords={keywords} appData={appData} />
+        {/* Final Keywords Section */}
+        <Card className="mb-8">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-green-100">
+                <Target className="h-5 w-5 text-green-600" />
+              </div>
+              <div>
+                <CardTitle>Final Keywords (ASO Implementation)</CardTitle>
+                <CardDescription>Selected keywords optimized for App Store and Google Play Store ranking</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <KeywordResearchSection keywords={keywords} appData={appData} />
+          </CardContent>
+        </Card>
+
+        {/* Full Keyword Research Section */}
+        {keywordResearchData.length > 0 && (
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-purple-100">
+                  <FileSpreadsheet className="h-5 w-5 text-purple-600" />
+                </div>
+                <div>
+                  <CardTitle>Complete Keyword Research (Reference)</CardTitle>
+                  <CardDescription>
+                    Full keyword research data showing the analysis methodology and all researched keywords
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <KeywordResearchUpload
+                data={keywordResearchData}
+                onChange={() => {}}
+                editable={false}
+              />
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   )

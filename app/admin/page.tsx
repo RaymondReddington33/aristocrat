@@ -23,6 +23,7 @@ import { ScreenshotManager } from "@/components/screenshot-manager"
 import { VisualReferencesUpload } from "@/components/visual-references-upload"
 import { ColorPaletteDisplay } from "@/components/color-palette-display"
 import { TypographyDisplay } from "@/components/typography-display"
+import { KeywordResearchUpload } from "@/components/keyword-research-upload"
 import { AppleSearchAdsConfig } from "@/components/apple-search-ads-config"
 import { CompetitorAnalysisManager } from "@/components/competitor-analysis-manager"
 import { KeywordRepetitionAlert } from "@/components/keyword-repetition-alert"
@@ -808,6 +809,29 @@ export default function AdminPanel() {
         "Golden Coin Pack (10k coins) – £1.99\n\nPremium Coin Pack (50k coins) – £4.99\n\nVIP Monthly Membership – £9.99\n• Includes extra daily bonuses\n• Exclusive bonus rounds\n• Priority support\n• Special events access",
       android_in_app_products:
         "Golden Coin Pack (10k coins) – £1.99\n\nPremium Coin Pack (50k coins) – £4.99\n\nVIP Monthly Membership – £9.99\n• Includes extra daily bonuses\n• Exclusive bonus rounds\n• Priority support\n• Special events access",
+      
+      // Full Keyword Research Data (CSV import for reference)
+      keyword_research_data: [
+        { keyword: "redrain slots casino", brand: true, category: "branded", relevancy_score: 95, volume: 12000, difficulty: 50, chance: 0.7, kei: 150, results: 200000, maximum_reach: 500000, priority: "high", platform: "both", recommended_field: "title" },
+        { keyword: "redrain", brand: true, category: "branded", relevancy_score: 98, volume: 8500, difficulty: 30, chance: 0.95, kei: 280, results: 1200, maximum_reach: 8500, priority: "high", platform: "both", recommended_field: "title" },
+        { keyword: "redrain casino", brand: true, category: "branded", relevancy_score: 97, volume: 6500, difficulty: 35, chance: 0.85, kei: 185.7, results: 800, maximum_reach: 6500, priority: "high", platform: "both", recommended_field: "title" },
+        { keyword: "casino slots", brand: false, category: "generic", relevancy_score: 96, volume: 50000, difficulty: 30, chance: 0.6, kei: 1666, results: 1500000, maximum_reach: 1000000, priority: "high", platform: "both", recommended_field: "subtitle" },
+        { keyword: "slots casino", brand: false, category: "generic", relevancy_score: 94, volume: 45000, difficulty: 25, chance: 0.65, kei: 1800, results: 1200000, maximum_reach: 800000, priority: "high", platform: "android", recommended_field: "title" },
+        { keyword: "free slots", brand: false, category: "generic", relevancy_score: 97, volume: 47000, difficulty: 15, chance: 0.55, kei: 3133, results: 1100000, maximum_reach: 600000, priority: "high", platform: "android", recommended_field: "subtitle" },
+        { keyword: "jackpot", brand: false, category: "generic", relevancy_score: 89, volume: 245000, difficulty: 75, chance: 0.45, kei: 3266, results: 3000000, maximum_reach: 2000000, priority: "high", platform: "both", recommended_field: "keywords" },
+        { keyword: "slots", brand: false, category: "generic", relevancy_score: 95, volume: 320000, difficulty: 78, chance: 0.45, kei: 4100, results: 45000, maximum_reach: 320000, priority: "high", platform: "both", recommended_field: "keywords" },
+        { keyword: "casino games", brand: false, category: "generic", relevancy_score: 92, volume: 280000, difficulty: 75, chance: 0.42, kei: 3733, results: 38000, maximum_reach: 280000, priority: "high", platform: "both", recommended_field: "keywords" },
+        { keyword: "heart of vegas", brand: false, category: "competitor", relevancy_score: 75, volume: 450000, difficulty: 95, chance: 0.05, kei: 4737, results: 800000, maximum_reach: 450000, priority: "low", platform: "both", recommended_field: "description" },
+        { keyword: "cashman casino", brand: false, category: "competitor", relevancy_score: 72, volume: 320000, difficulty: 92, chance: 0.08, kei: 3478, results: 650000, maximum_reach: 320000, priority: "low", platform: "both", recommended_field: "description" },
+        { keyword: "vegas", brand: false, category: "generic", relevancy_score: 82, volume: 180000, difficulty: 70, chance: 0.3, kei: 2571, results: 2500000, maximum_reach: 1500000, priority: "medium", platform: "both", recommended_field: "keywords" },
+        { keyword: "cleopatra slots", brand: false, category: "generic", relevancy_score: 90, volume: 12000, difficulty: 20, chance: 0.5, kei: 600, results: 800000, maximum_reach: 500000, priority: "medium", platform: "both", recommended_field: "keywords" },
+        { keyword: "egyptian slots", brand: false, category: "generic", relevancy_score: 93, volume: 38000, difficulty: 50, chance: 0.66, kei: 760, results: 3200, maximum_reach: 38000, priority: "medium", platform: "both", recommended_field: "keywords" },
+        { keyword: "pharaoh slots", brand: false, category: "generic", relevancy_score: 94, volume: 62000, difficulty: 52, chance: 0.68, kei: 1192, results: 5400, maximum_reach: 62000, priority: "high", platform: "both", recommended_field: "keywords" },
+        { keyword: "egypt slots", brand: false, category: "generic", relevancy_score: 96, volume: 88000, difficulty: 58, chance: 0.65, kei: 1517, results: 8200, maximum_reach: 88000, priority: "high", platform: "both", recommended_field: "keywords" },
+        { keyword: "ancient treasure slots", brand: false, category: "generic", relevancy_score: 88, volume: 25000, difficulty: 40, chance: 0.58, kei: 625, results: 3500, maximum_reach: 25000, priority: "medium", platform: "both", recommended_field: "keywords" },
+        { keyword: "pyramid slots", brand: false, category: "generic", relevancy_score: 87, volume: 18000, difficulty: 35, chance: 0.62, kei: 514, results: 2800, maximum_reach: 18000, priority: "medium", platform: "both", recommended_field: "keywords" },
+        { keyword: "cleopatra casino", brand: false, category: "generic", relevancy_score: 85, volume: 15000, difficulty: 38, chance: 0.6, kei: 395, results: 3200, maximum_reach: 15000, priority: "medium", platform: "both", recommended_field: "keywords" },
+      ],
     }
   }
 
@@ -1927,23 +1951,44 @@ export default function AdminPanel() {
           </TabsContent>
 
           <TabsContent value="keywords" className="space-y-6">
+            {/* Final Keywords - Used in ASO */}
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>Keyword Research</CardTitle>
-                    <CardDescription>Manage and optimize keywords for App Store and Google Play Store</CardDescription>
+                    <CardTitle>Final Keywords (ASO Implementation)</CardTitle>
+                    <CardDescription>Selected keywords used in App Store and Google Play Store optimization</CardDescription>
                   </div>
                   {!isReadOnly && (
                     <Button variant="outline" size="sm" onClick={() => handleClearSection("keywords")} className="gap-2 text-red-600 hover:text-red-700">
                       <Trash2 className="h-4 w-4" />
-                      Clear Section
+                      Clear Keywords
                     </Button>
                   )}
                 </div>
               </CardHeader>
               <CardContent>
                 <KeywordManager appId={appId} initialKeywords={keywords} />
+              </CardContent>
+            </Card>
+
+            {/* Full Keyword Research - Reference Data */}
+            <Card>
+              <CardHeader>
+                <div>
+                  <CardTitle>Complete Keyword Research (Reference)</CardTitle>
+                  <CardDescription>
+                    Upload your full keyword research CSV to show the complete analysis process. 
+                    This data is for reference only and shows the research methodology.
+                  </CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <KeywordResearchUpload
+                  data={Array.isArray(appData.keyword_research_data) ? appData.keyword_research_data : []}
+                  onChange={(data) => handleInputChange("keyword_research_data", data as any)}
+                  editable={!isReadOnly}
+                />
               </CardContent>
             </Card>
           </TabsContent>

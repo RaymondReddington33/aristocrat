@@ -82,6 +82,23 @@ export interface AppData {
   ios_in_app_purchases?: string
   android_in_app_products?: string
 
+  // Keyword Research Data (full CSV data for reference)
+  keyword_research_data?: Array<{
+    keyword: string
+    brand: boolean
+    category: string
+    relevancy_score: number
+    volume: number
+    difficulty: number
+    chance: number
+    kei: number
+    results: number
+    maximum_reach: number
+    priority: string
+    platform: string
+    recommended_field: string
+  }>
+
   is_published: boolean
 }
 

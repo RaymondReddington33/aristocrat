@@ -300,27 +300,46 @@ export default function AdminPanel() {
   
   // Auto-save function for special fields (visual references, keyword research, app icon)
   const handleAutoSaveField = useCallback(async (field: keyof AppData, value: any) => {
-    // First update local state
-    setAppData((prev) => ({ ...prev, [field]: value }))
-    
-    // Then auto-save to database
-    const currentData = { ...appData, [field]: value }
-    try {
-      const result = await saveAppData(currentData, appId)
-      if (result.success) {
-        console.log(`[handleAutoSaveField] Auto-saved ${field}`)
-        if (!appId && result.id) {
-          setAppId(result.id)
-          localStorage.setItem("selectedAppId", result.id)
+    // Update local state first
+    setAppData((prev) => {
+      const updatedData = { ...prev, [field]: value }
+      
+      // Auto-save to database with updated data
+      setTimeout(async () => {
+        try {
+          const result = await saveAppData(updatedData, appId)
+          if (result.success) {
+            console.log(`[handleAutoSaveField] Auto-saved ${field}`)
+            if (!appId && result.id) {
+              setAppId(result.id)
+              localStorage.setItem("selectedAppId", result.id)
+            }
+            setLastSaved(new Date())
+            toast({
+              title: "Saved",
+              description: `${field === "creative_brief_visual_references" ? "Visual references" : field === "keyword_research_data" ? "Keyword research" : "Data"} saved successfully`,
+            })
+          } else {
+            console.error(`[handleAutoSaveField] Failed to auto-save ${field}:`, result.error)
+            toast({
+              title: "Error",
+              description: `Failed to save ${field}`,
+              variant: "destructive",
+            })
+          }
+        } catch (error) {
+          console.error(`[handleAutoSaveField] Error saving ${field}:`, error)
+          toast({
+            title: "Error",
+            description: `Error saving ${field}`,
+            variant: "destructive",
+          })
         }
-        setLastSaved(new Date())
-      } else {
-        console.error(`[handleAutoSaveField] Failed to auto-save ${field}:`, result.error)
-      }
-    } catch (error) {
-      console.error(`[handleAutoSaveField] Error saving ${field}:`, error)
-    }
-  }, [appData, appId])
+      }, 100)
+      
+      return updatedData
+    })
+  }, [appId, toast])
 
   // Load apps list
   const loadApps = useCallback(async () => {

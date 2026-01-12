@@ -27,12 +27,20 @@ export function VisualReferencesUpload({ images, onImagesChange, maxImages = 10 
     }
 
     const filesToProcess = files.slice(0, remainingSlots)
+    const newImageUrls: string[] = []
+    let loadedCount = 0
 
     filesToProcess.forEach((file) => {
       const reader = new FileReader()
       reader.onloadend = () => {
         const imageUrl = reader.result as string
-        onImagesChange([...images, imageUrl])
+        newImageUrls.push(imageUrl)
+        loadedCount++
+        
+        // When all images are loaded, update state once with all new images
+        if (loadedCount === filesToProcess.length) {
+          onImagesChange([...images, ...newImageUrls])
+        }
       }
       reader.readAsDataURL(file)
     })

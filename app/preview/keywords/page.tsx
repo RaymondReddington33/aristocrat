@@ -85,28 +85,10 @@ export default async function KeywordsPreview({ searchParams }: { searchParams?:
               </div>
               
               {/* Summary Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-                <div className="bg-white rounded-lg p-4 shadow-sm">
+              <div className="mt-6">
+                <div className="bg-white rounded-lg p-4 shadow-sm inline-block">
                   <p className="text-2xl font-bold text-purple-600">{keywordResearchData.length}</p>
                   <p className="text-sm text-slate-600">Total Keywords</p>
-                </div>
-                <div className="bg-white rounded-lg p-4 shadow-sm">
-                  <p className="text-2xl font-bold text-blue-600">
-                    {keywordResearchData.filter(k => k.category === 'branded').length}
-                  </p>
-                  <p className="text-sm text-slate-600">Branded</p>
-                </div>
-                <div className="bg-white rounded-lg p-4 shadow-sm">
-                  <p className="text-2xl font-bold text-green-600">
-                    {keywordResearchData.filter(k => k.category === 'generic').length}
-                  </p>
-                  <p className="text-sm text-slate-600">Generic</p>
-                </div>
-                <div className="bg-white rounded-lg p-4 shadow-sm">
-                  <p className="text-2xl font-bold text-red-600">
-                    {keywordResearchData.filter(k => k.category === 'competitor').length}
-                  </p>
-                  <p className="text-sm text-slate-600">Competitor</p>
                 </div>
               </div>
             </CardHeader>

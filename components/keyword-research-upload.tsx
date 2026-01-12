@@ -297,53 +297,70 @@ export function KeywordResearchUpload({ data, onChange, onSave, editable = true 
             </div>
           </CardHeader>
           <CardContent>
-            <div className="rounded-md border overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-slate-50">
-                    <TableHead className="font-semibold">Keyword</TableHead>
-                    <TableHead className="font-semibold">Category</TableHead>
-                    <TableHead className="font-semibold text-right">Volume</TableHead>
-                    <TableHead className="font-semibold text-right">Difficulty</TableHead>
-                    <TableHead className="font-semibold text-right">Chance</TableHead>
-                    <TableHead className="font-semibold text-right">KEI</TableHead>
-                    <TableHead className="font-semibold">Priority</TableHead>
-                    <TableHead className="font-semibold">Platform</TableHead>
-                    <TableHead className="font-semibold">Recommended</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {data.map((row, index) => (
-                    <TableRow key={index} className="hover:bg-slate-50">
-                      <TableCell className="font-medium">
-                        {row.keyword}
-                        {row.brand && <Badge variant="outline" className="ml-2 text-xs">Brand</Badge>}
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={getCategoryColor(row.category)}>{row.category}</Badge>
-                      </TableCell>
-                      <TableCell className="text-right font-mono text-sm">
-                        {formatNumber(row.volume)}
-                      </TableCell>
-                      <TableCell className="text-right font-mono text-sm">
-                        {row.difficulty}
-                      </TableCell>
-                      <TableCell className="text-right font-mono text-sm">
-                        {(row.chance * 100).toFixed(0)}%
-                      </TableCell>
-                      <TableCell className="text-right font-mono text-sm">
-                        {row.kei.toFixed(0)}
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={getPriorityColor(row.priority)}>{row.priority}</Badge>
-                      </TableCell>
-                      <TableCell className="text-sm text-slate-600">{row.platform}</TableCell>
-                      <TableCell className="text-sm text-slate-600">{row.recommended_field}</TableCell>
+            {editable ? (
+              // Full table with all columns for admin/edit mode
+              <div className="rounded-md border overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-slate-50">
+                      <TableHead className="font-semibold">Keyword</TableHead>
+                      <TableHead className="font-semibold">Category</TableHead>
+                      <TableHead className="font-semibold text-right">Volume</TableHead>
+                      <TableHead className="font-semibold text-right">Difficulty</TableHead>
+                      <TableHead className="font-semibold text-right">Chance</TableHead>
+                      <TableHead className="font-semibold text-right">KEI</TableHead>
+                      <TableHead className="font-semibold">Priority</TableHead>
+                      <TableHead className="font-semibold">Platform</TableHead>
+                      <TableHead className="font-semibold">Recommended</TableHead>
                     </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {data.map((row, index) => (
+                      <TableRow key={index} className="hover:bg-slate-50">
+                        <TableCell className="font-medium">
+                          {row.keyword}
+                          {row.brand && <Badge variant="outline" className="ml-2 text-xs">Brand</Badge>}
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={getCategoryColor(row.category)}>{row.category}</Badge>
+                        </TableCell>
+                        <TableCell className="text-right font-mono text-sm">
+                          {formatNumber(row.volume)}
+                        </TableCell>
+                        <TableCell className="text-right font-mono text-sm">
+                          {row.difficulty}
+                        </TableCell>
+                        <TableCell className="text-right font-mono text-sm">
+                          {(row.chance * 100).toFixed(0)}%
+                        </TableCell>
+                        <TableCell className="text-right font-mono text-sm">
+                          {row.kei.toFixed(0)}
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={getPriorityColor(row.priority)}>{row.priority}</Badge>
+                        </TableCell>
+                        <TableCell className="text-sm text-slate-600">{row.platform}</TableCell>
+                        <TableCell className="text-sm text-slate-600">{row.recommended_field}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            ) : (
+              // Simple list view for preview/reference mode - only keywords
+              <div className="space-y-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                  {data.map((row, index) => (
+                    <div 
+                      key={index} 
+                      className="px-4 py-2 bg-slate-50 rounded-md border border-slate-200 hover:bg-slate-100 transition-colors"
+                    >
+                      <span className="text-sm font-medium text-slate-900">{row.keyword}</span>
+                    </div>
                   ))}
-                </TableBody>
-              </Table>
-            </div>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}

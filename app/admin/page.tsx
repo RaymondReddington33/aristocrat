@@ -283,10 +283,7 @@ export default function AdminPanel() {
     return Object.keys(errors).length === 0
   }
 
-  const handleInputChange = useCallback(async (field: keyof AppData, value: string | number | boolean | string[] | any) => {
-    // Fields that should auto-save immediately
-    const autoSaveFields = ["creative_brief_visual_references", "keyword_research_data", "app_icon_url"]
-    
+  const handleInputChange = useCallback((field: keyof AppData, value: string | number | boolean | string[] | any) => {
     setAppData((prev) => {
       const newData = { ...prev, [field]: value }
       // Clear validation error for this field
@@ -297,29 +294,33 @@ export default function AdminPanel() {
           return newErrors
         })
       }
-      
-      // Auto-save for special fields (images, keyword research)
-      if (autoSaveFields.includes(field)) {
-        // Use setTimeout to ensure state is updated before saving
-        setTimeout(async () => {
-          const dataToSave = { ...newData }
-          const result = await saveAppData(dataToSave, appId)
-          if (result.success) {
-            console.log(`[handleInputChange] Auto-saved ${field}`)
-            if (!appId && result.id) {
-              setAppId(result.id)
-              localStorage.setItem("selectedAppId", result.id)
-            }
-            setLastSaved(new Date())
-          } else {
-            console.error(`[handleInputChange] Failed to auto-save ${field}:`, result.error)
-          }
-        }, 100)
-      }
-      
       return newData
     })
-  }, [validationErrors, appId])
+  }, [validationErrors])
+  
+  // Auto-save function for special fields (visual references, keyword research, app icon)
+  const handleAutoSaveField = useCallback(async (field: keyof AppData, value: any) => {
+    // First update local state
+    setAppData((prev) => ({ ...prev, [field]: value }))
+    
+    // Then auto-save to database
+    const currentData = { ...appData, [field]: value }
+    try {
+      const result = await saveAppData(currentData, appId)
+      if (result.success) {
+        console.log(`[handleAutoSaveField] Auto-saved ${field}`)
+        if (!appId && result.id) {
+          setAppId(result.id)
+          localStorage.setItem("selectedAppId", result.id)
+        }
+        setLastSaved(new Date())
+      } else {
+        console.error(`[handleAutoSaveField] Failed to auto-save ${field}:`, result.error)
+      }
+    } catch (error) {
+      console.error(`[handleAutoSaveField] Error saving ${field}:`, error)
+    }
+  }, [appData, appId])
 
   // Load apps list
   const loadApps = useCallback(async () => {
@@ -1841,7 +1842,7 @@ export default function AdminPanel() {
                 <div className="space-y-2 pt-4 border-t">
                   <VisualReferencesUpload
                     images={Array.isArray(appData.creative_brief_visual_references) ? appData.creative_brief_visual_references : []}
-                    onImagesChange={(images) => handleInputChange("creative_brief_visual_references", images as any)}
+                    onImagesChange={(images) => handleAutoSaveField("creative_brief_visual_references", images)}
                     maxImages={10}
                   />
                 </div>
@@ -2009,22 +2010,7 @@ export default function AdminPanel() {
               <CardContent>
                 <KeywordResearchUpload
                   data={Array.isArray(appData.keyword_research_data) ? appData.keyword_research_data : []}
-                  onChange={(data) => handleInputChange("keyword_research_data", data as any)}
-                  onSave={async () => {
-                    // Auto-save when keyword research data is uploaded
-                    const result = await saveAppData(appData, appId)
-                    if (result.success) {
-                      if (!appId && result.id) {
-                        setAppId(result.id)
-                        localStorage.setItem("selectedAppId", result.id)
-                      }
-                      setLastSaved(new Date())
-                      toast({
-                        title: "Saved",
-                        description: "Keyword research data saved successfully",
-                      })
-                    }
-                  }}
+                  onChange={(data) => handleAutoSaveField("keyword_research_data", data)}
                   editable={true}
                 />
               </CardContent>

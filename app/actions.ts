@@ -83,6 +83,11 @@ export async function saveAppData(appData: Partial<AppData>, appId: string | nul
       // Supabase will automatically convert arrays to JSONB
       console.log("[saveAppData] Saving keyword_research_data with", dataToSave.keyword_research_data.length, "keywords")
     }
+    if (dataToSave.negative_keywords && Array.isArray(dataToSave.negative_keywords)) {
+      // Ensure negative_keywords is a proper array of strings
+      dataToSave.negative_keywords = dataToSave.negative_keywords.filter(k => typeof k === 'string' && k.trim().length > 0)
+      console.log("[saveAppData] Saving negative_keywords with", dataToSave.negative_keywords.length, "keywords")
+    }
 
     if (appId) {
       // Update existing
@@ -110,7 +115,13 @@ export async function saveAppData(appData: Partial<AppData>, appId: string | nul
     }
   } catch (error) {
     console.error("Error saving data:", error)
-    return { success: false, error: String(error) }
+    // Better error serialization
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : typeof error === 'object' && error !== null
+      ? JSON.stringify(error)
+      : String(error)
+    return { success: false, error: errorMessage }
   }
 }
 

@@ -335,12 +335,19 @@ export default function AdminPanel() {
             setLastSaved(new Date())
             toast({
               title: "Saved",
-              description: `${field === "creative_brief_visual_references" ? "Visual references" : field === "keyword_research_data" ? "Keyword research" : "Data"} saved successfully`,
+              description: `${field === "creative_brief_visual_references" ? "Visual references" : field === "keyword_research_data" ? "Keyword research" : field === "negative_keywords" ? "Negative keywords" : "Data"} saved successfully`,
             })
           } else {
-            console.error(`[handleAutoSaveField] Failed to auto-save ${field}:`, result.error)
-            const errorMsg = result.error?.includes("JSON") || result.error?.includes("string") 
+            // Better error handling - convert error object to string
+            const errorString = typeof result.error === 'object' && result.error !== null
+              ? JSON.stringify(result.error)
+              : String(result.error || 'Unknown error')
+            console.error(`[handleAutoSaveField] Failed to auto-save ${field}:`, errorString)
+            
+            const errorMsg = errorString.includes("JSON") || errorString.includes("string") 
               ? "Image data too large. Please use smaller images."
+              : field === "negative_keywords"
+              ? "Failed to save negative keywords. Please check the format."
               : `Failed to save ${field}`
             toast({
               title: "Error",

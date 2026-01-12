@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -21,9 +21,44 @@ import {
   Sparkles,
   Info
 } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
+import { getUserRole, getEffectiveRole } from "@/lib/auth"
 
 export default function Home() {
   const [showTestInfoDialog, setShowTestInfoDialog] = useState(false)
+  const [userRole, setUserRole] = useState<"test_owner" | "test_reviewer" | null>(null)
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+    const checkRole = async () => {
+      try {
+        // Check for supervisor session first
+        const supervisorSession = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("supervisor_session="))
+        
+        if (supervisorSession && supervisorSession.includes("supervisor_")) {
+          setUserRole("test_reviewer")
+          return
+        }
+        
+        // Otherwise check Supabase auth
+        const supabase = createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user?.email) {
+          const role = getEffectiveRole(user.email)
+          setUserRole(role)
+        }
+      } catch (error) {
+        console.error("Error checking role:", error)
+      }
+    }
+    
+    if (isMounted) {
+      checkRole()
+    }
+  }, [isMounted])
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-white to-slate-50 flex flex-col">
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
@@ -114,7 +149,7 @@ export default function Home() {
               </div>
 
               {/* Platform Previews */}
-              <div className="grid grid-cols-3 gap-3 mb-4">
+              <div className={`grid gap-3 mb-4 ${userRole === "test_reviewer" ? "grid-cols-2" : "grid-cols-3"}`}>
                 <Card className="border-2 hover:border-slate-300 hover:shadow-md transition-all group">
                   <Link href="/preview/ios" className="block p-4 text-center">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform shadow-sm">
@@ -135,15 +170,18 @@ export default function Home() {
                   </Link>
                 </Card>
 
-                <Card className="border-2 hover:border-slate-300 hover:shadow-md transition-all group">
-                  <Link href="/admin" className="block p-4 text-center">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform shadow-sm">
-                      <Settings className="h-6 w-6 text-white" />
-                    </div>
-                    <div className="text-sm font-semibold text-slate-900">Admin</div>
-                    <div className="text-xs text-slate-500">Panel</div>
-                  </Link>
-                </Card>
+                {/* Only show Admin Panel card if user is not test_reviewer */}
+                {userRole !== "test_reviewer" && (
+                  <Card className="border-2 hover:border-slate-300 hover:shadow-md transition-all group">
+                    <Link href="/admin" className="block p-4 text-center">
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform shadow-sm">
+                        <Settings className="h-6 w-6 text-white" />
+                      </div>
+                      <div className="text-sm font-semibold text-slate-900">Admin</div>
+                      <div className="text-xs text-slate-500">Panel</div>
+                    </Link>
+                  </Card>
+                )}
               </div>
 
               {/* Action Buttons */}

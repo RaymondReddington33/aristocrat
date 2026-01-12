@@ -339,9 +339,10 @@ export default function AdminPanel() {
             })
           } else {
             // Better error handling - convert error object to string
-            const errorString = typeof result.error === 'object' && result.error !== null
-              ? JSON.stringify(result.error)
-              : String(result.error || 'Unknown error')
+            const errorValue = (result as { error?: string | unknown }).error
+            const errorString = typeof errorValue === 'object' && errorValue !== null
+              ? JSON.stringify(errorValue)
+              : String(errorValue || 'Unknown error')
             console.error(`[handleAutoSaveField] Failed to auto-save ${field}:`, errorString)
             
             const errorMsg = errorString.includes("JSON") || errorString.includes("string") 

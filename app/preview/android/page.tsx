@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
-import { Star, Share, Info, Shield, ChevronRight } from "lucide-react"
+import { Star, Share, Info, Shield, ChevronRight, FileText } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { getScreenshots, getPreviewVideos } from "@/app/actions"
@@ -41,7 +41,15 @@ export default async function AndroidPreview({ searchParams }: { searchParams?: 
           <Link href="/preview" className="text-green-700 text-xs sm:text-sm font-medium">
             ← Back
           </Link>
-          <span className="text-xs text-gray-500">Google Play Preview</span>
+          <div className="flex items-center gap-2">
+            <Link href={`/preview/metadata/android${selectedAppId ? `?appId=${selectedAppId}` : ""}`}>
+              <Button variant="outline" size="sm" className="gap-2">
+                <FileText className="h-4 w-4" />
+                View Metadata
+              </Button>
+            </Link>
+            <span className="text-xs text-gray-500">Google Play Preview</span>
+          </div>
         </div>
       </div>
 

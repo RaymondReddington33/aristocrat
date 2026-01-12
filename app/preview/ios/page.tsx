@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
 import { Button } from "@/components/ui/button"
-import { Star, Download, Share2, ChevronRight } from "lucide-react"
+import { Star, Download, Share2, ChevronRight, FileText } from "lucide-react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { getScreenshots, getPreviewVideos } from "@/app/actions"
@@ -41,7 +41,15 @@ export default async function IOSPreview({ searchParams }: { searchParams?: Prom
           <Link href="/preview" className="text-blue-600 text-xs sm:text-sm font-medium">
             ← Back
           </Link>
-          <span className="text-xs text-gray-500">iOS App Store Preview</span>
+          <div className="flex items-center gap-2">
+            <Link href={`/preview/metadata/ios${selectedAppId ? `?appId=${selectedAppId}` : ""}`}>
+              <Button variant="outline" size="sm" className="gap-2">
+                <FileText className="h-4 w-4" />
+                View Metadata
+              </Button>
+            </Link>
+            <span className="text-xs text-gray-500">iOS App Store Preview</span>
+          </div>
         </div>
       </div>
 

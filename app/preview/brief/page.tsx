@@ -635,7 +635,7 @@ export default async function CreativeBriefPreview({ searchParams }: { searchPar
 
         {/* Store Page Variations */}
         <div className="mb-8">
-          <StorePagePreview />
+          <StorePagePreview appData={appData} />
         </div>
 
         {/* Current App Configuration */}

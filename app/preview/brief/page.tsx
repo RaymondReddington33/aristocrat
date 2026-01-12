@@ -767,18 +767,6 @@ export default async function CreativeBriefPreview({ searchParams }: { searchPar
           </Card>
         </div>
 
-        {/* Export Options */}
-        <Card className="border-2 bg-gradient-to-r from-purple-50 to-blue-50 no-print">
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <h3 className="font-semibold text-slate-900 mb-2">Ready to present?</h3>
-              <p className="text-sm text-slate-600 mb-4">
-                This creative brief can be exported or shared with your team
-              </p>
-              <ExportButtons appName={appData.app_name} />
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   )

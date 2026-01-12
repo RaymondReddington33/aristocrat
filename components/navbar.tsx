@@ -147,13 +147,9 @@ export function Navbar() {
 
         if (error) {
           // Log error details more comprehensively
-          console.error("Supabase error fetching apps:", {
-            message: error.message,
-            details: error.details,
-            hint: error.hint,
-            code: error.code,
-            fullError: error,
-          })
+          console.error("Supabase error fetching apps:", error)
+          // Don't show error to user, just use empty array
+          setApps([])
           return
         }
 

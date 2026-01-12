@@ -26,7 +26,7 @@ interface KeywordResearchRow {
 
 interface KeywordResearchUploadProps {
   data: KeywordResearchRow[]
-  onChange: (data: KeywordResearchRow[]) => void
+  onChange?: (data: KeywordResearchRow[]) => void
   onSave?: () => void
   editable?: boolean
 }
@@ -54,13 +54,20 @@ const DEMO_KEYWORD_RESEARCH: KeywordResearchRow[] = [
   { keyword: "cleopatra casino", brand: false, category: "generic", relevancy_score: 85, volume: 15000, difficulty: 38, chance: 0.6, kei: 395, results: 3200, maximum_reach: 15000, priority: "medium", platform: "both", recommended_field: "keywords" },
 ]
 
+// Helper function to format numbers consistently (avoid hydration mismatch)
+const formatNumber = (num: number): string => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+
 export function KeywordResearchUpload({ data, onChange, onSave, editable = true }: KeywordResearchUploadProps) {
   const [error, setError] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
 
   const handleLoadDemo = useCallback(async () => {
-    onChange(DEMO_KEYWORD_RESEARCH)
+    if (onChange) {
+      onChange(DEMO_KEYWORD_RESEARCH)
+    }
     setError(null)
     // Auto-save after loading demo data
     if (onSave) {
@@ -144,7 +151,9 @@ export function KeywordResearchUpload({ data, onChange, onSave, editable = true 
       try {
         const text = e.target?.result as string
         const parsedData = parseCSV(text)
-        onChange(parsedData)
+        if (onChange) {
+          onChange(parsedData)
+        }
         // Auto-save after uploading CSV
         if (onSave) {
           setIsSaving(true)
@@ -183,7 +192,9 @@ export function KeywordResearchUpload({ data, onChange, onSave, editable = true 
   }, [handleFileUpload])
 
   const handleClear = useCallback(() => {
-    onChange([])
+    if (onChange) {
+      onChange([])
+    }
     setError(null)
   }, [onChange])
 
@@ -312,7 +323,7 @@ export function KeywordResearchUpload({ data, onChange, onSave, editable = true 
                         <Badge className={getCategoryColor(row.category)}>{row.category}</Badge>
                       </TableCell>
                       <TableCell className="text-right font-mono text-sm">
-                        {row.volume.toLocaleString()}
+                        {formatNumber(row.volume)}
                       </TableCell>
                       <TableCell className="text-right font-mono text-sm">
                         {row.difficulty}

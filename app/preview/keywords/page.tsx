@@ -112,7 +112,6 @@ export default async function KeywordsPreview({ searchParams }: { searchParams?:
             <CardContent className="pt-6">
               <KeywordResearchUpload
                 data={keywordResearchData}
-                onChange={() => {}}
                 editable={false}
               />
             </CardContent>

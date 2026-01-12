@@ -7,8 +7,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Image from "next/image"
 
-// Helper function to compress image
-const compressImage = (file: File, maxWidth: number = 1200, maxHeight: number = 1200, quality: number = 0.8): Promise<string> => {
+// Helper function to compress image with aggressive compression
+const compressImage = (file: File, maxWidth: number = 800, maxHeight: number = 800, quality: number = 0.6, maxSizeKB: number = 200): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = (e) => {
@@ -21,12 +21,12 @@ const compressImage = (file: File, maxWidth: number = 1200, maxHeight: number = 
         // Calculate new dimensions
         if (width > height) {
           if (width > maxWidth) {
-            height = (height * maxWidth) / width
+            height = Math.round((height * maxWidth) / width)
             width = maxWidth
           }
         } else {
           if (height > maxHeight) {
-            width = (width * maxHeight) / height
+            width = Math.round((width * maxHeight) / height)
             height = maxHeight
           }
         }
@@ -40,8 +40,40 @@ const compressImage = (file: File, maxWidth: number = 1200, maxHeight: number = 
           return
         }
 
+        // Use better quality settings for compression
+        ctx.imageSmoothingEnabled = true
+        ctx.imageSmoothingQuality = 'high'
         ctx.drawImage(img, 0, 0, width, height)
-        const compressedDataUrl = canvas.toDataURL('image/jpeg', quality)
+        
+        // Try different quality levels to get under maxSizeKB
+        const tryCompress = (q: number): string => {
+          return canvas.toDataURL('image/jpeg', q)
+        }
+        
+        let compressedDataUrl = tryCompress(quality)
+        let currentSize = (compressedDataUrl.length * 3) / 4 / 1024 // Approximate KB
+        
+        // If still too large, reduce quality further
+        if (currentSize > maxSizeKB) {
+          let currentQuality = quality
+          while (currentSize > maxSizeKB && currentQuality > 0.3) {
+            currentQuality -= 0.1
+            compressedDataUrl = tryCompress(currentQuality)
+            currentSize = (compressedDataUrl.length * 3) / 4 / 1024
+          }
+        }
+        
+        // If still too large, reduce dimensions
+        if (currentSize > maxSizeKB) {
+          const scale = Math.sqrt(maxSizeKB / currentSize)
+          width = Math.round(width * scale)
+          height = Math.round(height * scale)
+          canvas.width = width
+          canvas.height = height
+          ctx.drawImage(img, 0, 0, width, height)
+          compressedDataUrl = canvas.toDataURL('image/jpeg', 0.5)
+        }
+        
         resolve(compressedDataUrl)
       }
       img.onerror = reject
@@ -58,7 +90,7 @@ interface VisualReferencesUploadProps {
   maxImages?: number
 }
 
-export function VisualReferencesUpload({ images, onImagesChange, maxImages = 10 }: VisualReferencesUploadProps) {
+export function VisualReferencesUpload({ images, onImagesChange, maxImages = 4 }: VisualReferencesUploadProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
   const [isDraggingFiles, setIsDraggingFiles] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -77,22 +109,50 @@ export function VisualReferencesUpload({ images, onImagesChange, maxImages = 10 
 
     try {
       // Compress and process all images
+      let totalSizeKB = 0
+      const MAX_TOTAL_SIZE_KB = 800 // Max 800KB total for all images
+      
       for (const file of filesToProcess) {
         // Check file size (max 10MB before compression)
         if (file.size > 10 * 1024 * 1024) {
-          console.warn(`File ${file.name} is too large (${(file.size / 1024 / 1024).toFixed(2)}MB), compressing...`)
+          console.warn(`File ${file.name} is too large (${(file.size / 1024 / 1024).toFixed(2)}MB), compressing aggressively...`)
         }
         
-        // Compress image to reduce base64 size
-        const compressedImage = await compressImage(file, 1200, 1200, 0.75)
+        // Calculate max size per image based on remaining total
+        const remainingSlots = filesToProcess.length - newImageUrls.length
+        const maxSizePerImage = Math.floor((MAX_TOTAL_SIZE_KB - totalSizeKB) / remainingSlots)
+        const targetSizeKB = Math.min(200, maxSizePerImage)
+        
+        // Aggressively compress image: 800x800px, quality 0.6, adaptive max size
+        const compressedImage = await compressImage(file, 800, 800, 0.6, targetSizeKB)
+        const sizeKB = (compressedImage.length * 3) / 4 / 1024
+        totalSizeKB += sizeKB
+        
+        console.log(`Compressed ${file.name}: ${sizeKB.toFixed(2)}KB (Total: ${totalSizeKB.toFixed(2)}KB)`)
+        
+        if (sizeKB > 300) {
+          console.warn(`Image ${file.name} is still large (${sizeKB.toFixed(2)}KB) after compression`)
+        }
+        
+        if (totalSizeKB > MAX_TOTAL_SIZE_KB) {
+          console.warn(`Total size (${totalSizeKB.toFixed(2)}KB) exceeds limit. Stopping.`)
+          break
+        }
+        
         newImageUrls.push(compressedImage)
+      }
+
+      if (newImageUrls.length === 0) {
+        alert("No images could be processed. Please try with smaller files.")
+        return
       }
 
       // Update state with all compressed images at once
       onImagesChange([...images, ...newImageUrls])
+      console.log(`Successfully processed ${newImageUrls.length} images. Total size: ${totalSizeKB.toFixed(2)}KB`)
     } catch (error) {
       console.error("Error processing images:", error)
-      alert("Error processing images. Please try again with smaller files.")
+      alert(`Error processing images: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again with smaller files.`)
     }
 
     // Reset input
@@ -130,17 +190,43 @@ export function VisualReferencesUpload({ images, onImagesChange, maxImages = 10 
     const newImageUrls: string[] = []
 
     try {
+      let totalSizeKB = 0
+      const MAX_TOTAL_SIZE_KB = 800 // Max 800KB total for all images
+      
       for (const file of filesToProcess) {
         if (file.size > 10 * 1024 * 1024) {
-          console.warn(`File ${file.name} is too large, compressing...`)
+          console.warn(`File ${file.name} is too large, compressing aggressively...`)
         }
-        const compressedImage = await compressImage(file, 1200, 1200, 0.75)
+        
+        const remainingSlots = filesToProcess.length - newImageUrls.length
+        const maxSizePerImage = Math.floor((MAX_TOTAL_SIZE_KB - totalSizeKB) / remainingSlots)
+        const targetSizeKB = Math.min(200, maxSizePerImage)
+        
+        // Aggressively compress: 800x800px, quality 0.6, adaptive max size
+        const compressedImage = await compressImage(file, 800, 800, 0.6, targetSizeKB)
+        const sizeKB = (compressedImage.length * 3) / 4 / 1024
+        totalSizeKB += sizeKB
+        
+        console.log(`Compressed ${file.name}: ${sizeKB.toFixed(2)}KB (Total: ${totalSizeKB.toFixed(2)}KB)`)
+        
+        if (totalSizeKB > MAX_TOTAL_SIZE_KB) {
+          console.warn(`Total size (${totalSizeKB.toFixed(2)}KB) exceeds limit. Stopping.`)
+          break
+        }
+        
         newImageUrls.push(compressedImage)
       }
+      
+      if (newImageUrls.length === 0) {
+        alert("No images could be processed. Please try with smaller files.")
+        return
+      }
+      
       onImagesChange([...images, ...newImageUrls])
+      console.log(`Successfully processed ${newImageUrls.length} images. Total size: ${totalSizeKB.toFixed(2)}KB`)
     } catch (error) {
       console.error("Error processing dropped images:", error)
-      alert("Error processing images. Please try again with smaller files.")
+      alert(`Error processing images: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again with smaller files.`)
     }
   }
 

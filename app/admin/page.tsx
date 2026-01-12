@@ -300,6 +300,24 @@ export default function AdminPanel() {
   
   // Auto-save function for special fields (visual references, keyword research, app icon)
   const handleAutoSaveField = useCallback(async (field: keyof AppData, value: any) => {
+    // Validate size for visual references
+    if (field === "creative_brief_visual_references" && Array.isArray(value)) {
+      const totalSize = value.reduce((acc: number, img: string) => {
+        return acc + (img.length * 3) / 4 / 1024 // Approximate KB
+      }, 0)
+      
+      if (totalSize > 1000) { // Max 1MB total
+        toast({
+          title: "Error",
+          description: `Total image size (${totalSize.toFixed(2)}KB) is too large. Maximum 1MB total. Please remove some images.`,
+          variant: "destructive",
+        })
+        return
+      }
+      
+      console.log(`[handleAutoSaveField] Visual references total size: ${totalSize.toFixed(2)}KB`)
+    }
+    
     // Update local state first
     setAppData((prev) => {
       const updatedData = { ...prev, [field]: value }
@@ -321,17 +339,23 @@ export default function AdminPanel() {
             })
           } else {
             console.error(`[handleAutoSaveField] Failed to auto-save ${field}:`, result.error)
+            const errorMsg = result.error?.includes("JSON") || result.error?.includes("string") 
+              ? "Image data too large. Please use smaller images."
+              : `Failed to save ${field}`
             toast({
               title: "Error",
-              description: `Failed to save ${field}`,
+              description: errorMsg,
               variant: "destructive",
             })
           }
         } catch (error) {
           console.error(`[handleAutoSaveField] Error saving ${field}:`, error)
+          const errorMsg = error instanceof Error && (error.message.includes("JSON") || error.message.includes("string"))
+            ? "Image data too large. Please use smaller images."
+            : `Error saving ${field}`
           toast({
             title: "Error",
-            description: `Error saving ${field}`,
+            description: errorMsg,
             variant: "destructive",
           })
         }
@@ -1862,7 +1886,7 @@ export default function AdminPanel() {
                   <VisualReferencesUpload
                     images={Array.isArray(appData.creative_brief_visual_references) ? appData.creative_brief_visual_references : []}
                     onImagesChange={(images) => handleAutoSaveField("creative_brief_visual_references", images)}
-                    maxImages={10}
+                    maxImages={4}
                   />
                 </div>
               </CardContent>

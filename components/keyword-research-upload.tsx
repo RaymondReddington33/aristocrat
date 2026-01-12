@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { Upload, FileSpreadsheet, Trash2, Download, AlertCircle } from "lucide-react"
+import { Upload, FileSpreadsheet, Trash2, Download, AlertCircle, Loader2, CheckCircle2 } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 
 interface KeywordResearchRow {
@@ -27,8 +27,8 @@ interface KeywordResearchRow {
 interface KeywordResearchUploadProps {
   data: KeywordResearchRow[]
   onChange: (data: KeywordResearchRow[]) => void
+  onSave?: () => void
   editable?: boolean
-  onLoadDemo?: () => void
 }
 
 // Demo keyword research data
@@ -54,14 +54,24 @@ const DEMO_KEYWORD_RESEARCH: KeywordResearchRow[] = [
   { keyword: "cleopatra casino", brand: false, category: "generic", relevancy_score: 85, volume: 15000, difficulty: 38, chance: 0.6, kei: 395, results: 3200, maximum_reach: 15000, priority: "medium", platform: "both", recommended_field: "keywords" },
 ]
 
-export function KeywordResearchUpload({ data, onChange, editable = true, onLoadDemo }: KeywordResearchUploadProps) {
+export function KeywordResearchUpload({ data, onChange, onSave, editable = true }: KeywordResearchUploadProps) {
   const [error, setError] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
-  const handleLoadDemo = useCallback(() => {
+  const handleLoadDemo = useCallback(async () => {
     onChange(DEMO_KEYWORD_RESEARCH)
     setError(null)
-  }, [onChange])
+    // Auto-save after loading demo data
+    if (onSave) {
+      setIsSaving(true)
+      // Small delay to ensure state is updated
+      setTimeout(async () => {
+        await onSave()
+        setIsSaving(false)
+      }, 100)
+    }
+  }, [onChange, onSave])
 
   const parseCSV = useCallback((csvText: string): KeywordResearchRow[] => {
     const lines = csvText.trim().split('\n')
@@ -135,6 +145,14 @@ export function KeywordResearchUpload({ data, onChange, editable = true, onLoadD
         const text = e.target?.result as string
         const parsedData = parseCSV(text)
         onChange(parsedData)
+        // Auto-save after uploading CSV
+        if (onSave) {
+          setIsSaving(true)
+          setTimeout(async () => {
+            await onSave()
+            setIsSaving(false)
+          }, 100)
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to parse CSV file")
       }
@@ -143,7 +161,7 @@ export function KeywordResearchUpload({ data, onChange, editable = true, onLoadD
       setError("Failed to read file")
     }
     reader.readAsText(file)
-  }, [parseCSV, onChange])
+  }, [parseCSV, onChange, onSave])
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -207,8 +225,9 @@ export function KeywordResearchUpload({ data, onChange, editable = true, onLoadD
                 accept=".csv"
                 onChange={handleFileInput}
                 className="hidden"
+                disabled={isSaving}
               />
-              <Button type="button" variant="outline" size="sm" className="cursor-pointer" asChild>
+              <Button type="button" variant="outline" size="sm" className="cursor-pointer" disabled={isSaving} asChild>
                 <span>
                   <Upload className="h-4 w-4 mr-2" />
                   Upload CSV
@@ -220,12 +239,23 @@ export function KeywordResearchUpload({ data, onChange, editable = true, onLoadD
               type="button" 
               size="sm" 
               onClick={handleLoadDemo}
+              disabled={isSaving}
               className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
             >
-              <FileSpreadsheet className="h-4 w-4 mr-2" />
-              Load Demo Research
+              {isSaving ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <FileSpreadsheet className="h-4 w-4 mr-2" />
+              )}
+              {isSaving ? "Saving..." : "Load Demo Research"}
             </Button>
           </div>
+          {isSaving && (
+            <p className="text-xs text-blue-600 mt-2 flex items-center justify-center gap-1">
+              <Loader2 className="h-3 w-3 animate-spin" />
+              Auto-saving to database...
+            </p>
+          )}
           <p className="text-xs text-slate-500 mt-3">
             Expected columns: Keyword, Brand, Category, Relevancy Score, Volume, Difficulty, Chance, KEI, Results, Maximum Reach, Priority, Platform, Recommended Field
           </p>

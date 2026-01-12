@@ -1987,6 +1987,21 @@ export default function AdminPanel() {
                 <KeywordResearchUpload
                   data={Array.isArray(appData.keyword_research_data) ? appData.keyword_research_data : []}
                   onChange={(data) => handleInputChange("keyword_research_data", data as any)}
+                  onSave={async () => {
+                    // Auto-save when keyword research data is uploaded
+                    const result = await saveAppData(appData, appId)
+                    if (result.success) {
+                      if (!appId && result.id) {
+                        setAppId(result.id)
+                        localStorage.setItem("selectedAppId", result.id)
+                      }
+                      setLastSaved(new Date())
+                      toast({
+                        title: "Saved",
+                        description: "Keyword research data saved successfully",
+                      })
+                    }
+                  }}
                   editable={true}
                 />
               </CardContent>

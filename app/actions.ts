@@ -412,6 +412,7 @@ export async function bulkSaveKeywords(keywords: Array<Omit<AppKeyword, 'id'> & 
 
     revalidatePath("/admin")
     revalidatePath("/preview")
+    revalidatePath("/preview/keywords")
 
     return { success: true, count: data?.length || 0 }
   } catch (error) {

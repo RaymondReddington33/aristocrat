@@ -510,6 +510,16 @@ export default function AdminPanel() {
             setAppData(demoData)
             setAppId(saveResult.id)
             setLastSaved(new Date())
+            
+            // Still save keywords even in fallback
+            console.log("[confirmCleanupAndLoadDemo] Saving demo keywords in fallback...")
+            const demoKeywords = getDemoKeywords(saveResult.id)
+            const keywordsResult = await bulkSaveKeywords(demoKeywords)
+            if (keywordsResult.success) {
+              console.log("[confirmCleanupAndLoadDemo] Fallback: Saved", keywordsResult.count, "keywords")
+              const loadedKeywords = await getKeywords(saveResult.id)
+              setKeywords(loadedKeywords)
+            }
           }
           
           toast({

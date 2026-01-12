@@ -28,11 +28,40 @@ interface KeywordResearchUploadProps {
   data: KeywordResearchRow[]
   onChange: (data: KeywordResearchRow[]) => void
   editable?: boolean
+  onLoadDemo?: () => void
 }
 
-export function KeywordResearchUpload({ data, onChange, editable = true }: KeywordResearchUploadProps) {
+// Demo keyword research data
+const DEMO_KEYWORD_RESEARCH: KeywordResearchRow[] = [
+  { keyword: "redrain slots casino", brand: true, category: "branded", relevancy_score: 95, volume: 12000, difficulty: 50, chance: 0.7, kei: 150, results: 200000, maximum_reach: 500000, priority: "high", platform: "both", recommended_field: "title" },
+  { keyword: "redrain", brand: true, category: "branded", relevancy_score: 98, volume: 8500, difficulty: 30, chance: 0.95, kei: 280, results: 1200, maximum_reach: 8500, priority: "high", platform: "both", recommended_field: "title" },
+  { keyword: "redrain casino", brand: true, category: "branded", relevancy_score: 97, volume: 6500, difficulty: 35, chance: 0.85, kei: 185.7, results: 800, maximum_reach: 6500, priority: "high", platform: "both", recommended_field: "title" },
+  { keyword: "casino slots", brand: false, category: "generic", relevancy_score: 96, volume: 50000, difficulty: 30, chance: 0.6, kei: 1666, results: 1500000, maximum_reach: 1000000, priority: "high", platform: "both", recommended_field: "subtitle" },
+  { keyword: "slots casino", brand: false, category: "generic", relevancy_score: 94, volume: 45000, difficulty: 25, chance: 0.65, kei: 1800, results: 1200000, maximum_reach: 800000, priority: "high", platform: "android", recommended_field: "title" },
+  { keyword: "free slots", brand: false, category: "generic", relevancy_score: 97, volume: 47000, difficulty: 15, chance: 0.55, kei: 3133, results: 1100000, maximum_reach: 600000, priority: "high", platform: "android", recommended_field: "subtitle" },
+  { keyword: "jackpot", brand: false, category: "generic", relevancy_score: 89, volume: 245000, difficulty: 75, chance: 0.45, kei: 3266, results: 3000000, maximum_reach: 2000000, priority: "high", platform: "both", recommended_field: "keywords" },
+  { keyword: "slots", brand: false, category: "generic", relevancy_score: 95, volume: 320000, difficulty: 78, chance: 0.45, kei: 4100, results: 45000, maximum_reach: 320000, priority: "high", platform: "both", recommended_field: "keywords" },
+  { keyword: "casino games", brand: false, category: "generic", relevancy_score: 92, volume: 280000, difficulty: 75, chance: 0.42, kei: 3733, results: 38000, maximum_reach: 280000, priority: "high", platform: "both", recommended_field: "keywords" },
+  { keyword: "heart of vegas", brand: false, category: "competitor", relevancy_score: 75, volume: 450000, difficulty: 95, chance: 0.05, kei: 4737, results: 800000, maximum_reach: 450000, priority: "low", platform: "both", recommended_field: "description" },
+  { keyword: "cashman casino", brand: false, category: "competitor", relevancy_score: 72, volume: 320000, difficulty: 92, chance: 0.08, kei: 3478, results: 650000, maximum_reach: 320000, priority: "low", platform: "both", recommended_field: "description" },
+  { keyword: "vegas", brand: false, category: "generic", relevancy_score: 82, volume: 180000, difficulty: 70, chance: 0.3, kei: 2571, results: 2500000, maximum_reach: 1500000, priority: "medium", platform: "both", recommended_field: "keywords" },
+  { keyword: "cleopatra slots", brand: false, category: "generic", relevancy_score: 90, volume: 12000, difficulty: 20, chance: 0.5, kei: 600, results: 800000, maximum_reach: 500000, priority: "medium", platform: "both", recommended_field: "keywords" },
+  { keyword: "egyptian slots", brand: false, category: "generic", relevancy_score: 93, volume: 38000, difficulty: 50, chance: 0.66, kei: 760, results: 3200, maximum_reach: 38000, priority: "medium", platform: "both", recommended_field: "keywords" },
+  { keyword: "pharaoh slots", brand: false, category: "generic", relevancy_score: 94, volume: 62000, difficulty: 52, chance: 0.68, kei: 1192, results: 5400, maximum_reach: 62000, priority: "high", platform: "both", recommended_field: "keywords" },
+  { keyword: "egypt slots", brand: false, category: "generic", relevancy_score: 96, volume: 88000, difficulty: 58, chance: 0.65, kei: 1517, results: 8200, maximum_reach: 88000, priority: "high", platform: "both", recommended_field: "keywords" },
+  { keyword: "ancient treasure slots", brand: false, category: "generic", relevancy_score: 88, volume: 25000, difficulty: 40, chance: 0.58, kei: 625, results: 3500, maximum_reach: 25000, priority: "medium", platform: "both", recommended_field: "keywords" },
+  { keyword: "pyramid slots", brand: false, category: "generic", relevancy_score: 87, volume: 18000, difficulty: 35, chance: 0.62, kei: 514, results: 2800, maximum_reach: 18000, priority: "medium", platform: "both", recommended_field: "keywords" },
+  { keyword: "cleopatra casino", brand: false, category: "generic", relevancy_score: 85, volume: 15000, difficulty: 38, chance: 0.6, kei: 395, results: 3200, maximum_reach: 15000, priority: "medium", platform: "both", recommended_field: "keywords" },
+]
+
+export function KeywordResearchUpload({ data, onChange, editable = true, onLoadDemo }: KeywordResearchUploadProps) {
   const [error, setError] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
+
+  const handleLoadDemo = useCallback(() => {
+    onChange(DEMO_KEYWORD_RESEARCH)
+    setError(null)
+  }, [onChange])
 
   const parseCSV = useCallback((csvText: string): KeywordResearchRow[] => {
     const lines = csvText.trim().split('\n')
@@ -171,20 +200,32 @@ export function KeywordResearchUpload({ data, onChange, editable = true }: Keywo
           <p className="text-sm text-slate-600 mb-2">
             Drag and drop your keyword research CSV here, or
           </p>
-          <label>
-            <input
-              type="file"
-              accept=".csv"
-              onChange={handleFileInput}
-              className="hidden"
-            />
-            <Button type="button" variant="outline" size="sm" className="cursor-pointer" asChild>
-              <span>
-                <Upload className="h-4 w-4 mr-2" />
-                Browse Files
-              </span>
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            <label>
+              <input
+                type="file"
+                accept=".csv"
+                onChange={handleFileInput}
+                className="hidden"
+              />
+              <Button type="button" variant="outline" size="sm" className="cursor-pointer" asChild>
+                <span>
+                  <Upload className="h-4 w-4 mr-2" />
+                  Upload CSV
+                </span>
+              </Button>
+            </label>
+            <span className="text-slate-400 text-sm">or</span>
+            <Button 
+              type="button" 
+              size="sm" 
+              onClick={handleLoadDemo}
+              className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
+            >
+              <FileSpreadsheet className="h-4 w-4 mr-2" />
+              Load Demo Research
             </Button>
-          </label>
+          </div>
           <p className="text-xs text-slate-500 mt-3">
             Expected columns: Keyword, Brand, Category, Relevancy Score, Volume, Difficulty, Chance, KEI, Results, Maximum Reach, Priority, Platform, Recommended Field
           </p>

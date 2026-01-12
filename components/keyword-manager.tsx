@@ -498,16 +498,16 @@ export const KeywordManager = memo(function KeywordManager({ appId, initialKeywo
                   <div>
                     <Label>Recommended Field</Label>
                     <Select
-                      value={newKeyword.recommended_field || ""}
+                      value={newKeyword.recommended_field || "auto"}
                       onValueChange={(value: any) =>
-                        setNewKeyword({ ...newKeyword, recommended_field: value || undefined })
+                        setNewKeyword({ ...newKeyword, recommended_field: value === "auto" ? undefined : value })
                       }
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Auto" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">Auto</SelectItem>
+                        <SelectItem value="auto">Auto</SelectItem>
                         <SelectItem value="title">Title</SelectItem>
                         <SelectItem value="subtitle">Subtitle</SelectItem>
                         <SelectItem value="keywords">Keywords</SelectItem>

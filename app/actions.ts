@@ -382,7 +382,7 @@ export async function saveKeyword(keyword: Partial<AppKeyword> & { app_data_id: 
   }
 }
 
-export async function bulkSaveKeywords(keywords: Array<Omit<AppKeyword, 'id'> & { app_data_id: string }>) {
+export async function bulkSaveKeywords(keywords: Array<Omit<AppKeyword, 'id' | 'created_at' | 'updated_at'> & { app_data_id: string }>) {
   const supabase = await createClient()
 
   try {

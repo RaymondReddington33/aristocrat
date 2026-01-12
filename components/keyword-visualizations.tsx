@@ -24,6 +24,8 @@ import { calculateIndividualKeywordDensity } from "@/lib/keyword-density"
 
 interface KeywordVisualizationsProps {
   keywords: AppKeyword[]
+  appData?: AppData
+  showAdvanced?: boolean // Show advanced visualizations (charts, distributions)
 }
 
 const COLORS = {
@@ -38,7 +40,7 @@ const PRIORITY_COLORS = {
   low: "#3b82f6", // blue
 }
 
-export function KeywordVisualizations({ keywords, appData }: KeywordVisualizationsProps) {
+export function KeywordVisualizations({ keywords, appData, showAdvanced = true }: KeywordVisualizationsProps) {
   // Volume Chart Data - Top 10 by volume
   const volumeData = useMemo(() => {
     return [...keywords]
@@ -133,6 +135,11 @@ export function KeywordVisualizations({ keywords, appData }: KeywordVisualizatio
         </div>
       )
     }
+    return null
+  }
+
+  // If showAdvanced is false, return null (don't render any visualizations)
+  if (!showAdvanced) {
     return null
   }
 

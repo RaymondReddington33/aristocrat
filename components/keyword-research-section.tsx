@@ -13,9 +13,10 @@ import { calculateKeywordPriority } from "@/lib/keyword-optimizer"
 interface KeywordResearchSectionProps {
   keywords: AppKeyword[]
   appData: AppData
+  showAdvancedVisualizations?: boolean
 }
 
-export function KeywordResearchSection({ keywords, appData }: KeywordResearchSectionProps) {
+export function KeywordResearchSection({ keywords, appData, showAdvancedVisualizations = false }: KeywordResearchSectionProps) {
   const [platformFilter, setPlatformFilter] = useState<string>("all")
   const [categoryFilter, setCategoryFilter] = useState<string>("all")
 
@@ -120,15 +121,15 @@ export function KeywordResearchSection({ keywords, appData }: KeywordResearchSec
         </CardContent>
       </Card>
 
-      {/* Visualizations */}
-      {filteredKeywords.length > 0 && (
+      {/* Visualizations - Only show if showAdvancedVisualizations is true */}
+      {showAdvancedVisualizations && filteredKeywords.length > 0 && (
         <div className="mb-6">
-          <KeywordVisualizations keywords={filteredKeywords} appData={appData} />
+          <KeywordVisualizations keywords={filteredKeywords} appData={appData} showAdvanced={showAdvancedVisualizations} />
         </div>
       )}
 
-      {/* Platform Analysis */}
-      {filteredKeywords.length > 0 && (
+      {/* Platform Analysis - Only show if showAdvancedVisualizations is true */}
+      {showAdvancedVisualizations && filteredKeywords.length > 0 && (
         <Card className="border-2 mb-6">
           <CardHeader className="bg-indigo-50">
             <CardTitle className="flex items-center gap-2 text-indigo-800">

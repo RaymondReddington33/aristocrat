@@ -9,9 +9,10 @@ import { getKeywords } from "@/app/actions"
 import type { AppKeyword } from "@/lib/types"
 import { getSelectedAppId, getAppDataOrLatest } from "@/lib/app-selection"
 
-export default async function KeywordsPreview({ searchParams }: { searchParams?: { appId?: string } }) {
+export default async function KeywordsPreview({ searchParams }: { searchParams?: Promise<{ appId?: string }> }) {
   // Get selected app ID from query param (from navbar), cookie, or use latest app
-  const queryAppId = searchParams?.appId || null
+  const params = await searchParams
+  const queryAppId = params?.appId || null
   const cookieAppId = await getSelectedAppId()
   const selectedAppId = queryAppId || cookieAppId
   const appData = await getAppDataOrLatest(selectedAppId)

@@ -135,20 +135,35 @@ export function Navbar() {
   }, [isMounted])
 
   useEffect(() => {
-    // Fetch all apps for selector
-    const fetchApps = async () => {
+    // Fetch all apps for selector with retry logic
+    const fetchApps = async (retryCount = 0) => {
       try {
         const supabase = createClient()
-        const { data, error } = await supabase
+        
+        // Add timeout to prevent hanging
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error("Request timeout")), 10000)
+        )
+        
+        const queryPromise = supabase
           .from("app_data")
           .select("id, app_name, app_icon_url")
           .order("created_at", { ascending: false })
           .limit(10)
+        
+        const { data, error } = await Promise.race([queryPromise, timeoutPromise]) as any
 
         if (error) {
-          // Log error details more comprehensively
-          console.error("Supabase error fetching apps:", error)
-          // Don't show error to user, just use empty array
+          // Log error but don't throw - allow retry
+          console.warn("Supabase error fetching apps (attempt " + (retryCount + 1) + "):", error.message || error)
+          
+          // Retry up to 2 times with exponential backoff
+          if (retryCount < 2) {
+            setTimeout(() => fetchApps(retryCount + 1), 1000 * Math.pow(2, retryCount))
+            return
+          }
+          
+          // After retries, just use empty array
           setApps([])
           return
         }
@@ -158,7 +173,7 @@ export function Navbar() {
           // Check localStorage for previously selected app, otherwise use first app
           if (!selectedAppId) {
             const savedAppId = typeof window !== "undefined" ? localStorage.getItem("selectedAppId") : null
-            if (savedAppId && data.find(app => app.id === savedAppId)) {
+            if (savedAppId && data.find((app: any) => app.id === savedAppId)) {
               setSelectedAppId(savedAppId)
             } else {
               setSelectedAppId(data[0].id)
@@ -172,19 +187,18 @@ export function Navbar() {
           setApps([])
         }
       } catch (error) {
-        // Handle client creation errors or network errors
+        // Handle client creation errors, network errors, or timeouts
         const errorMessage = error instanceof Error ? error.message : String(error)
-        const errorDetails = error instanceof Error ? {
-          name: error.name,
-          message: error.message,
-          stack: error.stack,
-        } : { error }
         
-        console.error("Error fetching apps:", {
-          message: errorMessage,
-          details: errorDetails,
-        })
-        // Silently fail - app can still work without the app selector
+        console.warn("Error fetching apps (attempt " + (retryCount + 1) + "):", errorMessage)
+        
+        // Retry up to 2 times with exponential backoff
+        if (retryCount < 2 && !errorMessage.includes("Missing Supabase")) {
+          setTimeout(() => fetchApps(retryCount + 1), 1000 * Math.pow(2, retryCount))
+          return
+        }
+        
+        // After retries or if it's a config error, silently fail
         setApps([])
       }
     }

@@ -115,7 +115,41 @@ export default function AdminPanel() {
 
       if (data) {
         console.log("[loadExistingData] Setting app data:", data.app_name, "ID:", data.id)
-        setAppData(data)
+        
+        // Auto-update old values to new ones if detected
+        const needsUpdate = 
+          data.ios_app_name === "RedRain: Egyptian Riches Slots" ||
+          data.ios_subtitle === "Premium Adventure & Fortune" ||
+          data.android_app_name === "RedRain Casino: Fortune Games"
+        
+        if (needsUpdate && data.id) {
+          console.log("[loadExistingData] Detected old values, auto-updating to new ones")
+          const updatedData = {
+            ...data,
+            ios_app_name: data.ios_app_name === "RedRain: Egyptian Riches Slots" 
+              ? "RedRain Fortune: Slots Casino" 
+              : data.ios_app_name,
+            ios_subtitle: data.ios_subtitle === "Premium Adventure & Fortune" 
+              ? "Egyptian Las Vegas Adventure" 
+              : data.ios_subtitle,
+            android_app_name: data.android_app_name === "RedRain Casino: Fortune Games" 
+              ? "RedRain Fortune: Slots Casino Las Vegas" 
+              : data.android_app_name,
+          }
+          
+          // Save updated values to database
+          try {
+            await saveAppData(updatedData, data.id)
+            console.log("[loadExistingData] Successfully updated old values in database")
+            setAppData(updatedData)
+          } catch (error) {
+            console.error("[loadExistingData] Error updating old values:", error)
+            setAppData(data)
+          }
+        } else {
+          setAppData(data)
+        }
+        
         setAppId(data.id || null)
         if (data.updated_at) {
           setLastSaved(new Date(data.updated_at))
@@ -655,8 +689,8 @@ export default function AdminPanel() {
       // Subtitle (30 chars): Value proposition - NO repetition from title  
       // Keywords (100 chars): Generic core keywords, NO spaces, NO plurals, NO repetition
       
-      ios_app_name: "RedRain: Egyptian Riches Slots", // 30 chars ✅ 100%
-      ios_subtitle: "Premium Adventure & Fortune", // 27 chars - Value prop, zero repetition
+      ios_app_name: "RedRain Fortune: Slots Casino", // 30 chars ✅ 100%
+      ios_subtitle: "Egyptian Las Vegas Adventure", // 30 chars - Value prop, zero repetition
       ios_description:
         "Step into the world of Ancient Egypt, claim your 5 MILLION FREE VIRTUAL COINS, and enjoy free virtual spins on amazing online slot machines! You must be 17+ to access this game. This game does not offer gambling or an opportunity to win real money or prizes. Practice or success at social gaming does not imply future success at gambling.\n\nRedRain Casino includes both 5-reel and 3-reel classic virtual slot machines for a free social casino experience like no other! The creators bring you a collection of Egyptian-themed social casino games that you love!\n\nSlot machines straight to your phone:\n- Watch the virtual big wins erupt in Pharaoh's Fortune slots\n- Enter the exotic world of Cleopatra's Palace\n- Strike gold with virtual huge Jackpots in Pyramid Treasures\n\nThe best virtual bonuses of any online slots game! With RedRain Casino, the more you spin, the more you win! No other social casino slots game offers what we do, with MEGA virtual bonuses every day, hour, and 15 MINUTES! Spin the jackpot wheel every day and get your virtual rewards!\n\nYour Privacy Rights: https://redrain.com/privacy",
       ios_promotional_text:
@@ -676,7 +710,7 @@ export default function AdminPanel() {
       // Short Description (80 chars): KEY CONVERSION FIELD - semantic variations
       // Long Description (4000 chars): Keyword distribution with semantic variations
       
-      android_app_name: "RedRain Casino: Fortune Games", // 29 chars
+      android_app_name: "RedRain Fortune: Slots Casino Las Vegas", // 43 chars
       android_short_description:
         "Premium Egyptian-themed slots with massive rewards – spin legendary reels today!", // 80 chars ✅ 100%
       android_full_description:

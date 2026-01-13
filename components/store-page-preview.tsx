@@ -32,7 +32,7 @@ const StorePageMockup = ({
 
   // Real strategic examples for each variant
   const getVariantContent = () => {
-    const appName = appData.ios_app_name || appData.app_name || "RedRain Slots Casino"
+    const appName = appData.ios_app_name || appData.app_name || "RedRain Fortune: Slots Casino"
     const rating = appData.rating || 4.8
     const reviewCount = appData.review_count || 125000
     
@@ -152,7 +152,7 @@ The UK represents our highest-value market per user, making CSL investment parti
     // Default - Main store page with strategic positioning
     return {
       title: appName,
-      subtitle: appData.ios_subtitle || appData.app_subtitle || "Premium Egyptian Slots Adventure",
+      subtitle: appData.ios_subtitle || appData.app_subtitle || "Egyptian Las Vegas Adventure",
       description: appData.ios_description || appData.android_full_description || `Step into the world of Ancient Egypt, claim your 5 MILLION FREE VIRTUAL COINS, and enjoy free virtual spins on amazing online slot machines!
 
 RedRain Casino includes both 5-reel and 3-reel classic virtual slot machines for a free social casino experience like no other! The creators bring you a collection of Egyptian-themed social casino games that you love!

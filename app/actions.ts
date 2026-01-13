@@ -100,6 +100,12 @@ export async function saveAppData(appData: Partial<AppData>, appId: string | nul
 
       revalidatePath("/admin")
       revalidatePath("/preview")
+      revalidatePath("/preview/ios")
+      revalidatePath("/preview/android")
+      revalidatePath("/preview/metadata/ios")
+      revalidatePath("/preview/metadata/android")
+      revalidatePath("/preview/brief")
+      revalidatePath("/preview/keywords")
 
       return { success: true, id: appId }
     } else {
